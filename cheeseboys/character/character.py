@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -
 
+import random
+
 import pygame
 from pygame.locals import *
-from gameobjects.vector2 import Vector2
+
 import utils
 import locals
+from utils import Vector2
+from sprite import GameSprite
 
-class Character(pygame.sprite.Sprite):
+class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers):
-        pygame.sprite.Sprite.__init__(self, *containers)
+    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150. ):
+        
+        GameSprite.__init__(self, *containers)
         self.containers = containers
         self.name = name
         self.img = img
@@ -20,17 +25,22 @@ class Character(pygame.sprite.Sprite):
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = locals.DIRECTION_E
         self._isMoving = False
-        self.speed = 150.
+        self.speed = speed
         
         self.navPoint = None
         self.heading =  None
         
         self.dimension = (24, 32)
 
-        self._x = 100.
-        self._y = 100.
+        self._x = firstPos[0]
+        self._y = firstPos[1]
         self.rect = self.image.get_rect(topleft = (100, 100))
-    
+
+    def getTip(self):
+        """Print a tip text near the character"""
+        rendered = locals.default_font.render(self.name, True, (255, 255, 255))
+        return rendered
+
     def _load_images(self, img_prefix):
         self.images = {}
         self.images['walk_north_1'] = utils.load_image("%s_walk_north_1.png" % img_prefix)
@@ -49,44 +59,16 @@ class Character(pygame.sprite.Sprite):
         self.lastUsedImage = 'head_east_1'
     
     def update(self, time_passed):
-        """Update method of pygame Sprite class"""
-        pressed_keys = pygame.key.get_pressed()
-        
-        # 1. Check for mouse navPoint setted
-        if locals.global_lastMouseLeftClickPosition and not self.navPoint or (self.navPoint and self.navPoint.as_tuple()!=locals.global_lastMouseLeftClickPosition):
-            self.navPoint = Vector2(*locals.global_lastMouseLeftClickPosition)
+        """Update method of pygame Sprite class.
+        Non playing character check if the have navPoint.
+        """
+        if self.navPoint:
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.
             self.heading = Vector2.from_points(self.position, destination)
             self.heading.normalize()
-            print self.heading
             direction = self._generateDirectionFromHeading(self.heading)
             self._checkDirectionChange(direction)
-        
-        # 2. Keys movement
-        if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
-            self.moving(True)
-            self.navPoint = None
-            locals.global_lastMouseLeftClickPosition = ()
-            if pressed_keys[K_LEFT] and pressed_keys[K_UP]:
-                direction = locals.DIRECTION_NW
-            elif pressed_keys[K_LEFT] and pressed_keys[K_DOWN]:
-                direction = locals.DIRECTION_SW
-            elif pressed_keys[K_RIGHT] and pressed_keys[K_UP]:
-                direction = locals.DIRECTION_NE
-            elif pressed_keys[K_RIGHT] and pressed_keys[K_DOWN]:
-                direction = locals.DIRECTION_SE
-            elif pressed_keys[K_LEFT]:
-                direction = locals.DIRECTION_W
-            elif pressed_keys[K_RIGHT]:
-                direction = locals.DIRECTION_E
-            elif pressed_keys[K_UP]:
-                direction = locals.DIRECTION_N
-            elif pressed_keys[K_DOWN]:
-                direction = locals.DIRECTION_S
-            self.direction = direction
-            distance = time_passed * self.speed
-            self.walk(distance)
-        elif self.navPoint:
+
             self.moving(True)
             distance = time_passed * self.speed
             movement = self.heading * distance
@@ -95,10 +77,11 @@ class Character(pygame.sprite.Sprite):
             self._y += movement.get_y()
             self.refresh()
             if self.isNearTo(*self.navPoint.as_tuple()):
-                locals.global_lastMouseLeftClickPosition = ()
                 self.navPoint = None
                 self.moving(False)
-
+        else:
+            # no navPoint? For now move to a random direction
+            self.setNavPoint(random.randint(1,639), random.randint(1,439) )
 
     def _setX(self, newx):
         self._x = newx
@@ -245,4 +228,6 @@ class Character(pygame.sprite.Sprite):
             self._mustChangeImage = True
         self._isMoving = new_move_status
 
-    
+    def setNavPoint(self, x, y):
+        """Set a new target navPoint for current character"""
+        self.navPoint = Vector2(x, y)

@@ -14,5 +14,11 @@ SCREEN_HEIGHT = 480
 
 MIN_PX_4_IMAGES_CHANGE = 20
 
-# Blobals
+DEFAULT_FONT = "Vera.ttf"
+
+
+
+# globals
+default_font = None
+screen = None
 global_lastMouseLeftClickPosition = ()
