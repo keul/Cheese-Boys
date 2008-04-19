@@ -20,7 +20,6 @@ class PlayingCharacter(Character):
         if (locals.global_lastMouseLeftClickPosition and not self.navPoint \
                     or (self.navPoint and self.navPoint.as_tuple()!=locals.global_lastMouseLeftClickPosition)
                 ) and not locals.global_lastMouseRightClickPosition:
-            #locals.cursorHandler.changeToCombatCursor()
             self.navPoint = Vector2(*locals.global_lastMouseLeftClickPosition)
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.
             self.heading = Vector2.from_points(self.position, destination)

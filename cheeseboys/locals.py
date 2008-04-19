@@ -25,4 +25,3 @@ default_font = None
 screen = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
-#cursorHandler = None

@@ -8,16 +8,12 @@ from pygame.locals import *
 import character
 import locals
 
-#from cursor import CursorHandler
-
 def main():
     clock = pygame.time.Clock()
     
     screen = pygame.display.set_mode( (locals.SCREEN_WIDTH, locals.SCREEN_HEIGHT), 0, 32)
     locals.screen = screen
-    #locals.cursorHandler = CursorHandler()
     pygame.display.set_caption("CheeseBoys - pre-alpha")
-    #pygame.key.set_repeat(0, 0)
     
     background = pygame.Surface( (640, 480), flags=SRCALPHA, depth=32 )
     all = pygame.sprite.RenderUpdates()
