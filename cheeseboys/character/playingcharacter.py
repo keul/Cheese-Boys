@@ -13,12 +13,14 @@ class PlayingCharacter(Character):
     
     def update(self, time_passed):
         """Update method of pygame Sprite class.
-        Overrided the one in Character main class because we need to handle controls here.
+        Overrided the one in Character main class because we need to handle user controls here.
         """
         pressed_keys = pygame.key.get_pressed()
-        
-        # 1. Check for mouse navPoint setted
-        if locals.global_lastMouseLeftClickPosition and not self.navPoint or (self.navPoint and self.navPoint.as_tuple()!=locals.global_lastMouseLeftClickPosition):
+        # 1. Check for mouse actions setted
+        if (locals.global_lastMouseLeftClickPosition and not self.navPoint \
+                    or (self.navPoint and self.navPoint.as_tuple()!=locals.global_lastMouseLeftClickPosition)
+                ) and not locals.global_lastMouseRightClickPosition:
+            #locals.cursorHandler.changeToCombatCursor()
             self.navPoint = Vector2(*locals.global_lastMouseLeftClickPosition)
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.
             self.heading = Vector2.from_points(self.position, destination)
@@ -26,6 +28,11 @@ class PlayingCharacter(Character):
             print self.heading
             direction = self._generateDirectionFromHeading(self.heading)
             self._checkDirectionChange(direction)
+        elif locals.global_lastMouseRightClickPosition:
+            # Click of right button: attack!
+            locals.global_lastMouseRightClickPosition = global_lastMouseLeftClickPosition = ()
+            self.navPoint = None
+            self.moving(False)
         
         # 2. Keys movement
         if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
@@ -52,6 +59,7 @@ class PlayingCharacter(Character):
             distance = time_passed * self.speed
             self.walk(distance)
         elif self.navPoint:
+            # NavPoint is set
             self.moving(True)
             distance = time_passed * self.speed
             movement = self.heading * distance

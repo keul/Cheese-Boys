@@ -19,8 +19,11 @@ class Character(GameSprite):
         self.containers = containers
         self.name = name
         self.img = img
+        self._imageDirectory = "charas"
         
         self._load_images(img)
+        self.lastUsedImage = 'head_east_1'
+
         self._distanceWalked = 0
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = locals.DIRECTION_E
@@ -30,7 +33,7 @@ class Character(GameSprite):
         self.navPoint = None
         self.heading =  None
         
-        self.dimension = (24, 32)
+        self.dimension = locals.TILE_IMAGE_DIMENSION
 
         self._x = firstPos[0]
         self._y = firstPos[1]
@@ -41,22 +44,13 @@ class Character(GameSprite):
         rendered = locals.default_font.render(self.name, True, (255, 255, 255))
         return rendered
 
-    def _load_images(self, img_prefix):
+    def _load_images(self, img):
         self.images = {}
-        self.images['walk_north_1'] = utils.load_image("%s_walk_north_1.png" % img_prefix)
-        self.images['walk_north_2'] = utils.load_image("%s_walk_north_2.png" % img_prefix)
-        self.images['walk_east_1'] = utils.load_image("%s_walk_east_1.png" % img_prefix)
-        self.images['walk_east_2'] = utils.load_image("%s_walk_east_2.png" % img_prefix)
-        self.images['walk_south_1'] = utils.load_image("%s_walk_south_1.png" % img_prefix)
-        self.images['walk_south_2'] = utils.load_image("%s_walk_south_2.png" % img_prefix)
-        self.images['walk_west_1'] = utils.load_image("%s_walk_west_1.png" % img_prefix)
-        self.images['walk_west_2'] = utils.load_image("%s_walk_west_2.png" % img_prefix)
-        self.images['head_north'] = utils.load_image("%s_head_north.png" % img_prefix)
-        self.images['head_east'] = utils.load_image("%s_head_east.png" % img_prefix)
-        self.images['head_south'] = utils.load_image("%s_head_south.png" % img_prefix)
-        self.images['head_west'] = utils.load_image("%s_head_west.png" % img_prefix)
-        self.images['crouch'] = utils.load_image("%s_crouch.png" % img_prefix)
-        self.lastUsedImage = 'head_east_1'
+        directory = self._imageDirectory
+        self.images['walk_north_1'], self.images['head_north'], self.images['walk_north_2'], self.images['walk_east_1'], \
+            self.images['head_east'], self.images['walk_east_2'], self.images['walk_south_1'], self.images['head_south'], \
+            self.images['walk_south_2'], self.images['walk_west_1'], self.images['head_west'], \
+            self.images['walk_west_2'] = utils.load_image(img, directory, charasFormatImage=True)
     
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -183,7 +177,7 @@ class Character(GameSprite):
         self.refresh()
     
     def refresh(self):
-        """Request character position"""
+        """Refresh character position"""
         self.rect.x = self._x
         self.rect.y = self._y
         #screenrect = Rect(0, 0, locals.SCREEN_WIDTH, locals.SCREEN_HEIGHT)
