@@ -54,7 +54,7 @@ class Character(GameSprite):
     
     def update(self, time_passed):
         """Update method of pygame Sprite class.
-        Non playing character check if the have navPoint.
+        Non playing character check if has navPoint.
         """
         if self.navPoint:
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.

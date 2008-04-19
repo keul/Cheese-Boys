@@ -15,25 +15,24 @@ class PlayingCharacter(Character):
         """Update method of pygame Sprite class.
         Overrided the one in Character main class because we need to handle user controls here.
         """
-        pressed_keys = pygame.key.get_pressed()
         # 1. Check for mouse actions setted
-        if (locals.global_lastMouseLeftClickPosition and not self.navPoint \
-                    or (self.navPoint and self.navPoint.as_tuple()!=locals.global_lastMouseLeftClickPosition)
-                ) and not locals.global_lastMouseRightClickPosition:
+        if locals.global_lastMouseLeftClickPosition:
             self.navPoint = Vector2(*locals.global_lastMouseLeftClickPosition)
+            locals.global_lastMouseLeftClickPosition = ()
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.
             self.heading = Vector2.from_points(self.position, destination)
             self.heading.normalize()
-            print self.heading
+            print "Heading:", self.heading
             direction = self._generateDirectionFromHeading(self.heading)
             self._checkDirectionChange(direction)
-        elif locals.global_lastMouseRightClickPosition:
-            # Click of right button: attack!
+        if locals.global_lastMouseRightClickPosition:
+            # Click of right button: stop moving and attack!
             locals.global_lastMouseRightClickPosition = global_lastMouseLeftClickPosition = ()
             self.navPoint = None
             self.moving(False)
         
         # 2. Keys movement
+        pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
             self.moving(True)
             self.navPoint = None
@@ -67,7 +66,6 @@ class PlayingCharacter(Character):
             self._y += movement.get_y()
             self.refresh()
             if self.isNearTo(*self.navPoint.as_tuple()):
-                locals.global_lastMouseLeftClickPosition = ()
                 self.navPoint = None
                 self.moving(False)
 
