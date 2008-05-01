@@ -184,26 +184,18 @@ class Character(GameSprite):
         """Using a direction, chose the right character non-moving image.
         Use weaponOut to know if an image without weapong carried must be used.
         """
+        if weaponOut:
+            wstr = "attack_"
+        else:
+            wstr = ""
         if direction==locals.DIRECTION_E or direction==locals.DIRECTION_NE or direction==locals.DIRECTION_SE:
-            if weaponOut:
-                image = "head_attack_east"
-            else:
-                image = "head_east"
+            image = "head_%seast" % wstr
         elif direction==locals.DIRECTION_W or direction==locals.DIRECTION_NW or direction==locals.DIRECTION_SW:
-            if weaponOut:
-                image = "head_attack_west"
-            else:
-                image = "head_west"
+            image = "head_%swest" % wstr
         elif direction==locals.DIRECTION_N:
-            if weaponOut:
-                image = "head_attack_north"
-            else:
-                image = "head_north"
+            image = "head_%snorth" % wstr
         elif direction==locals.DIRECTION_S:
-            if weaponOut:
-                image = "head_attack_south"
-            else:
-                image = "head_south"     
+            image = "head_%ssouth" % wstr
         else:
             raise ValueError("Invalid direction %s" % direction) 
         return image
