@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__version__ = "0.0.3"
+
 DIRECTION_N = 'N'
 DIRECTION_E = 'E'
 DIRECTION_S = 'S'

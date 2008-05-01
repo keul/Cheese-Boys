@@ -17,20 +17,17 @@ class PlayingCharacter(Character):
         """
         # 1. Check for mouse actions setted
         if locals.global_lastMouseLeftClickPosition:
-            self.navPoint = Vector2(*locals.global_lastMouseLeftClickPosition)
+            self.setNavPoint(*locals.global_lastMouseLeftClickPosition)
             locals.global_lastMouseLeftClickPosition = ()
-            destination = self.navPoint # - Vector2(*self.image.get_size())/2.
-            self.heading = Vector2.from_points(self.position, destination)
-            self.heading.normalize()
-            print "Heading:", self.heading
-            direction = self._generateDirectionFromHeading(self.heading)
-            self._checkDirectionChange(direction)
-        if locals.global_lastMouseRightClickPosition:
+        if locals.global_lastMouseRightClickPosition and not self.attackHeading:
             # Click of right button: stop moving and attack!
-            locals.global_lastMouseRightClickPosition = global_lastMouseLeftClickPosition = ()
-            self.navPoint = None
-            self.moving(False)
-        
+            self.attackHeading = Vector2.from_points(self.position, locals.global_lastMouseRightClickPosition)
+            self.attackHeading.normalize()
+            print "Attacking:", self.attackHeading
+            direction = self._generateDirectionFromHeading(self.attackHeading)
+            locals.global_lastMouseRightClickPosition = ()
+            self.attacking(direction)
+
         # 2. Keys movement
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
@@ -56,18 +53,10 @@ class PlayingCharacter(Character):
             self.direction = direction
             distance = time_passed * self.speed
             self.walk(distance)
-        elif self.navPoint:
-            # NavPoint is set
-            self.moving(True)
-            distance = time_passed * self.speed
-            movement = self.heading * distance
-            self.addDistanceWalked(distance)
-            self._x += movement.get_x()
-            self._y += movement.get_y()
-            self.refresh()
-            if self.isNearTo(*self.navPoint.as_tuple()):
-                self.navPoint = None
-                self.moving(False)
+
+        # BBB: if this is equal to update method of superclass, I can call it there!
+        if self.navPoint:
+            self._moveBasedOnNavPoint(time_passed)
 
 
 

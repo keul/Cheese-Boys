@@ -27,11 +27,13 @@ class Character(GameSprite):
         self._distanceWalked = 0
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = locals.DIRECTION_E
+        self._attackDirection = None
         self._isMoving = False
         self.speed = speed
         
         self.navPoint = None
         self.heading =  None
+        self.attackHeading = None
         
         self.dimension = locals.TILE_IMAGE_DIMENSION
 
@@ -57,25 +59,29 @@ class Character(GameSprite):
         Non playing character check if has navPoint.
         """
         if self.navPoint:
-            destination = self.navPoint # - Vector2(*self.image.get_size())/2.
-            self.heading = Vector2.from_points(self.position, destination)
-            self.heading.normalize()
-            direction = self._generateDirectionFromHeading(self.heading)
-            self._checkDirectionChange(direction)
-
-            self.moving(True)
-            distance = time_passed * self.speed
-            movement = self.heading * distance
-            self.addDistanceWalked(distance)
-            self._x += movement.get_x()
-            self._y += movement.get_y()
-            self.refresh()
-            if self.isNearTo(*self.navPoint.as_tuple()):
-                self.navPoint = None
-                self.moving(False)
+            self._moveBasedOnNavPoint(time_passed)
         else:
             # no navPoint? For now move to a random direction
             self.setNavPoint(random.randint(1,639), random.randint(1,439) )
+
+    def _moveBasedOnNavPoint(self, time_passed):
+        """Common method for move character using navPoint infos"""
+        destination = self.navPoint # - Vector2(*self.image.get_size())/2.
+        self.heading = Vector2.from_points(self.position, destination)
+        self.heading.normalize()
+        direction = self._generateDirectionFromHeading(self.heading)
+        self._checkDirectionChange(direction)
+
+        self.moving(True)
+        distance = time_passed * self.speed
+        movement = self.heading * distance
+        self.addDistanceWalked(distance)
+        self._x += movement.get_x()
+        self._y += movement.get_y()
+        self.refresh()
+        if self.isNearTo(*self.navPoint.as_tuple()):
+            self.navPoint = None
+            self.moving(False)
 
     def _setX(self, newx):
         self._x = newx
@@ -100,6 +106,9 @@ class Character(GameSprite):
     
     @property
     def image(self):
+        """Sprite must have an image property.
+        In this way I can control what image return.
+        """
         if self._isMoving:
             if self._mustChangeImage:
                 self._mustChangeImage = False
@@ -107,7 +116,11 @@ class Character(GameSprite):
                 self.lastUsedImage = image
             return self.images[self.lastUsedImage]
         else:
-            image = self._getImageFromDirectionFaced(self._lastUsedDirection)
+            if self._attackDirection:
+                direction = self._attackDirection
+            else:
+                direction = self._lastUsedDirection
+            image = self._getImageFromDirectionFaced(direction)
             self.lastUsedImage = image
             return self.images[image]
 
@@ -136,7 +149,10 @@ class Character(GameSprite):
         raise ValueError("Invalid direction %s" % direction)   
     
     def _getImageFromDirectionWalked(self, direction):
-        """Using a direction taken get the right image name to display"""
+        """Using a direction taken get the right image name to display.
+        This method check if an attack is currently executed by this character. If this is True
+        we must return the image facing direction attacked
+        """
         imagePrefix = self._getWalkImagePrefix(direction)
         if self.lastUsedImage.startswith(imagePrefix):
             if self.lastUsedImage.endswith("1"):
@@ -215,6 +231,13 @@ class Character(GameSprite):
             self.move(-distance, distance)
         elif direction==locals.DIRECTION_NW:
             self.move(-distance, -distance)
+
+    def attacking(self, direction):
+        """Set the character attacking a direction.
+        For the time during attack duration the character can still moving, but will face the direction attacked.
+        """
+        self._attackDirection = direction
+        self._mustChangeImage = True
 
     def moving(self, new_move_status):
         """Change character movement status"""
