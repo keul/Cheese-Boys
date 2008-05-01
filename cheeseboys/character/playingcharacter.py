@@ -23,10 +23,8 @@ class PlayingCharacter(Character):
             # Click of right button: stop moving and attack!
             self.attackHeading = Vector2.from_points(self.position, locals.global_lastMouseRightClickPosition)
             self.attackHeading.normalize()
-            print "Attacking:", self.attackHeading
-            direction = self._generateDirectionFromHeading(self.attackHeading)
             locals.global_lastMouseRightClickPosition = ()
-            self.attacking(direction)
+            self.attacking(self.attackHeading)
 
         # 2. Keys movement
         pressed_keys = pygame.key.get_pressed()

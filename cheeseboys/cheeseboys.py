@@ -17,7 +17,7 @@ def main():
     
     background = pygame.Surface( (640, 480), flags=SRCALPHA, depth=32 )
     all = pygame.sprite.RenderUpdates()
-    hero = character.PlayingCharacter("Luca", "hero_sword1_vest1.png", (all,))
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,), weaponInAndOut=True)
     
     enemy1 = character.Character("Max", "enemy1_sword.png", (all,), firstPos=(200, 90), speed=180.)
 #    enemy2 = character.Character("John", "enemy1_sword.png", (all,), firstPos=(400, 300), speed=60. )

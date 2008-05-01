@@ -13,7 +13,7 @@ from sprite import GameSprite
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150. ):
+    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150., weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = containers
@@ -21,7 +21,7 @@ class Character(GameSprite):
         self.img = img
         self._imageDirectory = "charas"
         
-        self._load_images(img)
+        self._load_images(img, weaponInAndOut)
         self.lastUsedImage = 'head_east_1'
 
         self._distanceWalked = 0
@@ -46,14 +46,27 @@ class Character(GameSprite):
         rendered = locals.default_font.render(self.name, True, (255, 255, 255))
         return rendered
 
-    def _load_images(self, img):
+    def _load_images(self, img, weaponInAndOut):
+        """Load images for this charas: 12 or 24 if used weaponInAndOut (so we need extra images without weapon)"""
         self.images = {}
         directory = self._imageDirectory
-        self.images['walk_north_1'], self.images['head_north'], self.images['walk_north_2'], self.images['walk_east_1'], \
-            self.images['head_east'], self.images['walk_east_2'], self.images['walk_south_1'], self.images['head_south'], \
-            self.images['walk_south_2'], self.images['walk_west_1'], self.images['head_west'], \
-            self.images['walk_west_2'] = utils.load_image(img, directory, charasFormatImage=True)
-    
+        if not weaponInAndOut:
+            # 12 images
+            self.images['walk_north_1'], self.images['head_north'], self.images['walk_north_2'], self.images['walk_east_1'], \
+                self.images['head_east'], self.images['walk_east_2'], self.images['walk_south_1'], self.images['head_south'], \
+                self.images['walk_south_2'], self.images['walk_west_1'], self.images['head_west'], \
+                self.images['walk_west_2'] = utils.load_image(img, directory, charasFormatImage=True, weaponInAndOut=weaponInAndOut)
+        else:
+            # 24 images
+            self.images['walk_north_1'], self.images['head_north'], self.images['walk_north_2'], self.images['walk_east_1'], \
+                self.images['head_east'], self.images['walk_east_2'], self.images['walk_south_1'], self.images['head_south'], \
+                self.images['walk_south_2'], self.images['walk_west_1'], self.images['head_west'], \
+                self.images['walk_west_2'], \
+                self.images['attack_north_1'], self.images['head_attack_north'], self.images['attack_north_2'], self.images['attack_east_1'], \
+                self.images['head_attack_east'], self.images['attack_east_2'], self.images['attack_south_1'], self.images['head_attack_south'], \
+                self.images['attack_south_2'], self.images['attack_west_1'], self.images['head_attack_west'], \
+                self.images['attack_west_2'] = utils.load_image(img, directory, charasFormatImage=True, weaponInAndOut=weaponInAndOut)
+                
     def update(self, time_passed):
         """Update method of pygame Sprite class.
         Non playing character check if has navPoint.
@@ -110,17 +123,21 @@ class Character(GameSprite):
         In this way I can control what image return.
         """
         if self._isMoving:
+            # I'm on moving
             if self._mustChangeImage:
                 self._mustChangeImage = False
                 image = self._getImageFromDirectionWalked(self._lastUsedDirection)
                 self.lastUsedImage = image
             return self.images[self.lastUsedImage]
         else:
+            # Stand and wait
             if self._attackDirection:
                 direction = self._attackDirection
+                weaponOut = True
             else:
                 direction = self._lastUsedDirection
-            image = self._getImageFromDirectionFaced(direction)
+                weaponOut = False
+            image = self._getImageFromDirectionFaced(direction, weaponOut)
             self.lastUsedImage = image
             return self.images[image]
 
@@ -163,16 +180,30 @@ class Character(GameSprite):
             image = imagePrefix+"1"
         return image
 
-    def _getImageFromDirectionFaced(self, direction):
-        """Using a direction, chose the right character non-moving image"""
+    def _getImageFromDirectionFaced(self, direction, weaponOut):
+        """Using a direction, chose the right character non-moving image.
+        Use weaponOut to know if an image without weapong carried must be used.
+        """
         if direction==locals.DIRECTION_E or direction==locals.DIRECTION_NE or direction==locals.DIRECTION_SE:
-            image = "head_east"
+            if weaponOut:
+                image = "head_attack_east"
+            else:
+                image = "head_east"
         elif direction==locals.DIRECTION_W or direction==locals.DIRECTION_NW or direction==locals.DIRECTION_SW:
-            image = "head_west"
+            if weaponOut:
+                image = "head_attack_west"
+            else:
+                image = "head_west"
         elif direction==locals.DIRECTION_N:
-            image = "head_north"
+            if weaponOut:
+                image = "head_attack_north"
+            else:
+                image = "head_north"
         elif direction==locals.DIRECTION_S:
-            image = "head_south"     
+            if weaponOut:
+                image = "head_attack_south"
+            else:
+                image = "head_south"     
         else:
             raise ValueError("Invalid direction %s" % direction) 
         return image
@@ -232,10 +263,11 @@ class Character(GameSprite):
         elif direction==locals.DIRECTION_NW:
             self.move(-distance, -distance)
 
-    def attacking(self, direction):
-        """Set the character attacking a direction.
-        For the time during attack duration the character can still moving, but will face the direction attacked.
+    def attacking(self, heading):
+        """Set the character attack versus an heading direction.
+        For duration of the attack the character can still moving, but will face the direction attacked.
         """
+        direction = self._generateDirectionFromHeading(heading)
         self._attackDirection = direction
         self._mustChangeImage = True
 
