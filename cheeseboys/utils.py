@@ -2,6 +2,9 @@
 
 import pygame
 import locals
+
+# BBB: I import this way because I'm planning to remove dependencies of WillMcGugan game-objects library.
+# Better: if original vector2 is available the use it!
 from gameobjects.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False):

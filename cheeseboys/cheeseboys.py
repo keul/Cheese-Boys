@@ -19,10 +19,10 @@ def main():
     all = pygame.sprite.RenderUpdates()
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,), weaponInAndOut=True)
     
-    enemy1 = character.Character("Max", "enemy1_sword.png", (all,), firstPos=(200, 90), speed=180.)
-#    enemy2 = character.Character("John", "enemy1_sword.png", (all,), firstPos=(400, 300), speed=60. )
+    enemy1 = character.Character("Max", "enemy1_sword.png", (all,), firstPos=(200, 90), speed=150.)
+#    enemy2 = character.Character("John", "enemy1_sword.png", (all,), firstPos=(400, 300), speed=80. )
 #    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,), firstPos=(320, 210), speed=125. )
-#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,), firstPos=(50, 420), speed=200. )
+#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,), firstPos=(50, 420), speed=180. )
     
     while True:
         for event in pygame.event.get():

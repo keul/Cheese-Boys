@@ -126,21 +126,30 @@ class Character(GameSprite):
         """Sprite must have an image property.
         In this way I can control what image return.
         """
+        if self._attackDirection:
+            weaponOut = True
+        else:
+            weaponOut = False
+
         if self._isMoving:
-            # I'm on moving
+            # I'm on move
             if self._mustChangeImage:
+                if self._attackDirection:
+                    direction = self._attackDirection
+                else:
+                    direction = self._lastUsedDirection
                 self._mustChangeImage = False
-                image = self._getImageFromDirectionWalked(self._lastUsedDirection)
+                image = self._getImageFromDirectionWalked(direction, weaponOut)
                 self.lastUsedImage = image
             return self.images[self.lastUsedImage]
         else:
             # Stand and wait
             if self._attackDirection:
-                direction = self._attackDirection
-                weaponOut = True
+                # I change the last faced direction because when I right click on a direction when the character isn't moving
+                # I wanna turn in that direction.
+                direction = self._lastUsedDirection = self._attackDirection
             else:
                 direction = self._lastUsedDirection
-                weaponOut = False
             image = self._getImageFromDirectionFaced(direction, weaponOut)
             self.lastUsedImage = image
             return self.images[image]
@@ -158,23 +167,30 @@ class Character(GameSprite):
         return locals.DIRECTION_E
         # BBB
 
-    def _getWalkImagePrefix(self, direction):
+    def _getWalkImagePrefix(self, direction, weaponOut):
+        """Simply return a prefix using to generate the key to retrieve the charas image.
+        This prefix is based on the direction of the character but also on the attack state.
+        """
+        if weaponOut:
+            prefix = "attack"
+        else:
+            prefix = "walk"
         if direction==locals.DIRECTION_E or direction==locals.DIRECTION_NE or direction==locals.DIRECTION_SE:
-            return "walk_east_"
+            return "%s_east_" % prefix
         if direction==locals.DIRECTION_W or direction==locals.DIRECTION_NW or direction==locals.DIRECTION_SW:
-            return "walk_west_"
+            return "%s_west_" % prefix
         if direction==locals.DIRECTION_N:
-            return "walk_north_"
+            return "%s_north_" % prefix
         if direction==locals.DIRECTION_S:
-            return "walk_south_"     
+            return "%s_south_" % prefix
         raise ValueError("Invalid direction %s" % direction)   
     
-    def _getImageFromDirectionWalked(self, direction):
+    def _getImageFromDirectionWalked(self, direction, weaponOut):
         """Using a direction taken get the right image name to display.
-        This method check if an attack is currently executed by this character. If this is True
-        we must return the image facing direction attacked
+        This method check if an attack is currently executed by this character (checking weaponOut). If this is True
+        we must return the image facing direction attacked.
         """
-        imagePrefix = self._getWalkImagePrefix(direction)
+        imagePrefix = self._getWalkImagePrefix(direction, weaponOut)
         if self.lastUsedImage.startswith(imagePrefix):
             if self.lastUsedImage.endswith("1"):
                 image = self.lastUsedImage[:-1]+"2"
