@@ -24,7 +24,7 @@ class PlayingCharacter(Character):
             self.attackHeading = Vector2.from_points(self.position, locals.global_lastMouseRightClickPosition)
             self.attackHeading.normalize()
             locals.global_lastMouseRightClickPosition = ()
-            self.attacking(self.attackHeading)
+            self.setAttackState(self.attackHeading)
 
         # 2. Keys movement
         pressed_keys = pygame.key.get_pressed()
@@ -55,7 +55,9 @@ class PlayingCharacter(Character):
         # BBB: if this is equal to update method of superclass, I can call it there!
         if self.navPoint:
             self._moveBasedOnNavPoint(time_passed)
-
+        
+        if self._attackDirection:
+            self._updateAttackState(time_passed)
 
 
     

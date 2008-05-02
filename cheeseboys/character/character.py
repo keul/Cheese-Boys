@@ -13,7 +13,7 @@ from sprite import GameSprite
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150., weaponInAndOut=False):
+    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = containers
@@ -27,13 +27,17 @@ class Character(GameSprite):
         self._distanceWalked = 0
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = locals.DIRECTION_E
-        self._attackDirection = None
         self._isMoving = False
         self.speed = speed
         
         self.navPoint = None
         self.heading =  None
+
+        # Attack infos
+        self._attackDirection = None
         self.attackHeading = None
+        self._attackTimeCollected = 0
+        self._attackTime = attackTime
         
         self.dimension = locals.TILE_IMAGE_DIMENSION
 
@@ -255,13 +259,28 @@ class Character(GameSprite):
         elif direction==locals.DIRECTION_NW:
             self.move(-distance, -distance)
 
-    def attacking(self, heading):
+    def setAttackState(self, heading):
         """Set the character attack versus an heading direction.
         For duration of the attack the character can still moving, but will face the direction attacked.
         """
         direction = self._generateDirectionFromHeading(heading)
         self._attackDirection = direction
         self._mustChangeImage = True
+
+    def _updateAttackState(self, time_passed):
+        """Called by update to add some time to the attack time.
+        This method control how long the attack is in action.
+        """
+        if self._attackTimeCollected<self._attackTime:
+            self._attackTimeCollected+=time_passed
+        else:
+            self.stopAttack()
+            
+    def stopAttack(self):
+        """Stop attack immediatly, resetting all attack infos"""
+        self._attackDirection = None
+        self.attackHeading = None
+        self._attackTimeCollected = 0
 
     def moving(self, new_move_status):
         """Change character movement status"""
