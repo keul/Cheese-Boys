@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 
 import character
+from group import Group
 import locals
 
 def main():
@@ -14,15 +15,17 @@ def main():
     screen = pygame.display.set_mode( (locals.SCREEN_WIDTH, locals.SCREEN_HEIGHT), 0, 32)
     locals.screen = screen
     pygame.display.set_caption("CheeseBoys - pre-alpha version %s" % locals.__version__)
-    
     background = pygame.Surface( (640, 480), flags=SRCALPHA, depth=32 )
-    all = pygame.sprite.RenderUpdates()
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,), weaponInAndOut=True)
     
-    enemy1 = character.Character("Max", "enemy1_sword.png", (all,), firstPos=(200, 90), speed=150.)
-#    enemy2 = character.Character("John", "enemy1_sword.png", (all,), firstPos=(400, 300), speed=80. )
-#    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,), firstPos=(320, 210), speed=125. )
-#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,), firstPos=(50, 420), speed=180. )
+    all = pygame.sprite.RenderUpdates()
+    charas = Group()
+
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), weaponInAndOut=True)
+    
+    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), speed=100.)
+#    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), speed=80. )
+#    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), speed=125. )
+#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), speed=180. )
     
     while True:
         for event in pygame.event.get():
@@ -50,6 +53,8 @@ def main():
         all.update(time_passed)
         
         screen.blit(background, (0,0) )
+        
+        charas.drawCollideRect(screen)
 
         all.draw(screen)
 

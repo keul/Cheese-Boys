@@ -49,3 +49,13 @@ def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
                 imgArray.append(mainImage.subsurface( (x*imgXSize,y*imgYSize), (imgXSize,imgYSize), ))
     
     return imgArray
+
+def normalizeXY(x, y):
+    """Given x and y as rect offset, they will be normalized as at minumum of 1 pixel"""
+    if x!=0 and abs(x)<1:
+        if x>0: x=1
+        elif x<0: x=-1
+    if y!=0 and abs(y)<1:
+        if y>0: y=1
+        elif y<0: y=-1
+    return x,y

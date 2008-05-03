@@ -16,7 +16,9 @@ class Character(GameSprite):
     def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
-        self.containers = containers
+        self.containers = {'all' : containers[0],
+                           'charas': containers[1],
+                           }
         self.name = name
         self.img = img
         self._imageDirectory = "charas"
@@ -43,7 +45,7 @@ class Character(GameSprite):
 
         self._x = firstPos[0]
         self._y = firstPos[1]
-        self.rect = self.image.get_rect(topleft = (100, 100))
+        self.rect = self.image.get_rect(topleft = firstPos)
 
     def getTip(self):
         """Print a tip text near the character"""
@@ -93,10 +95,16 @@ class Character(GameSprite):
         distance = time_passed * self.speed
         movement = self.heading * distance
         self.addDistanceWalked(distance)
-        self._x += movement.get_x()
-        self._y += movement.get_y()
-        self.refresh()
-        if self.isNearTo(*self.navPoint.as_tuple()):
+        x = movement.get_x()
+        y = movement.get_y()
+        if not self.checkCollision(x, y):
+            self._x += x
+            self._y += y
+            self.refresh()
+            if self.isNearTo(*self.navPoint.as_tuple()):
+                self.navPoint = None
+                self.moving(False)
+        else:
             self.navPoint = None
             self.moving(False)
 
@@ -116,15 +124,48 @@ class Character(GameSprite):
     def position_int(self):
         """Same as position but in integer format"""
         return (int(self.x), int(self.y))
-    
+
+    @property
+    def collide_rect(self):
+        """Return a rect used for collision in movement. This must be equals to charas "foot" area.
+        The foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
+        # BBB: some bigger or different images can behave other rect as "foot"?
+        """
+        rect = self.rect
+        ly = rect.bottom
+        h = rect.h*0.25
+        hy = ly-h
+        lx = rect.left + rect.w*0.2 # left + 20-left% of the width
+        w = rect.w*0.6
+        return pygame.Rect( (lx, hy), (w, h) )
+
+    def checkCollision(self, x=0, y=0):
+        """Check collision of this sprite with other.
+        If x and y are used, the collire_rect is adjusted before detection.
+        """
+        x, y = utils.normalizeXY(x, y)
+        
+        collide_rect = self.collide_rect
+        collide_rect.move_ip(x,y)
+        collideGroups = (self.containers['charas'],)
+        for group in collideGroups:
+            rects = [x.collide_rect for x in group.sprites() if x is not self]
+            for rect in rects:
+                if collide_rect.colliderect(rect):
+                    return True
+        return False
+
     def isNearTo(self, x, y):
-        """Check in the character is near to a point"""
+        """Check in the "whole" character is near to a point.
+        This is not good for movement collision if the charas movement is y-negative bit is used for navPoint movements.
+        """
         return self.rect.collidepoint(x, y)
     
     @property
     def image(self):
         """Sprite must have an image property.
         In this way I can control what image return.
+        BBB: I need a way to memoize this!!!!
         """
         if self._attackDirection:
             weaponOut = True
