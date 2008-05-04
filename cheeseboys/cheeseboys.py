@@ -55,6 +55,7 @@ def main():
         screen.blit(background, (0,0) )
         
         charas.drawCollideRect(screen)
+        charas.drawMainRect(screen)        
 
         all.draw(screen)
 

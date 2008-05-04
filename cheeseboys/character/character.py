@@ -13,7 +13,7 @@ from sprite import GameSprite
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos=(100.,100.), speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers, firstPos=(100.,100.), yAdjust=10, speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -45,6 +45,8 @@ class Character(GameSprite):
 
         self._x = firstPos[0]
         self._y = firstPos[1]
+        
+        # BBB: use of yAdjust?
         self.rect = self.image.get_rect(topleft = firstPos)
 
     def getTip(self):
