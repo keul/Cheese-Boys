@@ -149,7 +149,7 @@ class Character(GameSprite):
         rect = self.rect
         diffW = rect.w-self.dimension[0]
         diffH = rect.h-self.dimension[1]
-        return pygame.Rect( (rect.left+diffW, rect.top+diffH), self.dimension )
+        return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.dimension )
 
     def checkCollision(self, x=0, y=0):
         """Check collision of this sprite with other.
