@@ -20,7 +20,7 @@ def main():
     all = pygame.sprite.RenderUpdates()
     charas = Group()
 
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), firstPos=(100, 100), realSize=(22,26), weaponInAndOut=True)
     
     enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), speed=100.)
 #    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), speed=80. )
@@ -55,7 +55,8 @@ def main():
         screen.blit(background, (0,0) )
         
         charas.drawCollideRect(screen)
-        charas.drawMainRect(screen)        
+        charas.drawMainRect(screen) 
+        charas.drawPhysicalRect(screen)
 
         all.draw(screen)
 

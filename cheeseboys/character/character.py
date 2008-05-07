@@ -13,7 +13,7 @@ from sprite import GameSprite
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos=(100.,100.), yAdjust=10, speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers, firstPos, realSize=None, speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -41,12 +41,13 @@ class Character(GameSprite):
         self._attackTimeCollected = 0
         self._attackTime = attackTime
         
-        self.dimension = locals.TILE_IMAGE_DIMENSION
-
-        self._x = firstPos[0]
-        self._y = firstPos[1]
-        
-        # BBB: use of yAdjust?
+        if realSize:
+            self.dimension = realSize
+        else:
+            self.dimension = locals.TILE_IMAGE_DIMENSION
+            
+        self._x, self._y = firstPos
+        #self._rectAdjust = rectAdjust
         self.rect = self.image.get_rect(topleft = firstPos)
 
     def getTip(self):
@@ -140,6 +141,15 @@ class Character(GameSprite):
         lx = rect.left + rect.w*0.2 # left + 20-left% of the width
         w = rect.w*0.6
         return pygame.Rect( (lx, hy), (w, h) )
+
+    @property
+    def physical_rect(self):
+        """Return a rect used for collision in combat. This must be equals to charas total area.
+        """
+        rect = self.rect
+        diffW = rect.w-self.dimension[0]
+        diffH = rect.h-self.dimension[1]
+        return pygame.Rect( (rect.left+diffW, rect.top+diffH), self.dimension )
 
     def checkCollision(self, x=0, y=0):
         """Check collision of this sprite with other.

@@ -17,3 +17,8 @@ class Group(sprite.Group):
         """Draw a rect on the screen that repr rect attribute of the sprite, for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.rect, width)
+    
+    def drawPhysicalRect(self, surface, color=(200,200,200), width=1):
+        """Draw a rect on the screen that repr real physucal rect attribute of the sprite, for all Sprite in this group"""
+        for sprite in self.sprites():
+            pygame.draw.rect(surface, color, sprite.physical_rect, width)
