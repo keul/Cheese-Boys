@@ -13,7 +13,7 @@ from sprite import GameSprite
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos, realSize=None, speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers, firstPos, realSize=locals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -41,17 +41,15 @@ class Character(GameSprite):
         self._attackTimeCollected = 0
         self._attackTime = attackTime
         
-        if realSize:
-            self.dimension = realSize
-        else:
-            self.dimension = locals.TILE_IMAGE_DIMENSION
+        self.dimension = realSize
+        self._heatRectData = (5, 5, 8,13)
             
         self._x, self._y = firstPos
         #self._rectAdjust = rectAdjust
         self.rect = self.image.get_rect(topleft = firstPos)
 
     def getTip(self):
-        """Print a tip text near the character"""
+        """Return tip text, for print it near the character"""
         rendered = locals.default_font.render(self.name, True, (255, 255, 255))
         return rendered
 
@@ -144,12 +142,20 @@ class Character(GameSprite):
 
     @property
     def physical_rect(self):
-        """Return a rect used for collision in combat. This must be equals to charas total area.
+        """Return a rect used for collision in combat. This must be equals to image's character total area.
         """
         rect = self.rect
         diffW = rect.w-self.dimension[0]
         diffH = rect.h-self.dimension[1]
         return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.dimension )
+
+    @property
+    def heat_rect(self):
+        """Return a rect used for collision as heat rect, sensible to attack and other evil effects.
+        """
+        physical_rect = self.physical_rect
+        offsetX, offsetY, w, h = self._heatRectData
+        return pygame.Rect( (physical_rect.x+offsetX, physical_rect.y+offsetY), (w, h) )
 
     def checkCollision(self, x=0, y=0):
         """Check collision of this sprite with other.

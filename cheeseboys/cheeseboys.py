@@ -20,12 +20,12 @@ def main():
     all = pygame.sprite.RenderUpdates()
     charas = Group()
 
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), firstPos=(100, 100), realSize=(18,26), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), firstPos=(100, 100), realSize=(18,25), weaponInAndOut=True)
     
-    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), speed=100.)
-#    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), speed=80. )
-#    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), speed=125. )
-#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), speed=180. )
+    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), realSize=(18,25), speed=100.)
+#    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), realSize=(18,25), speed=80. )
+#    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), realSize=(18,25), speed=125. )
+#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), realSize=(18,25), speed=180. )
     
     while True:
         for event in pygame.event.get():
@@ -60,9 +60,11 @@ def main():
 
         all.draw(screen)
 
+        charas.drawHeatRect(screen)
+
         #textTips
         for displayable in [x for x in all.sprites() if x.getTip()]:
-            screen.blit(displayable.getTip(), displayable.topleft(y=-10) )
+            screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
         pygame.display.update()
 

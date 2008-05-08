@@ -22,3 +22,9 @@ class Group(sprite.Group):
         """Draw a rect on the screen that repr real physucal rect attribute of the sprite, for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.physical_rect, width)
+
+    def drawHeatRect(self, surface, color=(255,0,255), width=1):
+        """Draw a rect on the screen that repr the heat area for all Sprite in this group"""
+        for sprite in self.sprites():
+            pygame.draw.rect(surface, color, sprite.heat_rect, width)
+
