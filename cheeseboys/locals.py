@@ -22,6 +22,8 @@ DEFAULT_FONT = "Vera.ttf"
 
 IMAGES_DIR_PATH = "data/images"
 
+DEBUG = False
+
 # globals
 default_font = None
 screen = None

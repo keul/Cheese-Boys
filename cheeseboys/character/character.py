@@ -38,11 +38,12 @@ class Character(GameSprite):
         # Attack infos
         self._attackDirection = None
         self.attackHeading = None
-        self._attackRange = 16
-        self._attackColor = (200, 200, 200, 100)
+        self._attackRange = 18
+        self._attackColor = (200, 200, 200, 200)
         self._attackLineWidth = 2
-        self._attackTimeCollected = 0
+        self._attackTimeCollected = self._attackAnimationTimeCollected = 0
         self._attackTime = attackTime
+        self._attackAnimationTime = 0.25
         
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
@@ -358,17 +359,64 @@ class Character(GameSprite):
         else:
             self.stopAttack()
 
-    def drawAttack(self, surface):
+    def drawAttack(self, surface, time_passed):
         """Draw an attach effect on a surface in the attach heading direction.
-        This method do nothing if isAttacking return False.
+        This method do nothing if isAttacking method return False.
+        First this method get a point (call this attackEffectCenterVector) using the heading of the attack
+        far from the character by a value equals to _attackRange/2 property of this character.
+        This attackEffectCenterVector is a point from which we get another 2 random point in a radius of
+        _attackRange/2.
+        Finally a line is draw linking those 2 points.
         """
         if not self.isAttacking():
             return
+
         attackOriginVector = Vector2(self.physical_rect.center)
-        attackRange = self._attackRange
-        attackTargetVector = self.attackHeading*attackRange + attackOriginVector
-        pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackTargetVector.as_tuple(), self._attackLineWidth)
+        attackRange = self._attackRange        
+        attackEffectCenterVector = self.attackHeading*attackRange/2 + attackOriginVector
+
+        if not self._attackAnimationTimeCollected:
+            # memoize of the vector for a while
+            self._attackAnimationTimeCollected+=time_passed
+            attackTargetVector = self.attackHeading*attackRange + attackOriginVector
+            # Now I've attackEffectCenterVector point. I need the 2 random point now.
+            randomMagnitudeVector1 = random.randint(attackRange/4, attackRange/2)
+            randomMagnitudeVector2 = random.randint(attackRange/4, attackRange/2)
+            randomDirectionVector1 = Vector2(random.uniform(-1., 1.), random.uniform(-1., 1.))
+            randomDrawAttackBaseVector1 = randomDirectionVector1 * randomMagnitudeVector1
+            randomDrawAttackVector1 = randomDrawAttackBaseVector1 + attackEffectCenterVector
+            #randomDirectionVector2 = Vector2(random.uniform(-1., 1.), random.uniform(-1., 1.))
+            randomDirectionVector2 = randomDirectionVector1 * -1.
+            randomDrawAttackBaseVector2 = randomDirectionVector2 * randomMagnitudeVector2
+            randomDrawAttackVector2 = randomDrawAttackBaseVector2 + attackEffectCenterVector
+            self._attackAnimationVectors = (randomDrawAttackBaseVector1, randomDrawAttackBaseVector2)
+        else:
+            self._attackAnimationTimeCollected+=time_passed
+            if self._attackAnimationTimeCollected>=self._attackAnimationTime:
+                self._attackAnimationTimeCollected = 0
+            randomDrawAttackBaseVector1, randomDrawAttackBaseVector2 = self._attackAnimationVectors
+            randomDrawAttackVector1 = randomDrawAttackBaseVector1 + attackEffectCenterVector
+            randomDrawAttackVector2 = randomDrawAttackBaseVector2 + attackEffectCenterVector            
+
+        pygame.draw.line(surface,
+                         self._attackColor,
+                         randomDrawAttackVector1.as_tuple(),
+                         randomDrawAttackVector2.as_tuple(),
+                         self._attackLineWidth)
         
+        if locals.DEBUG:
+            pygame.draw.line(surface,
+                             self._attackColor,
+                             attackOriginVector.as_tuple(),
+                             attackEffectCenterVector.as_tuple(),
+                             self._attackLineWidth)
+    
+            pygame.draw.circle(surface,
+                             self._attackColor,
+                             attackEffectCenterVector.as_tuple(),
+                             attackRange/2,
+                             self._attackLineWidth)
+
     def isAttacking(self):
         """Test if this charas is making an attack"""
         if self.attackHeading:

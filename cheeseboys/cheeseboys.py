@@ -59,7 +59,7 @@ def main():
 #        charas.drawPhysicalRect(screen)
 
         all.draw(screen)
-        charas.drawAttacks(screen)
+        charas.drawAttacks(screen, time_passed)
 
 #        charas.drawHeatRect(screen)
 

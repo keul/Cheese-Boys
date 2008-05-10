@@ -28,10 +28,10 @@ class Group(sprite.Group):
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.heat_rect, width)
 
-    def drawAttacks(self, surface):
+    def drawAttacks(self, surface, time_passed):
         """Given a surface, draw all attack for charas on this surface.
         Drawing an attach is done by calling charas.drawAttack.
         """
         for sprite in self.sprites():
-            sprite.drawAttack(surface)
+            sprite.drawAttack(surface, time_passed)
         
