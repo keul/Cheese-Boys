@@ -54,13 +54,14 @@ def main():
         
         screen.blit(background, (0,0) )
         
-        charas.drawCollideRect(screen)
-        charas.drawMainRect(screen) 
-        charas.drawPhysicalRect(screen)
+#        charas.drawCollideRect(screen)
+#        charas.drawMainRect(screen) 
+#        charas.drawPhysicalRect(screen)
 
         all.draw(screen)
+        charas.drawAttacks(screen)
 
-        charas.drawHeatRect(screen)
+#        charas.drawHeatRect(screen)
 
         #textTips
         for displayable in [x for x in all.sprites() if x.getTip()]:

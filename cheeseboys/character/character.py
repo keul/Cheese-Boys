@@ -38,6 +38,9 @@ class Character(GameSprite):
         # Attack infos
         self._attackDirection = None
         self.attackHeading = None
+        self._attackRange = 16
+        self._attackColor = (200, 200, 200, 100)
+        self._attackLineWidth = 2
         self._attackTimeCollected = 0
         self._attackTime = attackTime
         
@@ -125,6 +128,10 @@ class Character(GameSprite):
     def position_int(self):
         """Same as position but in integer format"""
         return (int(self.x), int(self.y))
+    @property
+    def v(self):
+        """Return position as Vector2 object"""
+        return Vector2(self.x, self.y)
 
     @property
     def collide_rect(self):
@@ -350,7 +357,24 @@ class Character(GameSprite):
             self._attackTimeCollected+=time_passed
         else:
             self.stopAttack()
-            
+
+    def drawAttack(self, surface):
+        """Draw an attach effect on a surface in the attach heading direction.
+        This method do nothing if isAttacking return False.
+        """
+        if not self.isAttacking():
+            return
+        attackOriginVector = Vector2(self.physical_rect.center)
+        attackRange = self._attackRange
+        attackTargetVector = self.attackHeading*attackRange + attackOriginVector
+        pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackTargetVector.as_tuple(), self._attackLineWidth)
+        
+    def isAttacking(self):
+        """Test if this charas is making an attack"""
+        if self.attackHeading:
+            return True
+        return False
+
     def stopAttack(self):
         """Stop attack immediatly, resetting all attack infos"""
         self._attackDirection = None

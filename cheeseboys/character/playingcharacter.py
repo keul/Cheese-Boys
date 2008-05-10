@@ -19,7 +19,7 @@ class PlayingCharacter(Character):
         if locals.global_lastMouseLeftClickPosition:
             self.setNavPoint(*locals.global_lastMouseLeftClickPosition)
             locals.global_lastMouseLeftClickPosition = ()
-        if locals.global_lastMouseRightClickPosition and not self.attackHeading:
+        if locals.global_lastMouseRightClickPosition and not self.isAttacking():
             # Click of right button: stop moving and attack!
             self.attackHeading = Vector2.from_points(self.position, locals.global_lastMouseRightClickPosition)
             self.attackHeading.normalize()
