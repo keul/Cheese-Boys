@@ -9,6 +9,7 @@ import utils
 import locals
 from utils import Vector2
 from sprite import GameSprite
+from attack import Attack
 
 class Character(GameSprite):
     """Base character class"""
@@ -20,6 +21,7 @@ class Character(GameSprite):
                            'charas': containers[1],
                            }
         self.name = name
+        self.characterTpe = "Guy"
         self.img = img
         self._imageDirectory = "charas"
         
@@ -38,12 +40,14 @@ class Character(GameSprite):
         # Attack infos
         self._attackDirection = None
         self.attackHeading = None
-        self._attackRange = 18
+        self._attackRange = 24
+        self._attackEffect = 10
+        self._attack = None
         self._attackColor = (200, 200, 200, 200)
         self._attackLineWidth = 2
         self._attackTimeCollected = self._attackAnimationTimeCollected = 0
         self._attackTime = attackTime
-        self._attackAnimationTime = 0.25
+        self._attackAnimationTime = attackTime/2
         
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
@@ -54,7 +58,7 @@ class Character(GameSprite):
 
     def getTip(self):
         """Return tip text, for print it near the character"""
-        rendered = locals.default_font.render(self.name, True, (255, 255, 255))
+        rendered = locals.default_font.render(self.name or self.characterTpe, True, (255, 255, 255))
         return rendered
 
     def _load_images(self, img, weaponInAndOut):
@@ -360,62 +364,32 @@ class Character(GameSprite):
             self.stopAttack()
 
     def drawAttack(self, surface, time_passed):
-        """Draw an attach effect on a surface in the attach heading direction.
+        """Draw an attack effect on a surface in the attack heading direction.
         This method do nothing if isAttacking method return False.
         First this method get a point (call this attackEffectCenterVector) using the heading of the attack
         far from the character by a value equals to _attackRange/2 property of this character.
-        This attackEffectCenterVector is a point from which we get another 2 random point in a radius of
-        _attackRange/2.
-        Finally a line is draw linking those 2 points.
+        This attackEffectCenterVector is a point from which we draw an X, thar repr charas attack.
         """
         if not self.isAttacking():
             return
 
         attackOriginVector = Vector2(self.physical_rect.center)
-        attackRange = self._attackRange        
-        attackEffectCenterVector = self.attackHeading*attackRange/2 + attackOriginVector
+        if not self._attack:
+            self._attack = Attack(self, attackOriginVector, self._attackRange, self._attackEffect, self._attackColor, self._attackLineWidth)
 
-        if not self._attackAnimationTimeCollected:
-            # memoize of the vector for a while
-            self._attackAnimationTimeCollected+=time_passed
-            attackTargetVector = self.attackHeading*attackRange + attackOriginVector
-            # Now I've attackEffectCenterVector point. I need the 2 random point now.
-            randomMagnitudeVector1 = random.randint(attackRange/4, attackRange/2)
-            randomMagnitudeVector2 = random.randint(attackRange/4, attackRange/2)
-            randomDirectionVector1 = Vector2(random.uniform(-1., 1.), random.uniform(-1., 1.))
-            randomDrawAttackBaseVector1 = randomDirectionVector1 * randomMagnitudeVector1
-            randomDrawAttackVector1 = randomDrawAttackBaseVector1 + attackEffectCenterVector
-            #randomDirectionVector2 = Vector2(random.uniform(-1., 1.), random.uniform(-1., 1.))
-            randomDirectionVector2 = randomDirectionVector1 * -1.
-            randomDrawAttackBaseVector2 = randomDirectionVector2 * randomMagnitudeVector2
-            randomDrawAttackVector2 = randomDrawAttackBaseVector2 + attackEffectCenterVector
-            self._attackAnimationVectors = (randomDrawAttackBaseVector1, randomDrawAttackBaseVector2)
+        self._attackAnimationTimeCollected+=time_passed
+        if self._attackAnimationTimeCollected<self._attackAnimationTime/2:
+            self._attack.drawPhase1(surface, attackOriginVector)
         else:
-            self._attackAnimationTimeCollected+=time_passed
-            if self._attackAnimationTimeCollected>=self._attackAnimationTime:
-                self._attackAnimationTimeCollected = 0
-            randomDrawAttackBaseVector1, randomDrawAttackBaseVector2 = self._attackAnimationVectors
-            randomDrawAttackVector1 = randomDrawAttackBaseVector1 + attackEffectCenterVector
-            randomDrawAttackVector2 = randomDrawAttackBaseVector2 + attackEffectCenterVector            
+            self._attack.drawPhase2(surface, attackOriginVector)
 
-        pygame.draw.line(surface,
-                         self._attackColor,
-                         randomDrawAttackVector1.as_tuple(),
-                         randomDrawAttackVector2.as_tuple(),
-                         self._attackLineWidth)
-        
         if locals.DEBUG:
-            pygame.draw.line(surface,
+            pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackEffectCenterVectorTuple, 1)    
+            pygame.draw.rect(surface,
                              self._attackColor,
-                             attackOriginVector.as_tuple(),
-                             attackEffectCenterVector.as_tuple(),
-                             self._attackLineWidth)
-    
-            pygame.draw.circle(surface,
-                             self._attackColor,
-                             attackEffectCenterVector.as_tuple(),
-                             attackRange/2,
-                             self._attackLineWidth)
+                             (attackEffectCenterVectorTuple[0]-attackEffect/2,attackEffectCenterVectorTuple[1]-attackEffect/2,
+                              attackEffect,attackEffect),
+                             1)
 
     def isAttacking(self):
         """Test if this charas is making an attack"""
@@ -425,9 +399,8 @@ class Character(GameSprite):
 
     def stopAttack(self):
         """Stop attack immediatly, resetting all attack infos"""
-        self._attackDirection = None
-        self.attackHeading = None
-        self._attackTimeCollected = 0
+        self._attackDirection = self.attackHeading = self._attack = None
+        self._attackTimeCollected = self._attackAnimationTimeCollected = 0
 
     def moving(self, new_move_status):
         """Change character movement status"""

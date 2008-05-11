@@ -2,6 +2,8 @@
 
 __version__ = "0.0.3"
 
+from pygame.locals import *
+
 DIRECTION_N = 'N'
 DIRECTION_E = 'E'
 DIRECTION_S = 'S'
@@ -23,6 +25,9 @@ DEFAULT_FONT = "Vera.ttf"
 IMAGES_DIR_PATH = "data/images"
 
 DEBUG = False
+
+# EVENTS
+ATTACK_OCCURRED_EVENT = USEREVENT +1
 
 # globals
 default_font = None

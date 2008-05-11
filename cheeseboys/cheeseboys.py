@@ -23,9 +23,9 @@ def main():
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), firstPos=(100, 100), realSize=(18,25), weaponInAndOut=True)
     
     enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), realSize=(18,25), speed=100.)
-#    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), realSize=(18,25), speed=80. )
-#    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), realSize=(18,25), speed=125. )
-#    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), realSize=(18,25), speed=180. )
+    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), realSize=(18,25), speed=80. )
+    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), realSize=(18,25), speed=125. )
+    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), realSize=(18,25), speed=180. )
     
     while True:
         for event in pygame.event.get():
@@ -48,6 +48,12 @@ def main():
                     locals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
                 elif rb:
                     locals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
+
+            if event.type==locals.ATTACK_OCCURRED_EVENT:
+                print "Attack from %s" % event.character.name
+                hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
+                for hit in hit_list:
+                    print "  hit %s" % hit.name
 
         time_passed = clock.tick() / 1000.
         all.update(time_passed)

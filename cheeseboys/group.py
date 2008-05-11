@@ -34,4 +34,13 @@ class Group(sprite.Group):
         """
         for sprite in self.sprites():
             sprite.drawAttack(surface, time_passed)
+
+    def rectCollisionWithCharacterHeat(self, character, rect):
+        """Check if a rect is in collision with heat_rect of character"""
+        collisionList = []
+        for sprite in self.sprites():
+            if sprite is not character:
+                if rect.colliderect(sprite.heat_rect):
+                    collisionList.append(sprite)
+        return collisionList
         
