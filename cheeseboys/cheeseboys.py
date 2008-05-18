@@ -82,5 +82,4 @@ if __name__ == "__main__":
     pygame.init()
     initFont()
     main()
-    test2()
 
