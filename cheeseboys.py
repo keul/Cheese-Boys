@@ -5,16 +5,16 @@ import sys
 import pygame
 from pygame.locals import *
 
-import character
-from group import Group
-import locals
+from cheeseboys import cblocals
+from cheeseboys import character
+from cheeseboys.pygame_extensions import Group
 
 def main():
     clock = pygame.time.Clock()
     
-    screen = pygame.display.set_mode( (locals.SCREEN_WIDTH, locals.SCREEN_HEIGHT), 0, 32)
-    locals.screen = screen
-    pygame.display.set_caption("CheeseBoys - pre-alpha version %s" % locals.__version__)
+    screen = pygame.display.set_mode( (cblocals.SCREEN_WIDTH, cblocals.SCREEN_HEIGHT), 0, 32)
+    #cblocals.screen = screen
+    pygame.display.set_caption("CheeseBoys - pre-alpha version %s" % cblocals.__version__)
     background = pygame.Surface( (640, 480), flags=SRCALPHA, depth=32 )
     
     all = pygame.sprite.RenderUpdates()
@@ -45,11 +45,11 @@ def main():
             if event.type==MOUSEBUTTONDOWN:
                 lb, cb, rb = pygame.mouse.get_pressed()
                 if lb:
-                    locals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
+                    cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
                 elif rb:
-                    locals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
+                    cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
 
-            if event.type==locals.ATTACK_OCCURRED_EVENT:
+            if event.type==cblocals.ATTACK_OCCURRED_EVENT:
                 print "Attack from %s" % event.character.name
                 hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                 for hit in hit_list:
@@ -75,11 +75,11 @@ def main():
 
         pygame.display.update()
 
-def initFont():
-    locals.default_font = pygame.font.SysFont("data/%s" % locals.DEFAULT_FONT, 16)
+def cheeseBoysInit():
+    cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
 
 if __name__ == "__main__":
     pygame.init()
-    initFont()
+    cheeseBoysInit()
     main()
 

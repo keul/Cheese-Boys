@@ -3,7 +3,7 @@
 import pygame
 from pygame.locals import *
 
-import locals
+import cblocals
 from utils import Vector2
 
 class Attack(object):
@@ -35,7 +35,7 @@ class Attack(object):
         """Draw first phase of this attack"""
         if not self._phase1:
             self._phase1 = True
-            event = pygame.event.Event(locals.ATTACK_OCCURRED_EVENT, {'character':self._character, 'attack':self})
+            event = pygame.event.Event(cblocals.ATTACK_OCCURRED_EVENT, {'character':self._character, 'attack':self})
             pygame.event.post(event)
         self._updateRect(attackOriginVector)
         pygame.draw.line(surface,
@@ -48,7 +48,7 @@ class Attack(object):
         """Draw second phase of this attack"""
         if not self._phase2:
             self._phase2 = True
-            event = pygame.event.Event(locals.ATTACK_OCCURRED_EVENT, {'character':self._character, 'attack':self})
+            event = pygame.event.Event(cblocals.ATTACK_OCCURRED_EVENT, {'character':self._character, 'attack':self})
             pygame.event.post(event)
         self.drawPhase1(surface, attackOriginVector)
         pygame.draw.line(surface,

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+__author__ = "Keul - lucafbb AT gmail.com"
 __version__ = "0.0.4"
 
-from pygame.locals import *
+from pygame.locals import USEREVENT
 
 DIRECTION_N = 'N'
 DIRECTION_E = 'E'
@@ -22,6 +23,7 @@ MIN_PX_4_IMAGES_CHANGE = 20
 
 DEFAULT_FONT = "Vera.ttf"
 
+FONTS_DIR_PATH = "data/font"
 IMAGES_DIR_PATH = "data/images"
 
 DEBUG = False
@@ -31,6 +33,7 @@ ATTACK_OCCURRED_EVENT = USEREVENT +1
 
 # globals
 default_font = None
-screen = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
+
+#globals = {'default_font': None}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -
 
 import pygame
-import locals
+import cblocals
 
 # BBB: I import this way because I'm planning to remove dependencies of WillMcGugan game-objects library.
 # Better: if original vector2 is available the use it!
@@ -31,14 +31,14 @@ def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
         # Transform image always in a tuple, so I will act in the same way even if dont' using weaponInAndOut
         file_name = (file_name,)
 
-    imgXSize, imgYSize = locals.TILE_IMAGE_DIMENSION
+    imgXSize, imgYSize = cblocals.TILE_IMAGE_DIMENSION
     imgArray = []
 
     for fname in file_name:
         if not directory:
-            path = "%s/%s" % (locals.IMAGES_DIR_PATH, fname)
+            path = "%s/%s" % (cblocals.IMAGES_DIR_PATH, fname)
         else:
-            path = "%s/%s/%s" % (locals.IMAGES_DIR_PATH, directory, fname)
+            path = "%s/%s/%s" % (cblocals.IMAGES_DIR_PATH, directory, fname)
     
         # Load the 3x4 image
         mainImage = pygame.image.load(path)

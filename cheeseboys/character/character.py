@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -
 
-import random
+from cheeseboys.cbrandom import cbrandom
 
 import pygame
 from pygame.locals import *
 
-import utils
-import locals
+from cheeseboys import cblocals, utils
 from utils import Vector2
-from sprite import GameSprite
+from pygame_extensions import GameSprite
 from attack import Attack
 
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos, realSize=locals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers, firstPos, realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -30,7 +29,7 @@ class Character(GameSprite):
 
         self._distanceWalked = 0
         self._mustChangeImage = False
-        self.direction = self._lastUsedDirection = locals.DIRECTION_E
+        self.direction = self._lastUsedDirection = cblocals.DIRECTION_E
         self._isMoving = False
         self.speed = speed
         
@@ -58,7 +57,7 @@ class Character(GameSprite):
 
     def getTip(self):
         """Return tip text, for print it near the character"""
-        rendered = locals.default_font.render(self.name or self.characterTpe, True, (255, 255, 255))
+        rendered = cblocals.default_font.render(self.name or self.characterTpe, True, (255, 255, 255))
         return rendered
 
     def _load_images(self, img, weaponInAndOut):
@@ -90,7 +89,7 @@ class Character(GameSprite):
             self._moveBasedOnNavPoint(time_passed)
         else:
             # no navPoint? For now move to a random direction
-            self.setNavPoint(random.randint(1,639), random.randint(1,439) )
+            self.setNavPoint(cbrandom.randint(1,639), cbrandom.randint(1,439) )
 
     def _moveBasedOnNavPoint(self, time_passed):
         """Common method for move character using navPoint infos"""
@@ -230,12 +229,12 @@ class Character(GameSprite):
         # print new_heading
         x, y = new_heading.as_tuple()
         if abs(x)<.30 and y<0:
-            return locals.DIRECTION_N
+            return cblocals.DIRECTION_N
         if abs(x)<.30 and y>0:
-            return locals.DIRECTION_S
+            return cblocals.DIRECTION_S
         if x<0:
-            return locals.DIRECTION_W
-        return locals.DIRECTION_E
+            return cblocals.DIRECTION_W
+        return cblocals.DIRECTION_E
         # BBB
 
     def _getWalkImagePrefix(self, direction, weaponOut):
@@ -246,13 +245,13 @@ class Character(GameSprite):
             prefix = "attack"
         else:
             prefix = "walk"
-        if direction==locals.DIRECTION_E or direction==locals.DIRECTION_NE or direction==locals.DIRECTION_SE:
+        if direction==cblocals.DIRECTION_E or direction==cblocals.DIRECTION_NE or direction==cblocals.DIRECTION_SE:
             return "%s_east_" % prefix
-        if direction==locals.DIRECTION_W or direction==locals.DIRECTION_NW or direction==locals.DIRECTION_SW:
+        if direction==cblocals.DIRECTION_W or direction==cblocals.DIRECTION_NW or direction==cblocals.DIRECTION_SW:
             return "%s_west_" % prefix
-        if direction==locals.DIRECTION_N:
+        if direction==cblocals.DIRECTION_N:
             return "%s_north_" % prefix
-        if direction==locals.DIRECTION_S:
+        if direction==cblocals.DIRECTION_S:
             return "%s_south_" % prefix
         raise ValueError("Invalid direction %s" % direction)   
     
@@ -279,13 +278,13 @@ class Character(GameSprite):
             wstr = "attack_"
         else:
             wstr = ""
-        if direction==locals.DIRECTION_E or direction==locals.DIRECTION_NE or direction==locals.DIRECTION_SE:
+        if direction==cblocals.DIRECTION_E or direction==cblocals.DIRECTION_NE or direction==cblocals.DIRECTION_SE:
             image = "head_%seast" % wstr
-        elif direction==locals.DIRECTION_W or direction==locals.DIRECTION_NW or direction==locals.DIRECTION_SW:
+        elif direction==cblocals.DIRECTION_W or direction==cblocals.DIRECTION_NW or direction==cblocals.DIRECTION_SW:
             image = "head_%swest" % wstr
-        elif direction==locals.DIRECTION_N:
+        elif direction==cblocals.DIRECTION_N:
             image = "head_%snorth" % wstr
-        elif direction==locals.DIRECTION_S:
+        elif direction==cblocals.DIRECTION_S:
             image = "head_%ssouth" % wstr
         else:
             raise ValueError("Invalid direction %s" % direction) 
@@ -294,7 +293,7 @@ class Character(GameSprite):
     def addDistanceWalked(self, distance):
         self._distanceWalked+=distance
         # Every MIN_PX_4_IMAGES_CHANGEpx change image to simulate footsteps.
-        if self._distanceWalked>=locals.MIN_PX_4_IMAGES_CHANGE:
+        if self._distanceWalked>=cblocals.MIN_PX_4_IMAGES_CHANGE:
             #self._isMoving = False
             self._distanceWalked=0
             self._mustChangeImage = True
@@ -310,7 +309,7 @@ class Character(GameSprite):
         """Refresh character position"""
         self.rect.x = self._x
         self.rect.y = self._y
-        #screenrect = Rect(0, 0, locals.SCREEN_WIDTH, locals.SCREEN_HEIGHT)
+        #screenrect = Rect(0, 0, cblocals.SCREEN_WIDTH, cblocals.SCREEN_HEIGHT)
         #self.rect.clamp_ip(screenrect)
 
     def _checkDirectionChange(self, direction):
@@ -329,21 +328,21 @@ class Character(GameSprite):
         self.addDistanceWalked(distance)
         self._checkDirectionChange(direction)
 
-        if direction==locals.DIRECTION_E:
+        if direction==cblocals.DIRECTION_E:
             self.move(distance, 0)
-        elif direction==locals.DIRECTION_S:
+        elif direction==cblocals.DIRECTION_S:
             self.move(0, distance)
-        elif direction==locals.DIRECTION_W:
+        elif direction==cblocals.DIRECTION_W:
             self.move(-distance,0)
-        elif direction==locals.DIRECTION_N:
+        elif direction==cblocals.DIRECTION_N:
             self.move(0, -distance)
-        elif direction==locals.DIRECTION_NE:
+        elif direction==cblocals.DIRECTION_NE:
             self.move(distance, -distance)
-        elif direction==locals.DIRECTION_SE:
+        elif direction==cblocals.DIRECTION_SE:
             self.move(distance, distance)
-        elif direction==locals.DIRECTION_SW:
+        elif direction==cblocals.DIRECTION_SW:
             self.move(-distance, distance)
-        elif direction==locals.DIRECTION_NW:
+        elif direction==cblocals.DIRECTION_NW:
             self.move(-distance, -distance)
 
     def setAttackState(self, heading):
@@ -383,7 +382,7 @@ class Character(GameSprite):
         else:
             self._attack.drawPhase2(surface, attackOriginVector)
 
-        if locals.DEBUG:
+        if cblocals.DEBUG:
             pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackEffectCenterVectorTuple, 1)    
             pygame.draw.rect(surface,
                              self._attackColor,
