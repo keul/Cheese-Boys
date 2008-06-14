@@ -7,25 +7,33 @@ from pygame.locals import *
 
 from cheeseboys import cblocals
 from cheeseboys import character
+from cheeseboys.level import GameLevel
 from cheeseboys.pygame_extensions import Group
 
 def main():
     clock = pygame.time.Clock()
     
-    screen = pygame.display.set_mode( (cblocals.SCREEN_WIDTH, cblocals.SCREEN_HEIGHT), 0, 32)
+    screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
     #cblocals.screen = screen
     pygame.display.set_caption("CheeseBoys - pre-alpha version %s" % cblocals.__version__)
-    background = pygame.Surface( (640, 480), flags=SRCALPHA, depth=32 )
+    background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     all = pygame.sprite.RenderUpdates()
     charas = Group()
 
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), firstPos=(100, 100), realSize=(18,25), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
     
-    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), firstPos=(200, 90), realSize=(18,25), speed=100.)
-    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), firstPos=(400, 300), realSize=(18,25), speed=80. )
-    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), firstPos=(320, 210), realSize=(18,25), speed=125. )
-    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), firstPos=(50, 420), realSize=(18,25), speed=180. )
+    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=100.)
+    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=80. )
+    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=125. )
+    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=180. )
+    
+    testLevel = GameLevel("South bridge", (640, 480))
+    testLevel.addCharacter(hero, (100, 100))
+    testLevel.addCharacter(enemy1, (200, 90))
+    testLevel.addCharacter(enemy2, (400, 300))
+    testLevel.addCharacter(enemy3, (320, 210))
+    testLevel.addCharacter(enemy4, (50, 420))
     
     while True:
         for event in pygame.event.get():

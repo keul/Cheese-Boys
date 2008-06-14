@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -
 
-from cheeseboys.cbrandom import cbrandom
-
 import pygame
 from pygame.locals import *
 
+from cheeseboys.cbrandom import cbrandom
+from cheeseboys.ai import StateMachine
 from cheeseboys import cblocals, utils
 from utils import Vector2
 from pygame_extensions import GameSprite
@@ -13,7 +13,7 @@ from attack import Attack
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, firstPos, realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers, realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -23,6 +23,9 @@ class Character(GameSprite):
         self.characterTpe = "Guy"
         self.img = img
         self._imageDirectory = "charas"
+        
+        self._brain = StateMachine()
+        self.currentLevel = None
         
         self._load_images(img, weaponInAndOut)
         self.lastUsedImage = 'head_east_1'
@@ -51,9 +54,8 @@ class Character(GameSprite):
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
             
-        self._x, self._y = firstPos
+        self._x = self._y = None
         #self._rectAdjust = rectAdjust
-        self.rect = self.image.get_rect(topleft = firstPos)
 
     def getTip(self):
         """Return tip text, for print it near the character"""
@@ -83,13 +85,16 @@ class Character(GameSprite):
                 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
-        Non playing character check if has navPoint.
+        Non playing character check is own AI here.
         """
+        
+        self._brain.think()
+        
         if self.navPoint:
             self._moveBasedOnNavPoint(time_passed)
         else:
             # no navPoint? For now move to a random direction
-            self.setNavPoint(cbrandom.randint(1,639), cbrandom.randint(1,439) )
+            self.setNavPoint(self.currentLevel.generateRandomPoint())
 
     def _moveBasedOnNavPoint(self, time_passed):
         """Common method for move character using navPoint infos"""
@@ -407,6 +412,11 @@ class Character(GameSprite):
             self._mustChangeImage = True
         self._isMoving = new_move_status
 
-    def setNavPoint(self, x, y):
+    def setNavPoint(self, xy):
         """Set a new target navPoint for current character"""
-        self.navPoint = Vector2(x, y)
+        self.navPoint = Vector2(xy)
+
+    def addToGameLevel(self, level, firstPosition):
+        self.currentLevel = level
+        self.x, self.y = firstPosition
+        self.rect = self.image.get_rect(topleft=firstPosition)

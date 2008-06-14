@@ -9,7 +9,7 @@ from utils import Vector2
 from character import Character
 
 class PlayingCharacter(Character):
-    """player character class"""
+    """Player character class"""
     
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -17,7 +17,7 @@ class PlayingCharacter(Character):
         """
         # 1. Check for mouse actions setted
         if cblocals.global_lastMouseLeftClickPosition:
-            self.setNavPoint(*cblocals.global_lastMouseLeftClickPosition)
+            self.setNavPoint(cblocals.global_lastMouseLeftClickPosition)
             cblocals.global_lastMouseLeftClickPosition = ()
         if cblocals.global_lastMouseRightClickPosition and not self.isAttacking():
             # Click of right button: stop moving and attack!

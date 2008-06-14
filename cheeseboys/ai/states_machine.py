@@ -6,9 +6,14 @@
 # See http://www.willmcgugan.com/
 
 class State(object):
+    """Base class for the state machine's states.
+    This will be subclassed for every new existing states
+    """
     
-    def __init__(self, name):        
+    def __init__(self, name, character):        
         self.name = name
+        self.character = character
+        self.level = character.currentLevel
         
     def do_actions(self):
         raise NotImplementedError
@@ -24,6 +29,7 @@ class State(object):
         
         
 class StateMachine(object):
+    """The state machine class"""
     
     def __init__(self):
         self.states = {}
@@ -54,25 +60,14 @@ class StateMachine(object):
         
       
     
-class GameEntity(object):
+class IntelligenteEntity(object):
+    """All Character class that also subclass this class can take action in automatic.
+    So non-playing character MUST subclass this (or better, allNPC that need to move
+    and interact with the World).
+    """ 
     
-    def __init__(self, world, name, image):
-        self.world = world
-        self.name = name
-        self.image = image
-        self.location = Vector2(0, 0)
-        self.destination = Vector2(0, 0)
-        self.speed = 0.
-        
-        self.brain = StateMachine()
-        
-        self.id = 0
-        
-    def render(self, surface):
-        
-        x, y = self.location
-        w, h = self.image.get_size()
-        surface.blit(self.image, (x-w/2, y-h/2))   
+    def __init__(self):      
+        self.brain = StateMachine()  
         
     def process(self, time_passed):
         
