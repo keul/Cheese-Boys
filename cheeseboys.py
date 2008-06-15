@@ -8,6 +8,7 @@ from pygame.locals import *
 from cheeseboys import cblocals
 from cheeseboys import character
 from cheeseboys.level import GameLevel
+from cheeseboys.ai.ferrarese import FerrareseStateMachine
 from cheeseboys.pygame_extensions import Group
 
 def main():
@@ -15,7 +16,7 @@ def main():
     
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
     #cblocals.screen = screen
-    pygame.display.set_caption("CheeseBoys - pre-alpha version %s" % cblocals.__version__)
+    pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
     background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     all = pygame.sprite.RenderUpdates()
@@ -23,17 +24,22 @@ def main():
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
     
-    enemy1 = character.Character("Max", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=100.)
-    enemy2 = character.Character("John", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=80. )
-    enemy3 = character.Character("Jack", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=125. )
-    enemy4 = character.Character("Roger", "enemy1_sword.png", (all,charas), realSize=(18,25), speed=180. )
+    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=100., weaponInAndOut=True)
+    enemy1.setBrain(FerrareseStateMachine)
+    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=80., weaponInAndOut=True)
+    enemy2.setBrain(FerrareseStateMachine)
+    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=125., weaponInAndOut=True)
+    enemy3.setBrain(FerrareseStateMachine)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=180., weaponInAndOut=True)
+    enemy4.setBrain(FerrareseStateMachine)
     
-    testLevel = GameLevel("South bridge", (640, 480))
+    testLevel = GameLevel("South bridge", cblocals.SCREEN_SIZE)
     testLevel.addCharacter(hero, (100, 100))
     testLevel.addCharacter(enemy1, (200, 90))
     testLevel.addCharacter(enemy2, (400, 300))
     testLevel.addCharacter(enemy3, (320, 210))
     testLevel.addCharacter(enemy4, (50, 420))
+    testLevel.charasGroup = charas
     
     while True:
         for event in pygame.event.get():

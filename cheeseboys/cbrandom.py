@@ -8,9 +8,12 @@ class RandomGenerator(object):
     """  
 
     def choice(self, sequence):
-        return random.choice(choice)
+        return random.choice(sequence)
 
     def randint(self, int1, int2):
         return random.randint(int1, int2)
+
+    def uniform(self, a, b):
+        return random.uniform(a, b)
 
 cbrandom = RandomGenerator()

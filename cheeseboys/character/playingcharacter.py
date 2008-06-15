@@ -10,7 +10,10 @@ from character import Character
 
 class PlayingCharacter(Character):
     """Player character class"""
-    
+
+    def afterInit(self):
+        self.side = "Veneto"
+
     def update(self, time_passed):
         """Update method of pygame Sprite class.
         Overrided the one in Character main class because we need to handle user controls here.
@@ -21,10 +24,10 @@ class PlayingCharacter(Character):
             cblocals.global_lastMouseLeftClickPosition = ()
         if cblocals.global_lastMouseRightClickPosition and not self.isAttacking():
             # Click of right button: stop moving and attack!
-            self.attackHeading = Vector2.from_points(self.position, cblocals.global_lastMouseRightClickPosition)
-            self.attackHeading.normalize()
+            attackHeading = Vector2.from_points(self.position, cblocals.global_lastMouseRightClickPosition)
+            attackHeading.normalize()
             cblocals.global_lastMouseRightClickPosition = ()
-            self.setAttackState(self.attackHeading)
+            self.setAttackState(attackHeading)
 
         # 2. Keys movement
         pressed_keys = pygame.key.get_pressed()
@@ -54,10 +57,10 @@ class PlayingCharacter(Character):
 
         # BBB: if this is equal to update method of superclass, I can call it there!
         if self.navPoint:
-            self._moveBasedOnNavPoint(time_passed)
+            self.moveBasedOnNavPoint(time_passed)
         
         if self._attackDirection:
-            self._updateAttackState(time_passed)
+            self.updateAttackState(time_passed)
 
 
     

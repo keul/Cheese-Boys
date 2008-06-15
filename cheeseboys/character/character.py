@@ -13,18 +13,19 @@ from attack import Attack
 class Character(GameSprite):
     """Base character class"""
     
-    def __init__(self, name, img, containers, realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False):
+    def __init__(self, name, img, containers,
+                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False, sightRange=100,):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
                            'charas': containers[1],
                            }
         self.name = name
-        self.characterTpe = "Guy"
+        self.characterType = "Guy"
         self.img = img
         self._imageDirectory = "charas"
         
-        self._brain = StateMachine()
+        self._brain = None
         self.currentLevel = None
         
         self._load_images(img, weaponInAndOut)
@@ -34,7 +35,10 @@ class Character(GameSprite):
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = cblocals.DIRECTION_E
         self._isMoving = False
-        self.speed = speed
+        self.maxSpeed = self.speed = speed
+        self.sightRange = sightRange
+        self.side = 'Cheese Boys'
+        self._enemyTarget = None
         
         self.navPoint = None
         self.heading =  None
@@ -55,11 +59,19 @@ class Character(GameSprite):
         self._heatRectData = (5, 5, 8,13)
             
         self._x = self._y = None
-        #self._rectAdjust = rectAdjust
+        
+        self.afterInit()
+
+    def afterInit(self):
+        """Called after object creation to do something more specific for different character
+        I don't want to overload the __init__ method.
+        Base form of this method do nothing at all!
+        """
+        pass
 
     def getTip(self):
         """Return tip text, for print it near the character"""
-        rendered = cblocals.default_font.render(self.name or self.characterTpe, True, (255, 255, 255))
+        rendered = cblocals.default_font.render(self.name or self.characterType, True, (255, 255, 255))
         return rendered
 
     def _load_images(self, img, weaponInAndOut):
@@ -85,20 +97,20 @@ class Character(GameSprite):
                 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
-        Non playing character check is own AI here.
+        A non playing character check his own AI here.
         """
-        
-        self._brain.think()
-        
-        if self.navPoint:
-            self._moveBasedOnNavPoint(time_passed)
-        else:
-            # no navPoint? For now move to a random direction
-            self.setNavPoint(self.currentLevel.generateRandomPoint())
+        if self._brain:
+            self._brain.think(time_passed)
 
-    def _moveBasedOnNavPoint(self, time_passed):
-        """Common method for move character using navPoint infos"""
-        destination = self.navPoint # - Vector2(*self.image.get_size())/2.
+    def moveBasedOnNavPoint(self, time_passed, destination=None):
+        """Common method for move character using navPoint infos.
+        If a destination is not specified, then the current character navPoint is used.
+        """
+        if not destination:
+            destination = self.navPoint # - Vector2(*self.image.get_size())/2.
+        else:
+            destination = Vector2(destination)
+            self.navPoint = destination
         self.heading = Vector2.from_points(self.position, destination)
         self.heading.normalize()
         direction = self._generateDirectionFromHeading(self.heading)
@@ -355,11 +367,12 @@ class Character(GameSprite):
         For duration of the attack the character can still moving, but will face the direction attacked.
         """
         direction = self._generateDirectionFromHeading(heading)
+        self.attackHeading = heading
         self._attackDirection = direction
         self._mustChangeImage = True
 
-    def _updateAttackState(self, time_passed):
-        """Called by update to add some time to the attack time.
+    def updateAttackState(self, time_passed):
+        """Called to add some time to the attack time.
         This method control how long the attack is in action.
         """
         if self._attackTimeCollected<self._attackTime:
@@ -420,3 +433,36 @@ class Character(GameSprite):
         self.currentLevel = level
         self.x, self.y = firstPosition
         self.rect = self.image.get_rect(topleft=firstPosition)
+
+    def setBrain(self, smBrain):
+        """Set a AI StateMachine istance"""
+        self._brain = smBrain(self)
+    
+    def _setEnemyTarget(self, enemy):
+        self._enemyTarget = enemy
+    enemyTarget = property(lambda self: self._enemyTarget, _setEnemyTarget, doc="""The character current enemy target""")
+
+    def distanceFrom(self, character):
+        """Return the distance from two characters"""
+        return Vector2.from_points(self.position,character.position).get_magnitude()
+
+    @property
+    def attackRange(self):
+        """The range of the character's attacks"""
+        return self._attackRange
+
+    @property
+    def isAlive(self):
+        """True if the character is alive"""
+        return True
+
+    def getHeadingTo(self, target):
+        """Return the heading to a given object or position.
+        Object must has a "position" attribute.
+        """
+        if hasattr(target, 'position'):
+            position = target.position
+        else:
+            position = target
+        heading = Vector2.from_points(self.position, position)
+        return heading.normalize()
