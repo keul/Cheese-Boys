@@ -71,7 +71,7 @@ class State(object):
         """
         pass
 
-    def _chooseRandomDestination(self):
+    def _chooseRandomDestination(self, maxdistance=200):
         """Set a destination at random on map"""
-        self.character.setNavPoint(self.character.currentLevel.generateRandomPoint()) 
+        self.character.setNavPoint(self.character.currentLevel.generateRandomPoint(fromPoint=self.character.position_int, maxdistance=maxdistance)) 
         

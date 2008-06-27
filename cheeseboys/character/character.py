@@ -6,9 +6,9 @@ from pygame.locals import *
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import StateMachine
 from cheeseboys import cblocals, utils
-from utils import Vector2
-from pygame_extensions import GameSprite
-from attack import Attack
+from cheeseboys.utils import Vector2
+from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.attack import Attack
 
 class Character(GameSprite):
     """Base character class"""

@@ -26,7 +26,7 @@ class FerrareseStateExploring(State):
     
     def entry_actions(self, old_state_name):
         # "Relaxed" enemy never run... ;-)
-        self.character.speed = self.character.maxSpeed * cbrandom.uniform(0.3, 0.8)
+        self.character.speed = self.character.maxSpeed * cbrandom.uniform(0.3, 0.6)
         self._chooseRandomDestination()
 
 

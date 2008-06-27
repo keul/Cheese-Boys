@@ -3,9 +3,9 @@
 import pygame
 from pygame.locals import *
 
-import utils
+from cheeseboys import utils
 from cheeseboys import cblocals
-from utils import Vector2
+from cheeseboys.utils import Vector2
 from character import Character
 
 class PlayingCharacter(Character):
@@ -55,7 +55,6 @@ class PlayingCharacter(Character):
             distance = time_passed * self.speed
             self.walk(distance)
 
-        # BBB: if this is equal to update method of superclass, I can call it there!
         if self.navPoint:
             self.moveBasedOnNavPoint(time_passed)
         

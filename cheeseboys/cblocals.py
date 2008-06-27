@@ -35,5 +35,6 @@ ATTACK_OCCURRED_EVENT = USEREVENT +1
 default_font = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
+global_leftButtonIsDown = False
 
 #globals = {'default_font': None}

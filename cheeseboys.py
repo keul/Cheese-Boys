@@ -56,12 +56,16 @@ def main():
                 if pressed_keys[K_ESCAPE]:
                     sys.exit()
     
-            if event.type==MOUSEBUTTONDOWN:
+            if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
+                if not cblocals.global_leftButtonIsDown:
+                    cblocals.global_leftButtonIsDown = True
                 lb, cb, rb = pygame.mouse.get_pressed()
                 if lb:
                     cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
                 elif rb:
                     cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
+            elif event.type==MOUSEBUTTONUP:
+                cblocals.global_leftButtonIsDown = False
 
             if event.type==cblocals.ATTACK_OCCURRED_EVENT:
                 print "Attack from %s" % event.character.name
