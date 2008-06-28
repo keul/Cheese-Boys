@@ -26,6 +26,9 @@ DEFAULT_FONT = "Vera.ttf"
 FONTS_DIR_PATH = "data/font"
 IMAGES_DIR_PATH = "data/images"
 
+IMAGE_CURSOR_ATTACK_TYPE = "ATTACK"
+IMAGE_CURSOR_ATTACK_IMAGE = "icon_swords.gif"
+
 DEBUG = False
 
 # EVENTS
@@ -36,5 +39,6 @@ default_font = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False
+global_mouseCursor = None
 
 #globals = {'default_font': None}

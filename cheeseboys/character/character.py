@@ -185,7 +185,7 @@ class Character(GameSprite):
         offsetX, offsetY, w, h = self._heatRectData
         return pygame.Rect( (physical_rect.x+offsetX, physical_rect.y+offsetY), (w, h) )
 
-    def checkCollision(self, x=0, y=0):
+    def checkCollision(self, x, y):
         """Check collision of this sprite with other.
         If x and y are used, the collire_rect is adjusted before detection.
         """
@@ -202,8 +202,8 @@ class Character(GameSprite):
         return False
 
     def isNearTo(self, x, y):
-        """Check in the "whole" character is near to a point.
-        This is not good for movement collision if the charas movement is y-negative bit is used for navPoint movements.
+        """Check if the "whole" character is near to a point.
+        This is not good for movement collision because if the charas movement is y-negative, but its used for navPoint movements.
         """
         return self.rect.collidepoint(x, y)
     

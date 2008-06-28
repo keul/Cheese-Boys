@@ -4,7 +4,7 @@ from cheeseboys.ai import State, StateMachine
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
-class FerrareseStateExploring(State):   
+class BaseStateExploring(State):   
 
     def __init__(self, character):
         State.__init__(self, "exploring", character)
@@ -30,7 +30,7 @@ class FerrareseStateExploring(State):
         self._chooseRandomDestination()
 
 
-class FerrareseStateWaiting(State):   
+class BaseStateWaiting(State):   
 
     def __init__(self, character):
         State.__init__(self, "waiting", character)
@@ -57,7 +57,7 @@ class FerrareseStateWaiting(State):
 
 
 
-class FerrareseStateHunting(State):   
+class BaseStateHunting(State):   
 
     def __init__(self, character):
         State.__init__(self, "hunting", character)
@@ -74,7 +74,7 @@ class FerrareseStateHunting(State):
             return "waiting"
         
         if character.distanceFrom(enemy)>character.sightRange*2:
-            return "exploring"
+            return "waiting"
         
         if character.distanceFrom(enemy)<=character.attackRange and cbrandom.randint(1,50)==1:
             return "attacking"
@@ -89,7 +89,7 @@ class FerrareseStateHunting(State):
             self.character.enemyTarget = None
 
 
-class FerrareseStateAttacking(State):   
+class BaseStateAttacking(State):   
 
     def __init__(self, character):
         State.__init__(self, "attacking", character)
@@ -129,14 +129,14 @@ class FerrareseStateAttacking(State):
 
 
 
-class FerrareseStateMachine(StateMachine):
-    """State machine for a ferrarese"""
+class BaseStateMachine(StateMachine):
+    """State machine for very base character"""
 
     def __init__(self, character):
         self._character = character
-        states = (FerrareseStateWaiting(character),
-                  FerrareseStateExploring(character),
-                  FerrareseStateHunting(character),
-                  FerrareseStateAttacking(character),
+        states = (BaseStateWaiting(character),
+                  BaseStateExploring(character),
+                  BaseStateHunting(character),
+                  BaseStateAttacking(character),
                   )
         StateMachine.__init__(self, states)

@@ -1,18 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from cheeseboys import cblocals
+from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
-from cheeseboys.utils import Vector2
 
 class GameLevel(object):
     """This repr a game level.
     Character move inside a level using some of his methods.
     """
     
-    def __init__(self, name, size):
+    def __init__(self, name, size, background=None):
+        """Init a level object with a name and a dimension.
+        If a background file name is given, this image is loaded as background.
+        If you don't give a background then the level name (converted in a lowecase, less separated png file name)
+        is used instead.
+        If you really don't have a level image, please use a background parameter to None
+        """
         self.name = name
         self.levelSize = size
         self.charasGroup = None
+        if background is None:
+            background = name.lower().replace(" ","-")+".png"
+        if background:
+            self._background = utils.load_image(background, directory="levels")
     
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
@@ -60,3 +69,12 @@ class GameLevel(object):
         if enemies:
             return cbrandom.choice(enemies)
         return None
+
+    def draw(self, screen):
+        """Draw the level"""
+        if self._background:
+            screen.blit(self._background, (0,0) )
+
+    def hasBackground(self):
+        """Check is this level has a background image"""
+        return self._background is not None

@@ -5,10 +5,11 @@ import sys
 import pygame
 from pygame.locals import *
 
-from cheeseboys import cblocals
+from cheeseboys import cblocals, utils
 from cheeseboys import character
 from cheeseboys.level import GameLevel
-from cheeseboys.ai.ferrarese import FerrareseStateMachine
+from cheeseboys.ai.base_brain import BaseStateMachine
+from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import Group
 
 def main():
@@ -17,29 +18,32 @@ def main():
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
     #cblocals.screen = screen
     pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
-    background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     all = pygame.sprite.RenderUpdates()
     charas = Group()
+    enemies = Group()
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
+    hero.setBrain(HeroStateMachine)
     
-    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=100., weaponInAndOut=True)
-    enemy1.setBrain(FerrareseStateMachine)
-    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=80., weaponInAndOut=True)
-    enemy2.setBrain(FerrareseStateMachine)
-    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=125., weaponInAndOut=True)
-    enemy3.setBrain(FerrareseStateMachine)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas), realSize=(18,25), speed=180., weaponInAndOut=True)
-    enemy4.setBrain(FerrareseStateMachine)
+    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
+    enemy1.setBrain(BaseStateMachine)
+    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
+    enemy2.setBrain(BaseStateMachine)
+    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
+    enemy3.setBrain(BaseStateMachine)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
+    enemy4.setBrain(BaseStateMachine)
     
     testLevel = GameLevel("South bridge", cblocals.SCREEN_SIZE)
     testLevel.addCharacter(hero, (100, 100))
-    testLevel.addCharacter(enemy1, (200, 90))
+    testLevel.addCharacter(enemy1, (600, 90))
     testLevel.addCharacter(enemy2, (400, 300))
     testLevel.addCharacter(enemy3, (320, 210))
     testLevel.addCharacter(enemy4, (50, 420))
     testLevel.charasGroup = charas
+
+    background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     while True:
         for event in pygame.event.get():
@@ -57,9 +61,9 @@ def main():
                     sys.exit()
     
             if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
-                if not cblocals.global_leftButtonIsDown:
-                    cblocals.global_leftButtonIsDown = True
                 lb, cb, rb = pygame.mouse.get_pressed()
+                if lb and not cblocals.global_leftButtonIsDown:
+                    cblocals.global_leftButtonIsDown = True
                 if lb:
                     cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
                 elif rb:
@@ -77,7 +81,10 @@ def main():
         all.update(time_passed)
         
         screen.blit(background, (0,0) )
-        
+        if testLevel.hasBackground():
+            testLevel.draw(screen)
+
+
 #        charas.drawCollideRect(screen)
 #        charas.drawMainRect(screen) 
 #        charas.drawPhysicalRect(screen)
@@ -87,9 +94,21 @@ def main():
 
 #        charas.drawHeatRect(screen)
 
-        #textTips
+        # textTips
         for displayable in [x for x in all.sprites() if x.getTip()]:
             screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
+
+        # mouse cursor
+        for enemy in enemies.sprites():
+            if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
+                hero.seeking = enemy
+                utils.changeMouseCursor(cblocals.IMAGE_CURSOR_ATTACK_TYPE)
+                utils.drawCursor(screen, pygame.mouse.get_pos())
+                break
+        else:
+            if cblocals.global_mouseCursor is not None:
+                utils.changeMouseCursor(None)
+            hero.seeking = None
 
         pygame.display.update()
 

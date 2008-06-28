@@ -6,7 +6,9 @@
 
         
 class StateMachine(object):
-    """The state machine class"""
+    """The state machine class.
+    Istances of this class are the brain of the character that wanna move using AI intelligence.
+    """
     
     def __init__(self, states=None):
         self.states = {}
@@ -14,11 +16,11 @@ class StateMachine(object):
             self.active_state = None
         else:
             for state in states:
-                self.addState(state)
+                self._addState(state)
             self.active_state = states[0]
 
 
-    def addState(self, state):
+    def _addState(self, state):
         self.states[state.name] = state
         
     def think(self, time_passed):
@@ -33,6 +35,7 @@ class StateMachine(object):
         
     
     def setState(self, new_state_name):
+        """Set a new state for the brain based on its name"""
         old_state = self.active_state
         if self.active_state is not None:
             self.active_state.exit_actions(new_state_name)
@@ -55,7 +58,7 @@ class State(object):
         
     def check_conditions(self):
         """After every call of do_action, check_conditions is called to check if a state change must be done.
-        State didn't implements this method.
+        State doesn't implements this method.
         """
         raise NotImplementedError    
     

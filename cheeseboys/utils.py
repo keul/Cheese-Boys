@@ -17,10 +17,10 @@ def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=
     if charasFormatImage:
         return _imagesInCharasFormat(file_name, directory, weaponInAndOut)
     if not directory:
-        path = "%s/%s" % (locals.IMAGES_DIR_PATH, file_name)
+        path = "%s/%s" % (cblocals.IMAGES_DIR_PATH, file_name)
     else:
-        path = "%s/%s/%s" % (locals.IMAGES_DIR_PATH, directory, file_name)
-    return pygame.image.load(path)
+        path = "%s/%s/%s" % (cblocals.IMAGES_DIR_PATH, directory, file_name)
+    return pygame.image.load(path).convert_alpha()
 
 def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
     """Load an image from filesystem, from standard directory.
@@ -59,3 +59,19 @@ def normalizeXY(x, y):
         if y>0: y=1
         elif y<0: y=-1
     return x,y
+
+# ******* CURSOR *******
+def changeMouseCursor(type):
+    """Load a mouse cursor of the given type"""
+    if type==cblocals.IMAGE_CURSOR_ATTACK_TYPE:
+        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_ATTACK_IMAGE)
+    elif not type:
+        cblocals.global_mouseCursor = None
+    else:
+        raise ValueError("Cannot load cursor of type %s" % type)
+
+def drawCursor(screen, (x, y) ):
+    mouse_cursor = cblocals.global_mouseCursor
+    x-= mouse_cursor.get_width() / 2
+    y-= mouse_cursor.get_height() / 2
+    screen.blit(mouse_cursor, (x,y))
