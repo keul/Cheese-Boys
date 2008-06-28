@@ -18,7 +18,7 @@ except ImportError:
            "Please download it from:\n"
            "http://code.google.com/p/gameobjects/")
     sys.exit(1)
-print "All dependencies libraries are present!"
+print "All required libraries are present!"
 # #######
 
 from pygame.locals import *
