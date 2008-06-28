@@ -2,7 +2,25 @@
 
 import sys
 
-import pygame
+# CHECKING GAME DEPENDENCIES
+print "Checking dependencies..."
+try:
+    import pygame
+except ImportError:
+    print ("Pygame module isn't present!\n"
+           "This is the main game module! You must download it from\n"
+           "http://pygame.org/download.shtml")
+    sys.exit(1)
+try:
+    from cheeseboys.utils import Vector2
+except ImportError:
+    print ("Vector2 class of gameobjects not found.\n"
+           "Please download it from:\n"
+           "http://code.google.com/p/gameobjects/")
+    sys.exit(1)
+print "All dependencies libraries are present!"
+# #######
+
 from pygame.locals import *
 
 from cheeseboys import cblocals, utils
@@ -113,7 +131,9 @@ def main():
         pygame.display.update()
 
 def cheeseBoysInit():
+    """Init of this game engine"""
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
+
 
 if __name__ == "__main__":
     pygame.init()
