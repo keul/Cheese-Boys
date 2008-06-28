@@ -44,31 +44,31 @@ class PlayingCharacter(Character):
             else:
                 self.setAttackState(attackHeading)
 
-        # 2. Keys movement
-        pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
-            self.moving(True)
-            self.navPoint = None
-            cblocals.global_lastMouseLeftClickPosition = ()
-            if pressed_keys[K_LEFT] and pressed_keys[K_UP]:
-                direction = cblocals.DIRECTION_NW
-            elif pressed_keys[K_LEFT] and pressed_keys[K_DOWN]:
-                direction = cblocals.DIRECTION_SW
-            elif pressed_keys[K_RIGHT] and pressed_keys[K_UP]:
-                direction = cblocals.DIRECTION_NE
-            elif pressed_keys[K_RIGHT] and pressed_keys[K_DOWN]:
-                direction = cblocals.DIRECTION_SE
-            elif pressed_keys[K_LEFT]:
-                direction = cblocals.DIRECTION_W
-            elif pressed_keys[K_RIGHT]:
-                direction = cblocals.DIRECTION_E
-            elif pressed_keys[K_UP]:
-                direction = cblocals.DIRECTION_N
-            elif pressed_keys[K_DOWN]:
-                direction = cblocals.DIRECTION_S
-            self.direction = direction
-            distance = time_passed * self.speed
-            self.walk(distance)
+#        # 2. Keys movement
+#        pressed_keys = pygame.key.get_pressed()
+#        if pressed_keys[K_LEFT] or pressed_keys[K_RIGHT] or pressed_keys[K_UP] or pressed_keys[K_DOWN]:
+#            self.moving(True)
+#            self.navPoint = None
+#            cblocals.global_lastMouseLeftClickPosition = ()
+#            if pressed_keys[K_LEFT] and pressed_keys[K_UP]:
+#                direction = cblocals.DIRECTION_NW
+#            elif pressed_keys[K_LEFT] and pressed_keys[K_DOWN]:
+#                direction = cblocals.DIRECTION_SW
+#            elif pressed_keys[K_RIGHT] and pressed_keys[K_UP]:
+#                direction = cblocals.DIRECTION_NE
+#            elif pressed_keys[K_RIGHT] and pressed_keys[K_DOWN]:
+#                direction = cblocals.DIRECTION_SE
+#            elif pressed_keys[K_LEFT]:
+#                direction = cblocals.DIRECTION_W
+#            elif pressed_keys[K_RIGHT]:
+#                direction = cblocals.DIRECTION_E
+#            elif pressed_keys[K_UP]:
+#                direction = cblocals.DIRECTION_N
+#            elif pressed_keys[K_DOWN]:
+#                direction = cblocals.DIRECTION_S
+#            self.direction = direction
+#            distance = time_passed * self.speed
+#            self.walk(distance)
 
         if self.navPoint:
             self.moveBasedOnNavPoint(time_passed)
@@ -82,5 +82,5 @@ class PlayingCharacter(Character):
     seeking = property(lambda self: self._trackedEnemy, _setSeeking, doc="""The enemy that the hero is tracking""")
     
     def stopThinking(self):
-        """Block all state machien brain actions"""
+        """Block all state machine brain actions of the hero, keeping back the control of him"""
         self._brain.setState("controlled")

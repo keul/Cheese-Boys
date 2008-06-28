@@ -6,7 +6,9 @@ from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
 class HeroStateControlled(State):
-    """The hero is moved by the player (I mean a human with a brain)"""
+    """The hero is moved by the player (I mean a human with a brain).
+    Think this state like a "brain sleep state". 
+    """
 
     def __init__(self, character):
         State.__init__(self, "controlled", character)

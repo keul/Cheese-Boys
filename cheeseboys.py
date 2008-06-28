@@ -51,8 +51,8 @@ def main():
             if event.type == QUIT:
                 sys.exit()
             
-            if event.type==KEYUP:
-                hero.moving(False)
+#            if event.type==KEYUP:
+#                hero.moving(False)
             
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
@@ -68,7 +68,7 @@ def main():
                     cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
                 elif rb:
                     cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
-            elif event.type==MOUSEBUTTONUP:
+            if event.type==MOUSEBUTTONUP:
                 cblocals.global_leftButtonIsDown = False
 
             if event.type==cblocals.ATTACK_OCCURRED_EVENT:
