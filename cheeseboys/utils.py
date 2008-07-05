@@ -4,7 +4,7 @@ import pygame
 import cblocals
 
 # BBB: I import this way because I'm planning to remove dependencies of WillMcGugan game-objects library.
-# Better: if original vector2 is available the use it!
+# Better: if original vector2 class is available keep using it!
 from gameobjects.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False):
@@ -12,7 +12,7 @@ def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=
     file_name will the name of the file or a tuple of 2 file name (if weaponInAndOut is used)
     charasFormatImage is used to load not a single image but an array of 12 images in charas format.
     weaponInAndOut is used to load not 12 but 24 images. The first 12 are normal images with weapon, the others are without.
-    This is only used for charas that combat.
+    This is only used for charas that can do combat action.
     """
     if charasFormatImage:
         return _imagesInCharasFormat(file_name, directory, weaponInAndOut)
@@ -42,8 +42,7 @@ def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
     
         # Load the 3x4 image
         mainImage = pygame.image.load(path)
-    
-        
+
         for y in range(4):
             for x in range(3):
                 imgArray.append(mainImage.subsurface( (x*imgXSize,y*imgYSize), (imgXSize,imgYSize), ))
@@ -75,3 +74,4 @@ def drawCursor(screen, (x, y) ):
     x-= mouse_cursor.get_width() / 2
     y-= mouse_cursor.get_height() / 2
     screen.blit(mouse_cursor, (x,y))
+# **********************

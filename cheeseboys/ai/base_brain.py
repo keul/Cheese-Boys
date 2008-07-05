@@ -68,7 +68,6 @@ class BaseStateHunting(State):
             
     def check_conditions(self):
         character = self.character
-        level = character.currentLevel
         enemy = character.enemyTarget
         if not enemy.isAlive:
             return "waiting"
@@ -105,7 +104,6 @@ class BaseStateAttacking(State):
         
     def check_conditions(self):
         character = self.character
-        level = character.currentLevel
         enemy = character.enemyTarget
 
         if character.isAttacking():
@@ -127,7 +125,38 @@ class BaseStateAttacking(State):
             self.character.enemyTarget = None
 
 
+class BaseStateHit(State):
+    """This state is the base state for a character hit by a blow.
+    Commonly only external action can move a character in this state.
+    """
 
+    def __init__(self, character):
+        State.__init__(self, "hitten", character)
+        self.collected_distance = 0
+        self.distance_to_move = None
+
+    def do_actions(self, time_passed):
+        character = self.character
+        character.moveBasedOnHitTaken(time_passed)
+        self.collected_distance += time_passed * character.speed
+
+    def check_conditions(self):
+        """The character exit this state only when hit effect ends"""
+        if self.collected_distance>=self.distance_to_move:
+            return "waiting"
+        return None
+
+    def entry_actions(self, old_state_name):
+        self.character.speed = cbrandom.randint(cblocals.HIT_MOVEMENT_SPEED/2, cblocals.HIT_MOVEMENT_SPEED)
+        self.distance_to_move = 50
+
+    def exit_actions(self, new_state_name):
+        self.collected_distance = 0
+        self.distance_to_move = None
+
+
+
+# ******* ladies and gentlemen: The Amazing State Machine *******
 
 class BaseStateMachine(StateMachine):
     """State machine for very base character"""
@@ -138,5 +167,6 @@ class BaseStateMachine(StateMachine):
                   BaseStateExploring(character),
                   BaseStateHunting(character),
                   BaseStateAttacking(character),
+                  BaseStateHit(character)
                   )
         StateMachine.__init__(self, states)

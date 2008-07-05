@@ -55,6 +55,9 @@ class Character(GameSprite):
         self._attackTime = attackTime
         self._attackAnimationTime = attackTime/2
         
+        # From where a succesfull attack is coming
+        self.damageHeading = None
+        
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
             
@@ -109,7 +112,8 @@ class Character(GameSprite):
         if not destination:
             destination = self.navPoint # - Vector2(*self.image.get_size())/2.
         else:
-            destination = Vector2(destination)
+            if type(destination)==tuple:
+                destination = Vector2(destination)
             self.navPoint = destination
         self.heading = Vector2.from_points(self.position, destination)
         self.heading.normalize()
@@ -132,6 +136,18 @@ class Character(GameSprite):
         else:
             self.navPoint = None
             self.moving(False)
+
+    def moveBasedOnHitTaken(self, time_passed):
+        """This is similar to moveBasedOnNavPoint, but is called to animate a character hit by a blow"""
+        direction = self._generateDirectionFromHeading(self.damageHeading)
+        distance = time_passed * self.speed
+        movement = self.damageHeading * distance
+        x = movement.get_x()
+        y = movement.get_y()
+        if not self.checkCollision(x, y):
+            self._x += x
+            self._y += y
+            self.refresh()
 
     def _setX(self, newx):
         self._x = newx
@@ -466,3 +482,14 @@ class Character(GameSprite):
             position = target
         heading = Vector2.from_points(self.position, position)
         return heading.normalize()
+
+    def generatePhysicalAttachEffect(self, attack_origin):
+        """Called for animate a character hit by a physical blow.
+        Character will innaturally move away in a direction opposite to blow origin.
+        """
+        self.damageHeading = attack_origin.attackHeading #* -1
+        self._brain.setState("hitten")
+
+
+
+

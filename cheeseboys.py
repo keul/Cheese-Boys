@@ -46,19 +46,19 @@ def main():
     
     enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
     enemy1.setBrain(BaseStateMachine)
-    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
-    enemy2.setBrain(BaseStateMachine)
-    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
-    enemy3.setBrain(BaseStateMachine)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
-    enemy4.setBrain(BaseStateMachine)
+#    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
+#    enemy2.setBrain(BaseStateMachine)
+#    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
+#    enemy3.setBrain(BaseStateMachine)
+#    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
+#    enemy4.setBrain(BaseStateMachine)
     
     testLevel = GameLevel("South bridge", cblocals.SCREEN_SIZE)
     testLevel.addCharacter(hero, (100, 100))
     testLevel.addCharacter(enemy1, (600, 90))
-    testLevel.addCharacter(enemy2, (400, 300))
-    testLevel.addCharacter(enemy3, (320, 210))
-    testLevel.addCharacter(enemy4, (50, 420))
+#    testLevel.addCharacter(enemy2, (400, 300))
+#    testLevel.addCharacter(enemy3, (320, 210))
+#    testLevel.addCharacter(enemy4, (50, 420))
     testLevel.charasGroup = charas
 
     background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
@@ -93,6 +93,8 @@ def main():
                 print "Attack from %s" % event.character.name
                 hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                 for hit in hit_list:
+                    if hit is not hero:
+                        hit.generatePhysicalAttachEffect(attack_origin=event.character)
                     print "  hit %s" % hit.name
 
         time_passed = clock.tick() / 1000.
@@ -101,7 +103,6 @@ def main():
         screen.blit(background, (0,0) )
         if testLevel.hasBackground():
             testLevel.draw(screen)
-
 
 #        charas.drawCollideRect(screen)
 #        charas.drawMainRect(screen) 

@@ -39,7 +39,7 @@ class StateMachine(object):
         old_state = self.active_state
         if self.active_state is not None:
             self.active_state.exit_actions(new_state_name)
-        self.active_state = self.states[new_state_name]        
+        self.active_state = self.states[new_state_name]    
         self.active_state.entry_actions(old_state.name)
         
 
