@@ -39,7 +39,7 @@ class StateMachine(object):
         old_state = self.active_state
         if self.active_state is not None:
             self.active_state.exit_actions(new_state_name)
-        self.active_state = self.states[new_state_name]    
+        self.active_state = self.states[new_state_name]
         self.active_state.entry_actions(old_state.name)
         
 
@@ -58,7 +58,7 @@ class State(object):
         
     def check_conditions(self):
         """After every call of do_action, check_conditions is called to check if a state change must be done.
-        State doesn't implements this method.
+        State class doesn't implements this method.
         """
         raise NotImplementedError    
     

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -
 
 from cheeseboys.ai import State, StateMachine
-from base_brain import BaseStateHunting, BaseStateAttacking
+from base_brain import BaseStateHunting, BaseStateAttacking, BaseStateHit
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
@@ -26,10 +26,11 @@ class HeroStateHunting(BaseStateHunting):
         character = self.character
         level = character.currentLevel
         enemy = character.enemyTarget
+
         if not enemy.isAlive:
-            return "waiting"
+            return "controlled"
         
-        if character.distanceFrom(enemy)<=character.attackRange and cbrandom.randint(1,50)==1:
+        if character.distanceFrom(enemy)<=character.attackRange:
             return "attacking"
         
         return None
@@ -51,10 +52,27 @@ class HeroStateAttacking(BaseStateAttacking):
             character.updateAttackState(time_passed)
         
     def check_conditions(self):
-        """Alway exit after the first attack"""        
-        return "controlled"
+        """Alway exit after the first attack"""
+        if not self.character.isAttacking():      
+            return "controlled"
+        return None
 
+class HeroStateHit(BaseStateHit):
+    """Like BaseStateHit, but after the hit animation control return to last state"""
 
+    def __init__(self, character):
+        BaseStateHit.__init__(self, character)
+        self.lastState = None
+
+    def check_conditions(self):
+        """The character exit this state only when hit effect ends"""
+        if self.collected_distance>=self.distance_to_move:
+            return "controlled"
+        return None
+
+    def exit_actions(self, new_state_name):
+        BaseStateHit.exit_actions(self, new_state_name)
+        self.character.speed = self.character.maxSpeed
 
 class HeroStateMachine(StateMachine):
     """State machine for the hero.
@@ -66,6 +84,7 @@ class HeroStateMachine(StateMachine):
         states = (HeroStateControlled(character),
                   HeroStateHunting(character),
                   HeroStateAttacking(character),
+                  HeroStateHit(character)
                   )
         StateMachine.__init__(self, states)
 

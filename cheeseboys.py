@@ -77,7 +77,7 @@ def main():
                 
                 if pressed_keys[K_ESCAPE]:
                     sys.exit()
-    
+
             if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
                 lb, cb, rb = pygame.mouse.get_pressed()
                 if lb and not cblocals.global_leftButtonIsDown:
@@ -93,8 +93,7 @@ def main():
                 print "Attack from %s" % event.character.name
                 hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                 for hit in hit_list:
-                    if hit is not hero:
-                        hit.generatePhysicalAttachEffect(attack_origin=event.character)
+                    hit.generatePhysicalAttachEffect(attack_origin=event.character)
                     print "  hit %s" % hit.name
 
         time_passed = clock.tick() / 1000.

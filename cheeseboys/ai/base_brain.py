@@ -65,7 +65,7 @@ class BaseStateHunting(State):
     def do_actions(self, time_passed):
         character = self.character
         character.moveBasedOnNavPoint(time_passed, character.enemyTarget.position)
-            
+
     def check_conditions(self):
         character = self.character
         enemy = character.enemyTarget
@@ -75,7 +75,7 @@ class BaseStateHunting(State):
         if character.distanceFrom(enemy)>character.sightRange*2:
             return "waiting"
         
-        if character.distanceFrom(enemy)<=character.attackRange and cbrandom.randint(1,50)==1:
+        if character.distanceFrom(enemy)<=character.attackRange and cbrandom.randint(1,20)==1:
             return "attacking"
         
         return None
@@ -121,6 +121,8 @@ class BaseStateAttacking(State):
         self.character.speed = self.character.maxSpeed
 
     def exit_actions(self, new_state_name):
+        character = self.character
+        character.stopAttack()
         if new_state_name!="hunting":
             self.character.enemyTarget = None
 

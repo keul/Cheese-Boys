@@ -34,7 +34,7 @@ class PlayingCharacter(Character):
             attackHeading.normalize()
             cblocals.global_lastMouseRightClickPosition = ()
             # Right click on a distant enemy will move the hero towards him...
-            if self.seeking:
+            if self.seeking and not pygame.key.get_pressed()[K_LCTRL]:
                 # enable the hero brain
                 enemy = self.seeking
                 print "Seeking %s" % enemy.name
@@ -79,7 +79,7 @@ class PlayingCharacter(Character):
 
     def _setSeeking(self, enemy):
         self._trackedEnemy = enemy
-    seeking = property(lambda self: self._trackedEnemy, _setSeeking, doc="""The enemy that the hero is tracking""")
+    seeking = property(lambda self: self._trackedEnemy, _setSeeking, doc="""The enemy that the hero is hunting""")
     
     def stopThinking(self):
         """Block all state machine brain actions of the hero, keeping back the control of him"""
