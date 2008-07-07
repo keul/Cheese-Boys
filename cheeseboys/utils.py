@@ -2,6 +2,7 @@
 
 import pygame
 import cblocals
+from cheeseboys.cbrandom import cbrandom
 
 # BBB: I import this way because I'm planning to remove dependencies of WillMcGugan game-objects library.
 # Better: if original vector2 class is available keep using it!
@@ -58,6 +59,17 @@ def normalizeXY(x, y):
         if y>0: y=1
         elif y<0: y=-1
     return x,y
+
+def getRandomImageFacingUp(images):
+    """Given an image dictionary (commonly the character.images strucutre data) return a random image.
+    This image will be rotated randomly 90 degree left or right.
+    This is used to draw dead charas.
+    """
+    image = cbrandom.choice(images.values())
+    l_or_r = cbrandom.randint(1,2)
+    if l_or_r==1:
+        return pygame.transform.rotate(image, -90)
+    return pygame.transform.rotate(image, 90)
 
 # ******* CURSOR *******
 def changeMouseCursor(type):

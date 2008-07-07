@@ -18,8 +18,9 @@ class Character(GameSprite):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
-                           'charas': containers[1],
-                           }
+                           'charas' : containers[1],
+                           } 
+
         self.name = name
         self.characterType = "Guy"
         self.img = img
@@ -54,6 +55,7 @@ class Character(GameSprite):
         self._attackTimeCollected = self._attackAnimationTimeCollected = 0
         self._attackTime = attackTime
         self._attackAnimationTime = attackTime/2
+        self.attackDamage = "1d6"
         
         # From where a succesfull attack is coming
         self.damageHeading = None
@@ -62,7 +64,9 @@ class Character(GameSprite):
         self._heatRectData = (5, 5, 8,13)
             
         self._x = self._y = None
-        
+
+        self.codigoresePoints = self.codigoresePointsLeft = 20
+
         self.afterInit()
 
     def afterInit(self):
@@ -470,7 +474,17 @@ class Character(GameSprite):
     @property
     def isAlive(self):
         """True if the character is alive"""
-        return True
+        return self.codigoresePointsLeft>0
+
+    def checkAliveState(self):
+        """Check the character alive state, or kill it!"""
+        if not self.isAlive:
+            self.kill()
+    
+    def kill(self):
+        """Kill the character, removing it from all groups"""
+        GameSprite.kill(self)
+        self.currentLevel.generateDeadSprite(self)
 
     def getHeadingTo(self, target):
         """Return the heading to a given object or position.
@@ -487,9 +501,19 @@ class Character(GameSprite):
         """Called for animate a character hit by a physical blow.
         Character will innaturally move away in a direction opposite to blow origin.
         """
-        self.damageHeading = attack_origin.attackHeading #* -1
+        damage = cbrandom.throwDices(attack_origin.attackDamage)
+        self.codigoresePointsLeft-= damage
+        print "  %s wounded for %s points. %s left" % (self.name, damage, self.codigoresePointsLeft)
+        self.damageHeading = attack_origin.attackHeading
         self._brain.setState("hitten")
+        self.checkAliveState()
 
-
-
+    def drawPointsInfos(self, surface):
+        """Draw infos about this character point left on the surface"""
+        codigoresePoints = self.codigoresePoints
+        codigoresePointsLeft = self.codigoresePointsLeft
+        pr = self.physical_rect
+        # codigoresePoints : pr.height = codigoresePointsLeft : x
+        topright = (pr.topright[0], pr.bottomright[1] - (pr.height * codigoresePointsLeft / codigoresePoints) )
+        pygame.draw.line(surface, (0,0,255), pr.bottomright, topright, 3)
 

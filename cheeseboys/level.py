@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import pygame
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
+from cheeseboys.pygame_extensions import GameSprite
 
 class GameLevel(object):
     """This repr a game level.
@@ -17,11 +19,13 @@ class GameLevel(object):
         """
         self.name = name
         self.levelSize = size
-        self.charasGroup = None
+        self.group_charas = None
         if background is None:
             background = name.lower().replace(" ","-")+".png"
         if background:
             self._background = utils.load_image(background, directory="levels")
+        # Special group infos
+        self.group_dead = None
     
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
@@ -60,7 +64,7 @@ class GameLevel(object):
         if not sight:
             sight = character.sightRange
         
-        group = self.charasGroup
+        group = self.group_charas
         enemies = []
         for charas in group.sprites():
             if character.side!=charas.side and character.distanceFrom(charas)<=sight:
@@ -78,3 +82,13 @@ class GameLevel(object):
     def hasBackground(self):
         """Check is this level has a background image"""
         return self._background is not None
+
+    def generateDeadSprite(self, corpse):
+        """Using a character (commonly... very commonly... a DEAD ones!), generate a corpse"""
+        group_dead = self.group_dead
+        sprite = GameSprite(group_dead)
+        sprite.image = utils.getRandomImageFacingUp(corpse.images)
+        curRect = corpse.rect
+        newRect = pygame.Rect( (curRect.centerx-curRect.height/2, curRect.bottom-curRect.width), (curRect.height,curRect.width) )
+        sprite.rect = pygame.Rect(newRect)
+        group_dead.add()

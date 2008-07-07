@@ -14,6 +14,8 @@ class PlayingCharacter(Character):
     def afterInit(self):
         self.side = "Veneto"
         self._trackedEnemy = None
+        self.attackDamage = "1d6+2"
+        self.codigoresePoints = self.codigoresePointsLeft = 30
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

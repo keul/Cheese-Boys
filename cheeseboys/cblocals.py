@@ -15,7 +15,9 @@ DIRECTION_SW = 'SW'
 DIRECTION_NW = 'NW'
 
 SCREEN_SIZE = (800, 600)
-GAME_SCREEN_SIZE = (800, 600)
+GAME_SCREEN_SIZE = (650, 600)
+CONSOLE_SCREEN_SIZE = (150, 600)
+
 
 TILE_IMAGE_DIMENSION = (24, 32)
 
@@ -36,7 +38,7 @@ DEBUG = False
 ATTACK_OCCURRED_EVENT = USEREVENT +1
 
 # globals
-default_font = None
+default_font = default_font_big = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False

@@ -38,6 +38,7 @@ def main():
     pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
     
     all = pygame.sprite.RenderUpdates()
+    dead = Group()
     charas = Group()
     enemies = Group()
 
@@ -53,15 +54,18 @@ def main():
 #    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
 #    enemy4.setBrain(BaseStateMachine)
     
-    testLevel = GameLevel("South bridge", cblocals.SCREEN_SIZE)
+    testLevel = GameLevel("South bridge", cblocals.GAME_SCREEN_SIZE)
+    testLevel.group_dead = dead
+    
     testLevel.addCharacter(hero, (100, 100))
     testLevel.addCharacter(enemy1, (600, 90))
 #    testLevel.addCharacter(enemy2, (400, 300))
 #    testLevel.addCharacter(enemy3, (320, 210))
 #    testLevel.addCharacter(enemy4, (50, 420))
-    testLevel.charasGroup = charas
+    testLevel.group_charas = charas
 
-    background = pygame.Surface( cblocals.SCREEN_SIZE, flags=SRCALPHA, depth=32 )
+    background = pygame.Surface( cblocals.GAME_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
+    console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     while True:
         for event in pygame.event.get():
@@ -93,8 +97,8 @@ def main():
                 print "Attack from %s" % event.character.name
                 hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                 for hit in hit_list:
-                    hit.generatePhysicalAttachEffect(attack_origin=event.character)
                     print "  hit %s" % hit.name
+                    hit.generatePhysicalAttachEffect(attack_origin=event.character)
 
         time_passed = clock.tick() / 1000.
         all.update(time_passed)
@@ -107,10 +111,16 @@ def main():
 #        charas.drawMainRect(screen) 
 #        charas.drawPhysicalRect(screen)
 
+        dead.draw(screen)
+
         all.draw(screen)
         charas.drawAttacks(screen, time_passed)
 
 #        charas.drawHeatRect(screen)
+
+        # points
+        for displayable in [x for x in charas.sprites() if x.isAlive]:
+            displayable.drawPointsInfos(screen)
 
         # textTips
         for displayable in [x for x in all.sprites() if x.getTip()]:
@@ -128,11 +138,16 @@ def main():
                 utils.changeMouseCursor(None)
             hero.seeking = None
 
+        screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
+        console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )
+        console_area.blit(cblocals.default_font_big.render("console/command area", True, (255, 255, 255)), (2,30) )
+
         pygame.display.update()
 
 def cheeseBoysInit():
     """Init of this game engine"""
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
+    cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 24)
 
 
 if __name__ == "__main__":
