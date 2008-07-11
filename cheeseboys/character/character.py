@@ -104,6 +104,7 @@ class Character(GameSprite):
         """Update method of pygame Sprite class.
         A non playing character check his own AI here.
         """
+        GameSprite.update(self, time_passed)
         if self._brain:
             self._brain.think(time_passed)
 

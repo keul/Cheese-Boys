@@ -36,7 +36,7 @@ class Group(sprite.Group):
             sprite.drawAttack(surface, time_passed)
 
     def rectCollisionWithCharacterHeat(self, character, rect):
-        """Check if a rect is in collision with heat_rect of character"""
+        """Check if a rect is in collision with heat_rect of character of this group"""
         collisionList = []
         for sprite in self.sprites():
             if sprite is not character:

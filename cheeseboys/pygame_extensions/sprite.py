@@ -13,6 +13,13 @@ class GameSprite(pygame.sprite.Sprite):
         self._x = self._y = None
         self.rect = None
 
+    def update(self, time_passed):
+        """Update method of pygame Sprite class.
+        Keep updated sprite position on level.
+        """
+        pygame.sprite.Sprite.update(self, time_passed)
+        self.refresh()
+
     def topleft(self, x=0, y=0):
         """Return top left position for this sprite"""
         topleft = self.rect.topleft
@@ -46,22 +53,22 @@ class GameSprite(pygame.sprite.Sprite):
     @property
     def position(self):
         """Character position as tuple"""
-        return (self.x, self.y)
+        return (self.x + self.rect.width/2, self.y+self.rect.height-3)
     @property
     def position_int(self):
         """Same as position but in integer format"""
-        return (int(self.x), int(self.y))
+        x,y = self.position
+        return (int(x), int(y))
     @property
     def v(self):
         """Return position as Vector2 object"""
-        return Vector2(self.x, self.y)
+        x,y = self.position
+        return Vector2(x, y)
 
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""
         x, y = self.toScreenCoordinate()
-        #print x,y
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.midbottom = (x, y-3)
 
     def toScreenCoordinate(self):
         """Return X,Y tuple information converting it back to screen position"""
@@ -80,7 +87,7 @@ class GameSprite(pygame.sprite.Sprite):
 
     def move(self, x, y):
         """Move the sprite, relative to current point"""
-        self._x+=x
-        self._y+=y
+        self.x+=x
+        self.y+=y
         #self.rect.move_ip(x, y)
         self.refresh()
