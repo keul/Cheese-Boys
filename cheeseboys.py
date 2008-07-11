@@ -47,8 +47,8 @@ def main():
     
     enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
     enemy1.setBrain(BaseStateMachine)
-#    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
-#    enemy2.setBrain(BaseStateMachine)
+    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
+    enemy2.setBrain(BaseStateMachine)
 #    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
 #    enemy3.setBrain(BaseStateMachine)
 #    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
@@ -59,7 +59,7 @@ def main():
     
     testLevel.addCharacter(hero, (100, 100))
     testLevel.addCharacter(enemy1, (600, 90))
-#    testLevel.addCharacter(enemy2, (400, 300))
+    testLevel.addCharacter(enemy2, (400, 300))
 #    testLevel.addCharacter(enemy3, (320, 210))
 #    testLevel.addCharacter(enemy4, (50, 420))
     testLevel.group_charas = charas
@@ -147,7 +147,7 @@ def main():
 def cheeseBoysInit():
     """Init of this game engine"""
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
-    cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 24)
+    cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
 
 
 if __name__ == "__main__":

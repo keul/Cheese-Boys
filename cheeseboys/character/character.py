@@ -14,7 +14,7 @@ class Character(GameSprite):
     """Base character class"""
     
     def __init__(self, name, img, containers,
-                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime= 0.5, weaponInAndOut=False, sightRange=100,):
+                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=100,):
         
         GameSprite.__init__(self, *containers)
         self.containers = {'all' : containers[0],
@@ -50,10 +50,11 @@ class Character(GameSprite):
         self._attackRange = 24
         self._attackEffect = 10
         self._attack = None
-        self._attackColor = (200, 200, 200, 200)
+        self._attackColor = (255, 255, 255, 200)
         self._attackLineWidth = 2
         self._attackTimeCollected = self._attackAnimationTimeCollected = 0
         self._attackTime = attackTime
+        self._afterAttackRestTime = afterAttackRestTime
         self._attackAnimationTime = attackTime/2
         self.attackDamage = "1d6"
         
@@ -395,7 +396,7 @@ class Character(GameSprite):
         """Called to add some time to the attack time.
         This method control how long the attack is in action.
         """
-        if self._attackTimeCollected<self._attackTime:
+        if self._attackTimeCollected<self._attackTime + self._afterAttackRestTime:
             self._attackTimeCollected+=time_passed
         else:
             self.stopAttack()
@@ -417,16 +418,16 @@ class Character(GameSprite):
         self._attackAnimationTimeCollected+=time_passed
         if self._attackAnimationTimeCollected<self._attackAnimationTime/2:
             self._attack.drawPhase1(surface, attackOriginVector)
-        else:
+        elif self._attackAnimationTimeCollected<self._attackAnimationTime:
             self._attack.drawPhase2(surface, attackOriginVector)
+        # else pass
 
         if cblocals.DEBUG:
             pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackEffectCenterVectorTuple, 1)    
             pygame.draw.rect(surface,
                              self._attackColor,
                              (attackEffectCenterVectorTuple[0]-attackEffect/2,attackEffectCenterVectorTuple[1]-attackEffect/2,
-                              attackEffect,attackEffect),
-                             1)
+                              attackEffect,attackEffect), 1)
 
     def isAttacking(self):
         """Test if this charas is making an attack"""
