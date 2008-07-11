@@ -54,7 +54,8 @@ def main():
 #    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
 #    enemy4.setBrain(BaseStateMachine)
     
-    testLevel = GameLevel("South bridge", cblocals.GAME_SCREEN_SIZE)
+    testLevel = GameLevel("South bridge", (650, 1200))
+    testLevel.topleft = (0, 600)
     testLevel.group_dead = dead
     
     testLevel.addCharacter(hero, (100, 100))
@@ -104,8 +105,8 @@ def main():
         all.update(time_passed)
         
         screen.blit(background, (0,0) )
-        if testLevel.hasBackground():
-            testLevel.draw(screen)
+        testLevel.draw(screen)
+        testLevel.normalizeDrawPositionBasedOn(hero, time_passed)
 
 #        charas.drawCollideRect(screen)
 #        charas.drawMainRect(screen) 

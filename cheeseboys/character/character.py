@@ -27,7 +27,6 @@ class Character(GameSprite):
         self._imageDirectory = "charas"
         
         self._brain = None
-        self.currentLevel = None
         
         self._load_images(img, weaponInAndOut)
         self.lastUsedImage = 'head_east_1'
@@ -165,11 +164,13 @@ class Character(GameSprite):
     @property
     def position(self):
         """Character position as tuple"""
-        return (self.x, self.y)
+        lx, ly = (0,0)#self.currentLevel.topleft
+        return (lx+self.x, ly+self.y)
     @property
     def position_int(self):
         """Same as position but in integer format"""
-        return (int(self.x), int(self.y))
+        lx, ly = (0,0)#self.currentLevel.topleft
+        return (int(lx+self.x), int(ly+self.y))
     @property
     def v(self):
         """Return position as Vector2 object"""
