@@ -34,7 +34,7 @@ class GameLevel(object):
     
     def _setTopLeft(self, topleft):
         self._topleft = topleft
-    topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level bakcground image""")
+    topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
     
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
@@ -64,9 +64,9 @@ class GameLevel(object):
         elif y>self.levelSize[1]-1: y=self.levelSize[1]-1 
         return x,y       
 
-    def addCharacter(self, character, firstPosition):
-        """Add a character to this level at given position"""
-        character.addToGameLevel(self, firstPosition)
+    def addSprite(self, sprite, firstPosition):
+        """Add a sprite to this level at given position"""
+        sprite.addToGameLevel(self, firstPosition)
     
     def getCloserEnemy(self, character, sight=None):
         """Return an enemy in the character sight"""
@@ -125,12 +125,12 @@ class GameLevel(object):
         size = cblocals.GAME_SCREEN_SIZE
         return (topleft[0]+size[0]/2, topleft[1]+size[1]/2)
 
-    def normalizeDrawPositionBasedOn(self, character, time_passed):
+    def normalizeDrawPositionBasedOn(self, sprite, time_passed):
         """Slowly move drawn portion of the total level, for centering it on the given sprite"""
         if pygame.key.get_pressed()[K_LCTRL]:
             return
-        referencePointOnScreen = character.position_int
-        if self.isPointNearScreenCenter(referencePointOnScreen, (200,200) ):
+        referencePointOnScreen = sprite.position_int
+        if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
         heading.normalize()
@@ -140,7 +140,7 @@ class GameLevel(object):
         y = movement.get_y()
         self._topleft = (self._topleft[0]+x,self._topleft[1]+y)
 
-    def isPointNearScreenCenter(self, refpoint, centerDimension):
+    def isPointAtScreenCenter(self, refpoint, centerDimension):
         """This method return true if a given point is inside a rect of given dimension.
         The rect is placed at the screen center
         """
@@ -153,3 +153,9 @@ class GameLevel(object):
         x, y = position
         tx, ty = self.topleft
         return (tx+x, ty+y)
+    
+    def transformToScreenCoordinate(self, position):
+        """Given an XY position, transform this to screen position"""
+        x, y = position
+        tx, ty = self.topleft
+        return (x-tx, y-ty)

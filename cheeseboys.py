@@ -58,9 +58,9 @@ def main():
     testLevel.topleft = (0, 600)
     testLevel.group_dead = dead
     
-    testLevel.addCharacter(hero, (100, 100))
-    testLevel.addCharacter(enemy1, (600, 90))
-    testLevel.addCharacter(enemy2, (400, 300))
+    testLevel.addSprite(hero, (100, 700))
+    testLevel.addSprite(enemy1, (600, 790))
+    testLevel.addSprite(enemy2, (400, 900))
 #    testLevel.addCharacter(enemy3, (320, 210))
 #    testLevel.addCharacter(enemy4, (50, 420))
     testLevel.group_charas = charas
@@ -138,6 +138,8 @@ def main():
             if cblocals.global_mouseCursor is not None:
                 utils.changeMouseCursor(None)
             hero.seeking = None
+
+        print hero.x, hero.y
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
         console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )

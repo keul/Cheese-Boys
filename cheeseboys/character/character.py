@@ -62,8 +62,6 @@ class Character(GameSprite):
         
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
-            
-        self._x = self._y = None
 
         self.codigoresePoints = self.codigoresePointsLeft = 20
 
@@ -118,7 +116,7 @@ class Character(GameSprite):
         else:
             if type(destination)==tuple:
                 destination = Vector2(destination)
-            self.navPoint = destination
+            self.navPoint = destination    
         self.heading = Vector2.from_points(self.position, destination)
         self.heading.normalize()
         direction = self._generateDirectionFromHeading(self.heading)
@@ -131,9 +129,7 @@ class Character(GameSprite):
         x = movement.get_x()
         y = movement.get_y()
         if not self.checkCollision(x, y):
-            self._x += x
-            self._y += y
-            self.refresh()
+            self.move(x, y)
             if self.isNearTo(*self.navPoint.as_tuple()):
                 self.navPoint = None
                 self.moving(False)
@@ -149,32 +145,7 @@ class Character(GameSprite):
         x = movement.get_x()
         y = movement.get_y()
         if not self.checkCollision(x, y):
-            self._x += x
-            self._y += y
-            self.refresh()
-
-    def _setX(self, newx):
-        self._x = newx
-    x = property(lambda self: self.rect.centerx, _setX, doc="""The character X position""")
-
-    def _setY(self, newy):
-        self._y = newy
-    y = property(lambda self: self.rect.bottom-3, _setY, doc="""The character Y position""")
-
-    @property
-    def position(self):
-        """Character position as tuple"""
-        lx, ly = (0,0)#self.currentLevel.topleft
-        return (lx+self.x, ly+self.y)
-    @property
-    def position_int(self):
-        """Same as position but in integer format"""
-        lx, ly = (0,0)#self.currentLevel.topleft
-        return (int(lx+self.x), int(ly+self.y))
-    @property
-    def v(self):
-        """Return position as Vector2 object"""
-        return Vector2(self.x, self.y)
+            self.move(x, y)
 
     @property
     def collide_rect(self):
@@ -332,24 +303,11 @@ class Character(GameSprite):
     def addDistanceWalked(self, distance):
         self._distanceWalked+=distance
         # Every MIN_PX_4_IMAGES_CHANGEpx change image to simulate footsteps.
+        # BBB: ugly for very slow charas
         if self._distanceWalked>=cblocals.MIN_PX_4_IMAGES_CHANGE:
             #self._isMoving = False
             self._distanceWalked=0
             self._mustChangeImage = True
-    
-    def move(self, x, y):
-        """Move the character, relative to current point"""
-        self._x+=x
-        self._y+=y
-        #self.rect.move_ip(x, y)
-        self.refresh()
-    
-    def refresh(self):
-        """Refresh character position"""
-        self.rect.x = self._x
-        self.rect.y = self._y
-        #screenrect = Rect(0, 0, cblocals.SCREEN_WIDTH, cblocals.SCREEN_HEIGHT)
-        #self.rect.clamp_ip(screenrect)
 
     def _checkDirectionChange(self, direction):
         """Check if the character movement direction is changed"""
@@ -449,12 +407,10 @@ class Character(GameSprite):
 
     def setNavPoint(self, xy):
         """Set a new target navPoint for current character"""
-        self.navPoint = Vector2(xy)
-
-    def addToGameLevel(self, level, firstPosition):
-        self.currentLevel = level
-        self.x, self.y = firstPosition
-        self.rect = self.image.get_rect(topleft=firstPosition)
+        if isinstance(xy, Vector2):
+            self.navPoint = xy
+        else:
+            self.navPoint = Vector2(xy)
 
     def setBrain(self, smBrain):
         """Set a AI StateMachine istance"""
