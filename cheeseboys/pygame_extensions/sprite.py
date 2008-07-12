@@ -27,33 +27,18 @@ class GameSprite(pygame.sprite.Sprite):
             return (topleft[0]+x, topleft[1]+y)
         return topleft
 
-#    def _getX(self):
-#        tx = self.currentLevel.topleft[0]
-#        #return tx + self.rect.centerx
-#        return self._x# - self.rect.width/2
     def _setX(self, newx):
         self._x = newx
-    #x = property(_getX, _setX, doc="""The sprite X position""")
-    #x = property(lambda self: self.rect.centerx, _setX, doc="""The sprite X position""")
-    #x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
     x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
 
-#    def _getY(self):
-#        ty = self.currentLevel.topleft[1]
-#        topleft = self.topleft()
-#        #return ty + self.rect.bottom-3
-#        return self._y# + self.rect.height - 3
     def _setY(self, newy):
         self._y = newy
-    #y = property(_getY, _setY, doc="""The sprite Y position""")
-    #y = property(lambda self: self.rect.bottom-3, _setY, doc="""The sprite Y position""")
-    #y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
     y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
 
     @property
     def position(self):
         """Character position as tuple"""
-        return (self.x + self.rect.width/2, self.y+self.rect.height-3)
+        return (self.x + self.rect.width/2, self.y+self.rect.height)
     @property
     def position_int(self):
         """Same as position but in integer format"""
@@ -68,7 +53,7 @@ class GameSprite(pygame.sprite.Sprite):
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""
         x, y = self.toScreenCoordinate()
-        self.rect.midbottom = (x, y-3)
+        self.rect.midbottom = (x, y)
 
     def toScreenCoordinate(self):
         """Return X,Y tuple information converting it back to screen position"""

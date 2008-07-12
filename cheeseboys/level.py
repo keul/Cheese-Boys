@@ -133,7 +133,12 @@ class GameLevel(object):
         if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
+        speed = self._centeringSpeed
+        # More near to screen border, faster is the screen centering procedure
+        # BBB: todo
+
         heading.normalize()
+        
         distance = time_passed * self._centeringSpeed
         movement = heading * distance
         x = movement.get_x()

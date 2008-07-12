@@ -49,8 +49,8 @@ def main():
     enemy1.setBrain(BaseStateMachine)
     enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
     enemy2.setBrain(BaseStateMachine)
-#    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
-#    enemy3.setBrain(BaseStateMachine)
+    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
+    enemy3.setBrain(BaseStateMachine)
 #    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
 #    enemy4.setBrain(BaseStateMachine)
     
@@ -58,11 +58,11 @@ def main():
     testLevel.topleft = (0, 600)
     testLevel.group_dead = dead
     
-    testLevel.addSprite(hero, (100, 700))
+    testLevel.addSprite(hero, (100, 1100))
     testLevel.addSprite(enemy1, (600, 790))
-    testLevel.addSprite(enemy2, (400, 900))
-#    testLevel.addCharacter(enemy3, (320, 210))
-#    testLevel.addCharacter(enemy4, (50, 420))
+    testLevel.addSprite(enemy2, (400, 300))
+    testLevel.addSprite(enemy3, (320, 210))
+#    testLevel.addSprite(enemy4, (50, 420))
     testLevel.group_charas = charas
 
     background = pygame.Surface( cblocals.GAME_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
@@ -73,9 +73,6 @@ def main():
             #print event, event.type
             if event.type == QUIT:
                 sys.exit()
-            
-#            if event.type==KEYUP:
-#                hero.moving(False)
             
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
@@ -108,16 +105,17 @@ def main():
         testLevel.draw(screen)
         testLevel.normalizeDrawPositionBasedOn(hero, time_passed)
 
-#        charas.drawCollideRect(screen)
-#        charas.drawMainRect(screen) 
-#        charas.drawPhysicalRect(screen)
+        #charas.drawCollideRect(screen)
+        #charas.drawMainRect(screen) 
+        #charas.drawPhysicalRect(screen)
+        #charas.drawNavPoint(screen)
 
         dead.draw(screen)
 
         all.draw(screen)
         charas.drawAttacks(screen, time_passed)
 
-#        charas.drawHeatRect(screen)
+        #charas.drawHeatRect(screen)
 
         # points
         for displayable in [x for x in charas.sprites() if x.isAlive]:
@@ -138,8 +136,6 @@ def main():
             if cblocals.global_mouseCursor is not None:
                 utils.changeMouseCursor(None)
             hero.seeking = None
-
-        print hero.x, hero.y
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
         console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )

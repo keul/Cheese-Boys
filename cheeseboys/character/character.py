@@ -113,7 +113,7 @@ class Character(GameSprite):
         If a destination is not specified, then the current character navPoint is used.
         """
         if not destination:
-            destination = self.navPoint # - Vector2(*self.image.get_size())/2.
+            destination = self.navPoint
         else:
             if type(destination)==tuple:
                 destination = Vector2(destination)
@@ -131,7 +131,7 @@ class Character(GameSprite):
         y = movement.get_y()
         if not self.checkCollision(x, y):
             self.move(x, y)
-            if self.isNearTo(*self.navPoint.as_tuple()):
+            if self.isNearTo(self.navPoint.as_tuple()):
                 self.navPoint = None
                 self.moving(False)
         else:
@@ -195,11 +195,13 @@ class Character(GameSprite):
                     return True
         return False
 
-    def isNearTo(self, x, y):
+    def isNearTo(self, point):
         """Check if the "whole" character is near to a point.
-        This is not good for movement collision because if the charas movement is y-negative, but its used for navPoint movements.
+        This is not good for movement collision because if the charas movement is y-negative,
+        but it's used for navPoint based movements.
         """
-        return self.rect.collidepoint(x, y)
+        x, y = self.currentLevel.transformToScreenCoordinate(point)
+        return self.rect.collidepoint(x, y-3)
     
     @property
     def image(self):
@@ -237,7 +239,6 @@ class Character(GameSprite):
 
     def _generateDirectionFromHeading(self, new_heading):
         """Looking at heading, generate a valid direction string"""
-        # print new_heading
         x, y = new_heading.as_tuple()
         if abs(x)<.30 and y<0:
             return cblocals.DIRECTION_N

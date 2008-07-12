@@ -8,6 +8,7 @@ class Group(sprite.Group):
     Sprite in this class must have the collide_rect attribute.
     """
     
+    # ******* DEBUG HELPER METHODS *******
     def drawCollideRect(self, surface, color=(0,255,255), width=1):
         """Draw a rect on the screen that repr collide area for all Sprite in this group"""
         for sprite in self.sprites():
@@ -27,6 +28,15 @@ class Group(sprite.Group):
         """Draw a rect on the screen that repr the heat area for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.heat_rect, width)
+
+    def drawNavPoint(self, surface, color=(255,0,0), radius=3):
+        """Draw a point to the character navPoint"""
+        for sprite in self.sprites():
+            if hasattr(sprite,'navPoint') and sprite.navPoint:
+                pos = sprite.currentLevel.transformToScreenCoordinate(sprite.navPoint.as_tuple())
+                pos = (int(pos[0]), int(pos[1]))
+                pygame.draw.circle(surface, color, pos, radius, 0)
+    # *******
 
     def drawAttacks(self, surface, time_passed):
         """Given a surface, draw all attack for charas on this surface.
