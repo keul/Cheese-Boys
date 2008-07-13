@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 from pygame.locals import USEREVENT
 
