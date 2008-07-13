@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -
 
-from group import Group
+from group import GameGroup
 from sprite import GameSprite

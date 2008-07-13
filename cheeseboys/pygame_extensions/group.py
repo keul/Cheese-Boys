@@ -3,10 +3,13 @@
 import pygame
 from pygame import sprite
 
-class Group(sprite.Group):
-    """Custom version of PyGame Group class, adding some functionality needed by this game.
-    Sprite in this class must have the collide_rect attribute.
+class GameGroup(sprite.Group):
+    """Game specific version of PyGame Group class, adding some functionality needed by this game.
     """
+    
+    def __init__(self, name):
+        sprite.Group.__init__(self)
+        self.name = name
     
     # ******* DEBUG HELPER METHODS *******
     def drawCollideRect(self, surface, color=(0,255,255), width=1):

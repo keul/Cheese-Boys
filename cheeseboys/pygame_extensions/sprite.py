@@ -21,7 +21,9 @@ class GameSprite(pygame.sprite.Sprite):
         self.refresh()
 
     def topleft(self, x=0, y=0):
-        """Return top left position for this sprite"""
+        """Return top left rect info for this sprite.
+        x and y can be final coordinate modifier.
+        """
         topleft = self.rect.topleft
         if x or y:
             return (topleft[0]+x, topleft[1]+y)

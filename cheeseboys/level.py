@@ -10,6 +10,9 @@ from cheeseboys.pygame_extensions import GameSprite
 class GameLevel(object):
     """This repr a game level.
     Character move inside a level using some of its methods.
+    
+    When the level is draw, after the background image, all groups stored in thi level
+    are drawn ordered by zindex info.
     """
     
     def __init__(self, name, size, background=None):
@@ -29,9 +32,21 @@ class GameLevel(object):
         self._topleft = (0,0)
         self._centeringSpeed = 50
         self._centeringHeading = None
-        # Special group infos
-        self.group_dead = None
-    
+        self._groups = []
+
+    def __getitem__(self, key):
+        """Get a group by its name"""
+        for group in self._groups:
+            if group[1].name==key:
+                return group[1]
+
+    def addGroup(self, group, zindex=10):
+        """Add a new group the this level.
+        All group are added to a default zindex info of 10.
+        """
+        self._groups.append( (zindex,group) )
+        self._groups.sort(lambda x,y: x[0]-y[0])
+
     def _setTopLeft(self, topleft):
         self._topleft = topleft
     topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
@@ -85,9 +100,18 @@ class GameLevel(object):
 
     def draw(self, screen):
         """Draw the level"""
+        # 1 * Draw the background image
         if self._background:
             self.topleft = self._normalizeDrawPart()
             screen.blit(self._background.subsurface(pygame.Rect(self.topleft, cblocals.GAME_SCREEN_SIZE) ), (0,0) )
+        # 2 * Draw all sprite groups
+        for group in self._groups:
+            group[1].draw(screen)
+
+    def update(self, time_passed):
+        """Call the group update method on all group stored in this level"""
+        for group in self._groups:
+            group[1].update(time_passed)
 
     def _normalizeDrawPart(self, topleft=None, size=None):
         """Called to be sure that the draw portion of level isn't out of the level total surface"""
@@ -109,14 +133,18 @@ class GameLevel(object):
         return self._background is not None
 
     def generateDeadSprite(self, corpse):
-        """Using a character (commonly... very commonly... a DEAD ones!), generate a corpse"""
-        group_dead = self.group_dead
-        sprite = GameSprite(group_dead)
+        """Using a character (commonly... very commonly... a DEAD ones!), generate a corpse.
+        Corpse is added to a group called "dead".
+        """
+        sprite = GameSprite()
         sprite.image = utils.getRandomImageFacingUp(corpse.images)
         curRect = corpse.rect
         newRect = pygame.Rect( (curRect.centerx-curRect.height/2, curRect.bottom-curRect.width), (curRect.height,curRect.width) )
         sprite.rect = pygame.Rect(newRect)
-        group_dead.add()
+        self["dead"].add(sprite)
+        x,y = self.topleft
+        y+=curRect.width/2
+        sprite.addToGameLevel(self, corpse.topleft(x,y))
 
     @property
     def center(self):
@@ -133,13 +161,21 @@ class GameLevel(object):
         if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
-        speed = self._centeringSpeed
         # More near to screen border, faster is the screen centering procedure
-        # BBB: todo
-
+        speed = self._centeringSpeed
+        magnitude = heading.get_magnitude()
+        if magnitude<150:
+            pass
+        elif magnitude<200:
+            speed = speed*2
+        elif magnitude<250:
+            speed = speed*3
+        elif magnitude<300:
+            speed = speed*4                        
+        
         heading.normalize()
         
-        distance = time_passed * self._centeringSpeed
+        distance = time_passed * speed
         movement = heading * distance
         x = movement.get_x()
         y = movement.get_y()

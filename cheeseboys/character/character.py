@@ -16,10 +16,7 @@ class Character(GameSprite):
     def __init__(self, name, img, containers,
                  realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=100,):
         
-        GameSprite.__init__(self, *containers)
-        self.containers = {'all' : containers[0],
-                           'charas' : containers[1],
-                           } 
+        GameSprite.__init__(self, *containers) 
 
         self.name = name
         self.characterType = "Guy"
@@ -187,7 +184,7 @@ class Character(GameSprite):
         
         collide_rect = self.collide_rect
         collide_rect.move_ip(x,y)
-        collideGroups = (self.containers['charas'],)
+        collideGroups = (self.currentLevel['charas'],)
         for group in collideGroups:
             rects = [x.collide_rect for x in group.sprites() if x is not self]
             for rect in rects:

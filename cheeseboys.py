@@ -28,7 +28,7 @@ from cheeseboys import character
 from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine
 from cheeseboys.ai.hero import HeroStateMachine
-from cheeseboys.pygame_extensions import Group
+from cheeseboys.pygame_extensions import GameGroup
 
 def main():
     clock = pygame.time.Clock()
@@ -37,10 +37,10 @@ def main():
     #cblocals.screen = screen
     pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
     
-    all = pygame.sprite.RenderUpdates()
-    dead = Group()
-    charas = Group()
-    enemies = Group()
+    all = GameGroup("all")
+    dead = GameGroup("dead")
+    charas = GameGroup("charas")
+    enemies = GameGroup("enemies")
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -51,8 +51,8 @@ def main():
     enemy2.setBrain(BaseStateMachine)
     enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
     enemy3.setBrain(BaseStateMachine)
-#    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
-#    enemy4.setBrain(BaseStateMachine)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
+    enemy4.setBrain(BaseStateMachine)
     
     testLevel = GameLevel("South bridge", (650, 1200))
     testLevel.topleft = (0, 600)
@@ -62,8 +62,11 @@ def main():
     testLevel.addSprite(enemy1, (600, 790))
     testLevel.addSprite(enemy2, (400, 300))
     testLevel.addSprite(enemy3, (320, 210))
-#    testLevel.addSprite(enemy4, (50, 420))
+    testLevel.addSprite(enemy4, (50, 520))
     testLevel.group_charas = charas
+
+    testLevel.addGroup(dead, zindex=5)
+    testLevel.addGroup(charas, zindex=10)
 
     background = pygame.Surface( cblocals.GAME_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
@@ -99,7 +102,7 @@ def main():
                     hit.generatePhysicalAttachEffect(attack_origin=event.character)
 
         time_passed = clock.tick() / 1000.
-        all.update(time_passed)
+        testLevel.update(time_passed)
         
         screen.blit(background, (0,0) )
         testLevel.draw(screen)
@@ -110,9 +113,9 @@ def main():
         #charas.drawPhysicalRect(screen)
         #charas.drawNavPoint(screen)
 
-        dead.draw(screen)
+        #dead.draw(screen)
 
-        all.draw(screen)
+        #all.draw(screen)
         charas.drawAttacks(screen, time_passed)
 
         #charas.drawHeatRect(screen)
@@ -125,7 +128,7 @@ def main():
         for displayable in [x for x in all.sprites() if x.getTip()]:
             screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
-        # mouse cursor
+        # mouse cursor hover on enemy
         for enemy in enemies.sprites():
             if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
                 hero.seeking = enemy
