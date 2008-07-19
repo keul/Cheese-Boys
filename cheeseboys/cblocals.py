@@ -37,6 +37,14 @@ DEBUG = False
 # EVENTS
 ATTACK_OCCURRED_EVENT = USEREVENT +1
 
+
+# TH0
+TH0_MISS = "miss"
+TH0_HIT = "hit"
+TH0_MISS_CRITICAL = "miss (critical)"
+TH0_HIT_CRITICAL = "critical hit"
+
+
 # globals
 default_font = default_font_big = None
 global_lastMouseLeftClickPosition = ()

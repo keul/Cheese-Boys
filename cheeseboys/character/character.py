@@ -61,6 +61,8 @@ class Character(GameSprite):
         self._heatRectData = (5, 5, 8,13)
 
         self.codigoresePoints = self.codigoresePointsLeft = 20
+        
+        self._baseAC = 1
 
         self.afterInit()
 
@@ -137,9 +139,18 @@ class Character(GameSprite):
 
     def moveBasedOnHitTaken(self, time_passed):
         """This is similar to moveBasedOnNavPoint, but is called to animate a character hit by a blow"""
-        direction = self._generateDirectionFromHeading(self.damageHeading)
         distance = time_passed * self.speed
         movement = self.damageHeading * distance
+        x = movement.get_x()
+        y = movement.get_y()
+        if not self.checkCollision(x, y):
+            self.move(x, y)
+
+    def moveBasedOnRetreatAction(self, time_passed):
+        """This is similar to moveBasedOnNavPoint, but is called to animate a character that wanna retreat"""
+        heading = -self.heading
+        distance = time_passed * self.speed
+        movement = heading * distance
         x = movement.get_x()
         y = movement.get_y()
         if not self.checkCollision(x, y):

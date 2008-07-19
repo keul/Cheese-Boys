@@ -29,7 +29,7 @@ class PlayingCharacter(Character):
         if self._brain.active_state and self._brain.active_state.name!="controlled":
             return Character.update(self, time_passed)
         
-        # 1. Check for mouse actions setted
+        # Check for mouse actions setted
         if cblocals.global_lastMouseLeftClickPosition:
             self.setNavPoint(self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition))
             cblocals.global_lastMouseLeftClickPosition = ()
@@ -47,6 +47,9 @@ class PlayingCharacter(Character):
             # ...or attack (even if moving)...
             else:
                 self.setAttackState(attackHeading)
+
+        if pygame.key.get_pressed()[K_z]:
+            self._brain.setState("retreat")
 
         if self.navPoint:
             self.moveBasedOnNavPoint(time_passed)

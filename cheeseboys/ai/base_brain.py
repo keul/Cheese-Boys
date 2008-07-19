@@ -111,7 +111,10 @@ class BaseStateAttacking(State):
 
         if enemy and not enemy.isAlive:
             return "waiting"
-        
+
+        if cbrandom.randint(1,100)<=25:
+            return "retreat"
+
         if character.distanceFrom(enemy)>character.attackRange:
             return "hunting"
         
@@ -157,6 +160,66 @@ class BaseStateHit(State):
         self.distance_to_move = None
 
 
+class BaseStateRetreat(State):
+    """The character will perform a withdraw.
+    """
+
+    def __init__(self, character):
+        State.__init__(self, "retreat", character)
+        self.collected_distance = 0
+        self.distance_to_move = None
+
+    def do_actions(self, time_passed):
+        character = self.character
+        character.moveBasedOnRetreatAction(time_passed)
+        self.collected_distance += time_passed * character.speed
+
+    def check_conditions(self):
+        """The character exit this state only when hit effect ends"""
+        if self.collected_distance>=self.distance_to_move:
+            return "resting"
+        return None
+
+    def entry_actions(self, old_state_name):
+        character = self.character
+        character.speed = character.maxSpeed * 2
+        character.navPoint = None
+        character.moving(False)
+        self.distance_to_move = 50
+
+    def exit_actions(self, new_state_name):
+        self.collected_distance = 0
+        self.character.speed = self.character.maxSpeed
+        self.distance_to_move = None
+
+
+class BaseStateResting(State):
+    """The character will rest for a while.
+    """
+
+    def __init__(self, character):
+        State.__init__(self, "resting", character)
+        self.rest_time = .5
+        self.collected_rest_time = 0
+
+    def do_actions(self, time_passed):
+        self.collected_rest_time += time_passed
+
+    def check_conditions(self):
+        """The character exit this state only when hit effect ends"""
+        if self.collected_rest_time>=self.rest_time:
+            return "waiting"
+        return None
+
+    def exit_actions(self, new_state_name):
+        self.collected_rest_time = 0
+
+    def isLockedState(self):
+        return True
+
+
+
+
 
 # ******* ladies and gentlemen: The Amazing State Machine *******
 
@@ -169,6 +232,8 @@ class BaseStateMachine(StateMachine):
                   BaseStateExploring(character),
                   BaseStateHunting(character),
                   BaseStateAttacking(character),
-                  BaseStateHit(character)
+                  BaseStateHit(character),
+                  BaseStateRetreat(character),
+                  BaseStateResting(character),
                   )
         StateMachine.__init__(self, states)

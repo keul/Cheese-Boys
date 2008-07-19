@@ -31,11 +31,16 @@ class StateMachine(object):
 
         new_state_name = self.active_state.check_conditions()
         if new_state_name is not None:
-            self.setState(new_state_name)
+            self.setState(new_state_name, forceChange=True)
         
     
-    def setState(self, new_state_name):
-        """Set a new state for the brain based on its name"""
+    def setState(self, new_state_name, forceChange=False):
+        """Set a new state for the brain based on its name.
+        If the current state is marked as "locked", this will silently fail;
+        to exit from those state, use the forceChange parameter
+        """
+        if not forceChange and self.active_state.isLockedState:
+            return
         old_state = self.active_state
         if self.active_state is not None:
             self.active_state.exit_actions(new_state_name)
@@ -73,6 +78,12 @@ class State(object):
         The new state name is passed.
         """
         pass
+
+    @property
+    def isLockedState(self):
+        """True if the state is unchangable"""
+        return False
+    
 
     def _chooseRandomDestination(self, maxdistance=200):
         """Set a destination at random on map"""
