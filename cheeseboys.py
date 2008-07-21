@@ -51,7 +51,7 @@ def main():
     enemy2.setBrain(BaseStateMachine)
     enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
     enemy3.setBrain(BaseStateMachine)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=180., weaponInAndOut=True)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=160., weaponInAndOut=True)
     enemy4.setBrain(BaseStateMachine)
     
     testLevel = GameLevel("South bridge", (650, 1200))

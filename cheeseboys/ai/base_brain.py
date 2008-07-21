@@ -112,6 +112,7 @@ class BaseStateAttacking(State):
         if enemy and not enemy.isAlive:
             return "waiting"
 
+        # BBB...
         if cbrandom.randint(1,100)<=25:
             return "retreat"
 
@@ -126,8 +127,8 @@ class BaseStateAttacking(State):
     def exit_actions(self, new_state_name):
         character = self.character
         character.stopAttack()
-        if new_state_name!="hunting":
-            self.character.enemyTarget = None
+#        if new_state_name!="hunting":
+#            self.character.enemyTarget = None
 
 
 class BaseStateHit(State):
@@ -139,6 +140,7 @@ class BaseStateHit(State):
         State.__init__(self, "hitten", character)
         self.collected_distance = 0
         self.distance_to_move = None
+        self.old_state_name = None
 
     def do_actions(self, time_passed):
         character = self.character
@@ -146,14 +148,19 @@ class BaseStateHit(State):
         self.collected_distance += time_passed * character.speed
 
     def check_conditions(self):
-        """The character exit this state only when hit effect ends"""
+        """Always return to last action before the Hit.
+        If the last was an attack then we return to the hunting state (or an "aatack in the air" is performed).
+        """
         if self.collected_distance>=self.distance_to_move:
-            return "waiting"
+            if self.old_state_name == "attacking":
+                return "hunting"
+            return self.old_state_name
         return None
 
     def entry_actions(self, old_state_name):
         self.character.speed = cbrandom.randint(cblocals.HIT_MOVEMENT_SPEED/2, cblocals.HIT_MOVEMENT_SPEED)
         self.distance_to_move = 50
+        self.old_state_name = old_state_name
 
     def exit_actions(self, new_state_name):
         self.collected_distance = 0

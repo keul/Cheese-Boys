@@ -67,9 +67,10 @@ class State(object):
         """
         raise NotImplementedError    
     
-    def entry_actions(self, old_state_name):
+    def entry_actions(self, old_state_name, **kwargs):
         """Optionally entry action called when this state became the current state.
         The old state name is passed.
+        Other key-value parameter can be passed; the state inside logic can use those parameter for more complicated actions.
         """
         pass
     
