@@ -87,5 +87,18 @@ class State(object):
 
     def _chooseRandomDestination(self, maxdistance=200):
         """Set a destination at random on map"""
-        self.character.setNavPoint(self.character.currentLevel.generateRandomPoint(fromPoint=self.character.position_int, maxdistance=maxdistance)) 
+        self.character.setNavPoint(self.character.currentLevel.generateRandomPoint(fromPoint=self.character.position_int,
+                                                                                   maxdistance=maxdistance)) 
         
+    def _getChanceForAttackBasedOnDistance(self, distanceFromEnemy, attackRange):
+        """This method helps to simulate more real attack.
+        When an enemy enter in the character attack range, he can still wait for an attack, but obviously he can't
+        wait infinite time...
+        This method return the percentage of an attack..
+        The rule: less is the distance from enemy, more hight is the chance returned.
+        """
+        if distanceFromEnemy>attackRange:
+            # enemy is outside the attack range
+            return 0
+        # distanceFromEnemy / attackRange * 100
+        return distanceFromEnemy / attackRange * 100

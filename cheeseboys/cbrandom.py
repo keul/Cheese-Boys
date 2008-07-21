@@ -45,4 +45,10 @@ class RandomGenerator(object):
             amount+= rndAmoun
         return amount
 
+    def rool100(self, forceResultTo=None):
+        """Return a random number from 1 to 100, or forceResultTo"""
+        if self._debug:
+            return self._getNextRandom()
+        return forceResultTo or random.randint(1, 100)
+
 cbrandom = RandomGenerator()

@@ -75,7 +75,7 @@ class BaseStateHunting(State):
         if character.distanceFrom(enemy)>character.sightRange*2:
             return "waiting"
         
-        if character.distanceFrom(enemy)<=character.attackRange and cbrandom.randint(1,20)==1:
+        if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(character.distanceFrom(enemy), character.attackRange):
             return "attacking"
         
         return None
