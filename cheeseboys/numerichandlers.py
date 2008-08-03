@@ -5,7 +5,7 @@ __author__ = "Keul - lucafbb AT gmail.com"
 import re
 import logging
 
-baseStDiceFormat = r"^\dd\d(\+\d|\-\d)?$"
+baseStDiceFormat = r"^\d+d\d+(\+\d|\-\d)?$"
 diceRe = re.compile(baseStDiceFormat)
 
 baseStHdFormat = r"^\d(\+\d|\-\d)?$"
@@ -23,7 +23,7 @@ class DiceHandler(object):
         m = diceRe.match(value)
         
         if not m:
-            raise ValueError("The string %s did not match a valid dice format")
+            raise ValueError('The string "%s" did not match a valid dice format' % value)
         
         numberOfDices, typeOfDice = value.split("d")
         bonus = 0

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -
 
 from cheeseboys.ai import State, StateMachine
-from base_brain import BaseStateHunting, BaseStateAttacking, BaseStateHit, BaseStateResting, BaseStateRetreat
+from base_brain import BaseStateHunting, BaseStateAttacking, BaseStateHit, BaseStateRetreat
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
@@ -76,17 +76,6 @@ class HeroStateHit(BaseStateHit):
         self.character.speed = self.character.maxSpeed
 
 
-class HeroStateResting(BaseStateResting):
-    """The character will rest for a while (hero version)
-    """
-
-    def check_conditions(self):
-        """The character exit this state only when hit effect ends"""
-        if self.collected_rest_time>=self.rest_time:
-            return "controlled"
-        return None
-
-
 
 
 class HeroStateMachine(StateMachine):
@@ -101,7 +90,6 @@ class HeroStateMachine(StateMachine):
                   HeroStateAttacking(character),
                   HeroStateHit(character),
                   BaseStateRetreat(character),
-                  HeroStateResting(character),
                   )
         StateMachine.__init__(self, states)
 

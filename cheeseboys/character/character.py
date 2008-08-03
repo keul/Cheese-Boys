@@ -9,6 +9,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.attack import Attack
+from cheeseboys.th0 import TH0
 
 class Character(GameSprite):
     """Base character class"""
@@ -63,6 +64,7 @@ class Character(GameSprite):
         self.codigoresePoints = self.codigoresePointsLeft = 20
         
         self._baseAC = 1
+        self._th0 = None
 
         self.afterInit()
 
@@ -72,6 +74,26 @@ class Character(GameSprite):
         Base form of this method do nothing at all!
         """
         pass
+
+    def setCombatValues(self, level_bonus, AC):
+        """Common method for set all combat infos of the character, as far as base AC and TH0 infos are readonly"""
+        self._th0 = TH0(level_bonus)
+        self._baseAC = AC
+    
+    @property
+    def th0(self):
+        return self._th0
+
+    @property
+    def AC(self):
+        return self._baseAC
+
+    def roll_for_hit(self, target):
+        """Common method called to rool a dice and see if a target is hit by the blow"""
+        th0 = self._th0
+        targetAC = target.AC
+        result = th0.attack(targetAC)
+        return result
 
     def getTip(self):
         """Return tip text, for print it near the character"""
@@ -315,7 +337,6 @@ class Character(GameSprite):
         # Every MIN_PX_4_IMAGES_CHANGEpx change image to simulate footsteps.
         # BBB: ugly for very slow charas
         if self._distanceWalked>=cblocals.MIN_PX_4_IMAGES_CHANGE:
-            #self._isMoving = False
             self._distanceWalked=0
             self._mustChangeImage = True
 
@@ -445,9 +466,13 @@ class Character(GameSprite):
         return self.codigoresePointsLeft>0
 
     def checkAliveState(self):
-        """Check the character alive state, or kill it!"""
+        """Check the character alive state, or kill it!
+        In any case return the alive state as a boolean.
+        """
         if not self.isAlive:
             self.kill()
+            return False
+        return True
     
     def kill(self):
         """Kill the character, removing it from all groups"""
@@ -456,7 +481,7 @@ class Character(GameSprite):
 
     def getHeadingTo(self, target):
         """Return the heading to a given object or position.
-        Object must has a "position" attribute.
+        Object must have a "position" attribute or be a position tuple itself.
         """
         if hasattr(target, 'position'):
             position = target.position
@@ -465,16 +490,21 @@ class Character(GameSprite):
         heading = Vector2.from_points(self.position, position)
         return heading.normalize()
 
-    def generatePhysicalAttachEffect(self, attack_origin):
+    def generatePhysicalAttachEffect(self, attack_origin, criticity=None):
         """Called for animate a character hit by a physical blow.
         Character will innaturally move away in a direction opposite to blow origin.
         """
         damage = cbrandom.throwDices(attack_origin.attackDamage)
+        critic = ""
+        if criticity and criticity==cblocals.TH0_HIT_CRITICAL:
+            damage = int(damage * 1.5)
+            critic = "CRITICAL! "
         self.codigoresePointsLeft-= damage
-        print "  %s wounded for %s points. %s left" % (self.name, damage, self.codigoresePointsLeft)
+        print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.codigoresePointsLeft)
         self.damageHeading = attack_origin.attackHeading
         self._brain.setState("hitten")
-        self.checkAliveState()
+        if not self.checkAliveState():
+            print "%s is dead." % self.name
 
     def drawPointsInfos(self, surface):
         """Draw infos about this character point left on the surface"""

@@ -65,3 +65,19 @@ class PlayingCharacter(Character):
     def stopThinking(self):
         """Block all state machine brain actions of the hero, keeping back the control of him"""
         self._brain.setState("controlled")
+
+    def moveBasedOnRetreatAction(self, time_passed):
+        """See moveBasedOnRetreatAction of Character class.
+        The playing character movement is based on the mouse position on the screen"""
+        cpos = self.toScreenCoordinate()
+        mpos = pygame.mouse.get_pos()
+        toMouse = Vector2.from_points(cpos,mpos)
+        toMouse.normalize()
+        heading = -toMouse
+        
+        distance = time_passed * self.speed
+        movement = heading * distance
+        x = movement.get_x()
+        y = movement.get_y()
+        if not self.checkCollision(x, y):
+            self.move(x, y)

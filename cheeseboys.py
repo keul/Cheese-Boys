@@ -44,16 +44,21 @@ def main():
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
+    hero.setCombatValues(2, 10)
     
     enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
     enemy1.setBrain(BaseStateMachine)
+    enemy1.setCombatValues(0, 5)
     enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
     enemy2.setBrain(BaseStateMachine)
+    enemy2.setCombatValues(0, 5)
     enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
     enemy3.setBrain(BaseStateMachine)
+    enemy3.setCombatValues(0, 5)
     enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=160., weaponInAndOut=True)
     enemy4.setBrain(BaseStateMachine)
-    
+    enemy4.setCombatValues(0, 5)
+
     testLevel = GameLevel("South bridge", (650, 1200))
     testLevel.topleft = (0, 600)
     testLevel.group_dead = dead
@@ -98,8 +103,12 @@ def main():
                 print "Attack from %s" % event.character.name
                 hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                 for hit in hit_list:
-                    print "  hit %s" % hit.name
-                    hit.generatePhysicalAttachEffect(attack_origin=event.character)
+                    attackRes = event.character.roll_for_hit(hit)
+                    if attackRes==cblocals.TH0_HIT or attackRes==cblocals.TH0_HIT_CRITICAL:
+                        print "  hit %s" % hit.name
+                        hit.generatePhysicalAttachEffect(attack_origin=event.character, criticity=attackRes)
+                    else:
+                        print "  missed %s" % hit.name
 
         time_passed = clock.tick() / 1000.
         testLevel.update(time_passed)
