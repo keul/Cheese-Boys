@@ -40,16 +40,9 @@ class HeroStateHunting(BaseStateHunting):
             self.character.enemyTarget = None
 
 
-class HeroStateAttacking(BaseStateAttacking):   
-
-    def do_actions(self, time_passed):
-        character = self.character
-        enemy = character.enemyTarget
-        character.moveBasedOnNavPoint(time_passed, enemy.position)
-        if not character.isAttacking():
-            character.setAttackState(character.getHeadingTo(enemy))
-        else:
-            character.updateAttackState(time_passed)
+class HeroStateAttacking(BaseStateAttacking):
+    """Different from base class is only needed for different check_conditions.
+    """
         
     def check_conditions(self):
         """Alway exit after the first attack"""
@@ -63,18 +56,13 @@ class HeroStateHit(BaseStateHit):
 
     def __init__(self, character):
         BaseStateHit.__init__(self, character)
-        self.lastState = None
+        self.rest_time = .3
 
     def check_conditions(self):
         """The character exit this state only when hit effect ends"""
-        if self.collected_distance>=self.distance_to_move:
+        if self.collected_rest_time>=self.rest_time:
             return "controlled"
         return None
-
-    def exit_actions(self, new_state_name):
-        BaseStateHit.exit_actions(self, new_state_name)
-        self.character.speed = self.character.maxSpeed
-
 
 
 

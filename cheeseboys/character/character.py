@@ -43,7 +43,7 @@ class Character(GameSprite):
 
         # Attack infos
         self._attackDirection = None
-        self.attackHeading = None
+        self.attackHeading = self.lastAttackHeading = None
         self._attackRange = 24
         self._attackEffect = 10
         self._attack = None
@@ -86,8 +86,17 @@ class Character(GameSprite):
 
     @property
     def AC(self):
-        return self._baseAC
-
+        """The character current Armour Class value, based on a base value and some other status"""
+        base_ac = self._baseAC
+        bonus = 0
+        active_state = self.active_state
+        # BBB: may be very better query the state directly (with a getAcModifier method?)
+        if active_state=="retreat":
+            bonus = 4
+        elif active_state=="attacking":
+            bonus = -2
+        return base_ac + bonus
+    
     def roll_for_hit(self, target):
         """Common method called to rool a dice and see if a target is hit by the blow"""
         th0 = self._th0
@@ -378,7 +387,7 @@ class Character(GameSprite):
         For duration of the attack the character can still moving, but will face the direction attacked.
         """
         direction = self._generateDirectionFromHeading(heading)
-        self.attackHeading = heading
+        self.attackHeading = self.lastAttackHeading = heading
         self._attackDirection = direction
         self._mustChangeImage = True
 
@@ -447,6 +456,11 @@ class Character(GameSprite):
         """Set a AI StateMachine istance"""
         self._brain = smBrain(self)
     
+    @property
+    def active_state(self):
+        """Get the current brain active state"""
+        return self._brain.active_state.name
+    
     def _setEnemyTarget(self, enemy):
         self._enemyTarget = enemy
     enemyTarget = property(lambda self: self._enemyTarget, _setEnemyTarget, doc="""The character current enemy target""")
@@ -501,7 +515,8 @@ class Character(GameSprite):
             critic = "CRITICAL! "
         self.codigoresePointsLeft-= damage
         print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.codigoresePointsLeft)
-        self.damageHeading = attack_origin.attackHeading
+        # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
+        self.damageHeading = attack_origin.lastAttackHeading
         self._brain.setState("hitten")
         if not self.checkAliveState():
             print "%s is dead." % self.name

@@ -75,6 +75,10 @@ class BaseStateHunting(State):
         if character.distanceFrom(enemy)>character.sightRange*2:
             return "waiting"
         
+        # BBB...
+        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking':
+            return "retreat"
+        
         if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(character.distanceFrom(enemy), character.attackRange):
             return "attacking"
         
@@ -88,7 +92,8 @@ class BaseStateHunting(State):
             self.character.enemyTarget = None
 
 
-class BaseStateAttacking(State):   
+class BaseStateAttacking(State):
+    """The character is performing an attack"""
 
     def __init__(self, character):
         State.__init__(self, "attacking", character)
@@ -111,10 +116,6 @@ class BaseStateAttacking(State):
 
         if enemy and not enemy.isAlive:
             return "waiting"
-
-        # BBB...
-        if cbrandom.randint(1,100)<=25:
-            return "retreat"
 
         if character.distanceFrom(enemy)>character.attackRange:
             return "hunting"
@@ -141,17 +142,25 @@ class BaseStateHit(State):
         self.collected_distance = 0
         self.distance_to_move = None
         self.old_state_name = None
+        # stun after the blow
+        self.rest_time = .3
+        self.collected_rest_time = 0
 
     def do_actions(self, time_passed):
         character = self.character
-        character.moveBasedOnHitTaken(time_passed)
-        self.collected_distance += time_passed * character.speed
+        if self.collected_distance<self.distance_to_move:
+            # phase 1: the blow move away the character
+            character.moveBasedOnHitTaken(time_passed)
+            self.collected_distance += time_passed * character.speed
+        else:
+            # phase 2: stunned for a while
+            self.collected_rest_time += time_passed    
 
     def check_conditions(self):
         """Always return to last action before the Hit.
-        If the last was an attack then we return to the hunting state (or an "aatack in the air" is performed).
+        If the last was an attack then we return to the hunting state (or an "attack in the air" is performed).
         """
-        if self.collected_distance>=self.distance_to_move:
+        if self.collected_rest_time>=self.rest_time:
             if self.old_state_name == "attacking":
                 return "hunting"
             return self.old_state_name
@@ -164,8 +173,8 @@ class BaseStateHit(State):
 
     def exit_actions(self, new_state_name):
         self.collected_distance = 0
-        self.distance_to_move = None
-
+        self.character.speed = self.character.maxSpeed
+        self.collected_rest_time = 0
 
 class BaseStateRetreat(State):
     """The character will perform a withdraw.
