@@ -4,7 +4,8 @@
 # "Beginning Game Development with Python and Pygame - From Novice to Professional", by Will McGugan.
 # See http://www.willmcgugan.com/
 
-        
+import logging
+
 class StateMachine(object):
     """The state machine class.
     Istances of this class are the brain of the character that wanna move using AI intelligence.
@@ -31,6 +32,7 @@ class StateMachine(object):
 
         new_state_name = self.active_state.check_conditions()
         if new_state_name is not None:
+            logging.debug("New state for %s: %s" % (self._character, new_state_name))
             self.setState(new_state_name, forceChange=True)
         
     

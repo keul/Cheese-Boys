@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -
 
+import logging
+
 import pygame
 from pygame.locals import *
 
@@ -174,7 +176,7 @@ class Character(GameSprite):
         movement = self.damageHeading * distance
         x = movement.get_x()
         y = movement.get_y()
-        if not self.checkCollision(x, y):
+        if not self.checkCollision(x, y) and self.checkValidCoord(x, y):
             self.move(x, y)
 
     def moveBasedOnRetreatAction(self, time_passed):
@@ -220,7 +222,8 @@ class Character(GameSprite):
 
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.
-        If x and y are used, the collire_rect is adjusted before detection.
+        Params x and y are used to adjust the collire_rect before detection.
+        BBB: move this logic in the Level?
         """
         x, y = utils.normalizeXY(x, y)
         
@@ -233,6 +236,13 @@ class Character(GameSprite):
                 if collide_rect.colliderect(rect):
                     return True
         return False
+
+    def checkValidCoord(self, x=0, y=0):
+        """Check if the character coords are valid for current Level
+        You can also use x,y adjustement to check a different relative position of the character
+        """
+        r = self.physical_rect.move(x,y)
+        return self.currentLevel.checkRectIsInLevel(r)
 
     def isNearTo(self, point):
         """Check if the "whole" character is near to a point.
@@ -530,3 +540,5 @@ class Character(GameSprite):
         topright = (pr.topright[0], pr.bottomright[1] - (pr.height * codigoresePointsLeft / codigoresePoints) )
         pygame.draw.line(surface, (0,0,255), pr.bottomright, topright, 3)
 
+    def __str__(self):
+        return "Character %s" % self.name

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, logging
 
 # CHECKING GAME DEPENDENCIES
 print "Checking dependencies..."
@@ -31,6 +31,7 @@ from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import GameGroup
 
 def main():
+    logging.getLogger().setLevel(logging.DEBUG)
     clock = pygame.time.Clock()
     
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)

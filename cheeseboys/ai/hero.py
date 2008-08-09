@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -
 
+import pygame
+from pygame.locals import *
+
 from cheeseboys.ai import State, StateMachine
 from base_brain import BaseStateHunting, BaseStateAttacking, BaseStateHit, BaseStateRetreat
 from cheeseboys import cblocals
@@ -22,6 +25,13 @@ class HeroStateControlled(State):
 class HeroStateHunting(BaseStateHunting):   
     """You right clicked over a far enemy. Move toward him"""
 
+    def do_actions(self, time_passed):
+        """Even while the hero is using the brain, the player can prevent him from moving
+        using keys.
+        """
+        if not pygame.key.get_pressed()[K_LCTRL]:
+            BaseStateHunting.do_actions(self, time_passed)
+
     def check_conditions(self):
         character = self.character
         level = character.currentLevel
@@ -35,19 +45,25 @@ class HeroStateHunting(BaseStateHunting):
         
         return None
 
-    def exit_actions(self, new_state_name):
-        if new_state_name!="attacking":
-            self.character.enemyTarget = None
-
 
 class HeroStateAttacking(BaseStateAttacking):
     """Different from base class is only needed for different check_conditions.
     """
-        
+
     def check_conditions(self):
-        """Alway exit after the first attack"""
-        if not self.character.isAttacking():      
+        """Continue attacking until other command or enemy dead"""
+        character = self.character
+        enemy = character.enemyTarget
+
+        if character.isAttacking():
+            return None
+
+        if enemy and not enemy.isAlive:
             return "controlled"
+
+        if character.distanceFrom(enemy)>character.attackRange:
+            return "hunting"
+        
         return None
 
 
@@ -57,13 +73,6 @@ class HeroStateHit(BaseStateHit):
     def __init__(self, character):
         BaseStateHit.__init__(self, character)
         self.rest_time = .3
-
-    def check_conditions(self):
-        """The character exit this state only when hit effect ends"""
-        if self.collected_rest_time>=self.rest_time:
-            return "controlled"
-        return None
-
 
 
 class HeroStateMachine(StateMachine):

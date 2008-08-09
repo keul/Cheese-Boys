@@ -72,12 +72,30 @@ class GameLevel(object):
         return self.normalizePointOnLevel(cbrandom.randint(startX,endX), cbrandom.randint(startY,endY))
 
     def normalizePointOnLevel(self, x, y):
-        """Given and xy pair, normalize this to make this point valid on level coordinates"""
+        """Given and x,y pair, normalize this to make this point valid on level coordinates"""
         if x<1: x=1
         elif x>self.levelSize[0]-1: x=self.levelSize[0]-1
         if y<1: y=1
         elif y>self.levelSize[1]-1: y=self.levelSize[1]-1 
-        return x,y       
+        return x,y
+
+    def checkPointIsValidOnLevel(self, point, screenCoordinate=False):
+        """Check if a coordinate is valid in current level.
+        If screenCoordinate is True, then x,y will be normalized to level coord before use
+        (calling transformToLevelCoordinate).
+        """
+        if screenCoordinate:
+            x,y = self.transformToLevelCoordinate(point)
+        if x<1: return False
+        elif x>self.levelSize[0]-1: return False
+        if y<1: return False
+        elif y>self.levelSize[1]-1: return False 
+        return True
+
+    def checkRectIsInLevel(self, r):
+        """Check if a rect is inside the level area"""
+        levelRect = pygame.Rect( (0,0), self.levelSize)
+        return levelRect.contains(r)
 
     def addSprite(self, sprite, firstPosition):
         """Add a sprite to this level at given position"""

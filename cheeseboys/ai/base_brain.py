@@ -87,10 +87,6 @@ class BaseStateHunting(State):
     def entry_actions(self, old_state_name):
         self.character.speed = self.character.maxSpeed
 
-    def exit_actions(self, new_state_name):
-        if new_state_name!="attacking":
-            self.character.enemyTarget = None
-
 
 class BaseStateAttacking(State):
     """The character is performing an attack"""
