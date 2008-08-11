@@ -4,7 +4,8 @@ from cheeseboys.ai import State, StateMachine
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
-class BaseStateExploring(State):   
+class BaseStateExploring(State):
+    """Exploring state. The character will move to a random position near to the current one"""
 
     def __init__(self, character):
         State.__init__(self, "exploring", character)
@@ -76,7 +77,7 @@ class BaseStateHunting(State):
             return "waiting"
         
         # BBB...
-        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking':
+        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget==character:
             return "retreat"
         
         if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(character.distanceFrom(enemy), character.attackRange):
@@ -89,7 +90,7 @@ class BaseStateHunting(State):
 
 
 class BaseStateAttacking(State):
-    """The character is performing an attack"""
+    """The character is performing an attack towards an enemy"""
 
     def __init__(self, character):
         State.__init__(self, "attacking", character)

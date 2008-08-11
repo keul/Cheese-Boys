@@ -48,7 +48,7 @@ class GameLevel(object):
         self._groups.sort(lambda x,y: x[0]-y[0])
 
     def _setTopLeft(self, topleft):
-        self._topleft = topleft
+        self._topleft = self._normalizeDrawPart(topleft)
     topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
     
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
@@ -120,11 +120,15 @@ class GameLevel(object):
         """Draw the level"""
         # 1 * Draw the background image
         if self._background:
-            self.topleft = self._normalizeDrawPart()
             screen.blit(self._background.subsurface(pygame.Rect(self.topleft, cblocals.GAME_SCREEN_SIZE) ), (0,0) )
         # 2 * Draw all sprite groups
         for group in self._groups:
             group[1].draw(screen)
+        # 3 * Draw screen center (if in DEBUG mode)
+        if cblocals.DEBUG:
+            xy, wh = self._getScreenCenter()
+            xy = self.transformToScreenCoordinate(xy)
+            pygame.draw.rect(screen, (50,250,250), (xy, wh), 2)
 
     def update(self, time_passed):
         """Call the group update method on all group stored in this level"""
@@ -179,7 +183,7 @@ class GameLevel(object):
         if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
-        # More near to screen border, faster is the screen centering procedure
+        # More near to screen border, faster will be the screen centering procedure
         speed = self._centeringSpeed
         magnitude = heading.get_magnitude()
         if magnitude<150:
@@ -192,19 +196,25 @@ class GameLevel(object):
             speed = speed*4                        
         
         heading.normalize()
-        
         distance = time_passed * speed
         movement = heading * distance
         x = movement.get_x()
         y = movement.get_y()
-        self._topleft = (self._topleft[0]+x,self._topleft[1]+y)
+        self.topleft = (self.topleft[0]+x,self.topleft[1]+y)
 
-    def isPointAtScreenCenter(self, refpoint, centerDimension):
+    def _getScreenCenter(self, centerDimension=(200,200)):
+        """Return the screen center rect as ( (x,y), (w,h) )
+        w and h are taken by the optional centerDimension param.
+        """
+        cx, cy = self.center
+        return (cx-centerDimension[0]/2,cy-centerDimension[1]/2), centerDimension
+
+    def isPointAtScreenCenter(self, refpoint, centerDimension=(200,200)):
         """This method return true if a given point is inside a rect of given dimension.
         The rect is placed at the screen center
         """
         cx, cy = self.center
-        rect = pygame.Rect( (cx-centerDimension[0]/2,cy-centerDimension[1]/2), centerDimension )
+        rect = pygame.Rect( self._getScreenCenter(centerDimension) )
         return rect.collidepoint(refpoint)
 
     def transformToLevelCoordinate(self, position):

@@ -63,7 +63,7 @@ class Character(GameSprite):
         self.dimension = realSize
         self._heatRectData = (5, 5, 8,13)
 
-        self.codigoresePoints = self.codigoresePointsLeft = 20
+        self.hitPoints = self.hitPointsLeft = 20
         
         self._baseAC = 1
         self._th0 = None
@@ -186,7 +186,7 @@ class Character(GameSprite):
         movement = heading * distance
         x = movement.get_x()
         y = movement.get_y()
-        if not self.checkCollision(x, y):
+        if not self.checkCollision(x, y) and self.checkValidCoord(x, y):
             self.move(x, y)
 
     @property
@@ -431,13 +431,6 @@ class Character(GameSprite):
             self._attack.drawPhase2(surface, attackOriginVector)
         # else pass
 
-        if cblocals.DEBUG:
-            pygame.draw.line(surface, self._attackColor, attackOriginVector.as_tuple(), attackEffectCenterVectorTuple, 1)    
-            pygame.draw.rect(surface,
-                             self._attackColor,
-                             (attackEffectCenterVectorTuple[0]-attackEffect/2,attackEffectCenterVectorTuple[1]-attackEffect/2,
-                              attackEffect,attackEffect), 1)
-
     def isAttacking(self):
         """Test if this charas is making an attack"""
         if self.attackHeading:
@@ -487,7 +480,7 @@ class Character(GameSprite):
     @property
     def isAlive(self):
         """True if the character is alive"""
-        return self.codigoresePointsLeft>0
+        return self.hitPointsLeft>0
 
     def checkAliveState(self):
         """Check the character alive state, or kill it!
@@ -523,8 +516,8 @@ class Character(GameSprite):
         if criticity and criticity==cblocals.TH0_HIT_CRITICAL:
             damage = int(damage * 1.5)
             critic = "CRITICAL! "
-        self.codigoresePointsLeft-= damage
-        print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.codigoresePointsLeft)
+        self.hitPointsLeft-= damage
+        print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.hitPointsLeft)
         # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
         self.damageHeading = attack_origin.lastAttackHeading
         self._brain.setState("hitten")
@@ -533,11 +526,11 @@ class Character(GameSprite):
 
     def drawPointsInfos(self, surface):
         """Draw infos about this character point left on the surface"""
-        codigoresePoints = self.codigoresePoints
-        codigoresePointsLeft = self.codigoresePointsLeft
+        hitPoints = self.hitPoints
+        hitPointsLeft = self.hitPointsLeft
         pr = self.physical_rect
-        # codigoresePoints : pr.height = codigoresePointsLeft : x
-        topright = (pr.topright[0], pr.bottomright[1] - (pr.height * codigoresePointsLeft / codigoresePoints) )
+        # hitPoints : pr.height = hitPointsLeft : x
+        topright = (pr.topright[0], pr.bottomright[1] - (pr.height * hitPointsLeft / hitPoints) )
         pygame.draw.line(surface, (0,0,255), pr.bottomright, topright, 3)
 
     def __str__(self):

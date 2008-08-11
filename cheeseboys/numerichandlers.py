@@ -41,8 +41,6 @@ class DiceHandler(object):
         
         if self.numberOfDices<1 or self.typeOfDice<1:
             raise ValueError("Bad int values for %s" % value)
-        
-        logging.debug("%s --> %s %s %s" % (value, self.numberOfDices, self.typeOfDice, self.bonus))
     
     def getValues(self):
         """Return int value stored by the object handler"""

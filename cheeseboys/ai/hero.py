@@ -50,6 +50,17 @@ class HeroStateAttacking(BaseStateAttacking):
     """Different from base class is only needed for different check_conditions.
     """
 
+    def do_actions(self, time_passed):
+        """Changes from the base do_actions: we need to handle the CTRL key here"""
+        character = self.character
+        enemy = character.enemyTarget
+        if not pygame.key.get_pressed()[K_LCTRL]:
+            character.moveBasedOnNavPoint(time_passed, enemy.position)
+        if not character.isAttacking():
+            character.setAttackState(character.getHeadingTo(enemy))
+        else:
+            character.updateAttackState(time_passed)
+
     def check_conditions(self):
         """Continue attacking until other command or enemy dead"""
         character = self.character

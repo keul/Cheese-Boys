@@ -16,7 +16,7 @@ class PlayingCharacter(Character):
         self.side = "Veneto"
         self._trackedEnemy = None
         self.attackDamage = "1d6+2"
-        self.codigoresePoints = self.codigoresePointsLeft = 30
+        self.hitPoints = self.hitPointsLeft = 40
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -79,5 +79,5 @@ class PlayingCharacter(Character):
         movement = heading * distance
         x = movement.get_x()
         y = movement.get_y()
-        if not self.checkCollision(x, y):
+        if not self.checkCollision(x, y) and self.checkValidCoord(x, y):
             self.move(x, y)

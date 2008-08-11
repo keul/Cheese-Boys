@@ -31,7 +31,6 @@ from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import GameGroup
 
 def main():
-    logging.getLogger().setLevel(logging.DEBUG)
     clock = pygame.time.Clock()
     
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
@@ -45,7 +44,7 @@ def main():
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
-    hero.setCombatValues(2, 10)
+    hero.setCombatValues(2, 13)
     
     enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
     enemy1.setBrain(BaseStateMachine)
@@ -158,6 +157,7 @@ def main():
 
 def cheeseBoysInit():
     """Init of this game engine"""
+    logging.getLogger().setLevel(logging.DEBUG)
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
 

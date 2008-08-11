@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -
 
+import logging
 import random
 from numerichandlers import DiceHandler
 
@@ -43,6 +44,7 @@ class RandomGenerator(object):
             if rndAmoun<1:
                 rndAmoun = 1
             amount+= rndAmoun
+        logging.debug("Roll for %s: %s" % (dices, amount))
         return amount
 
     def rool100(self, forceResultTo=None):
