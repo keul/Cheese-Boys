@@ -29,6 +29,7 @@ from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine
 from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import GameGroup
+from cheeseboys.sprites import PhysicalBackground
 
 def main():
     clock = pygame.time.Clock()
@@ -39,38 +40,44 @@ def main():
     
     all = GameGroup("all")
     dead = GameGroup("dead")
+    physical = GameGroup("physical")
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
 
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas), realSize=(18,25), weaponInAndOut=True)
+    pb = PhysicalBackground( (0,208), (230, 1130) )
+    physical.add(pb)
+
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
     hero.setCombatValues(2, 13)
     
-    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=100., weaponInAndOut=True)
+    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=100., weaponInAndOut=True)
     enemy1.setBrain(BaseStateMachine)
     enemy1.setCombatValues(0, 5)
-    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=80., weaponInAndOut=True)
+    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=80., weaponInAndOut=True)
     enemy2.setBrain(BaseStateMachine)
     enemy2.setCombatValues(0, 5)
-    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=125., weaponInAndOut=True)
+    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=125., weaponInAndOut=True)
     enemy3.setBrain(BaseStateMachine)
     enemy3.setCombatValues(0, 5)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies), realSize=(18,25), speed=160., weaponInAndOut=True)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=160., weaponInAndOut=True)
     enemy4.setBrain(BaseStateMachine)
     enemy4.setCombatValues(0, 5)
 
-    testLevel = GameLevel("South bridge", (650, 1200))
-    testLevel.topleft = (0, 600)
-    testLevel.group_dead = dead
+    testLevel = GameLevel("The South Bridge", (800, 1500))
+    testLevel.topleft = (100, 900)
     
-    testLevel.addSprite(hero, (100, 1100))
+    testLevel.addSprite(hero, (350, 1450))
     testLevel.addSprite(enemy1, (600, 790))
     testLevel.addSprite(enemy2, (400, 300))
     testLevel.addSprite(enemy3, (320, 210))
     testLevel.addSprite(enemy4, (50, 520))
     testLevel.group_charas = charas
 
+    testLevel.addSprite(pb, (0, 208))
+
     testLevel.addGroup(dead, zindex=5)
+    testLevel.addGroup(physical, zindex=10)
     testLevel.addGroup(charas, zindex=10)
 
     background = pygame.Surface( cblocals.GAME_SCREEN_SIZE, flags=SRCALPHA, depth=32 )

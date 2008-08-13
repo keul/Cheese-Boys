@@ -15,7 +15,7 @@ class GameLevel(object):
     are drawn ordered by zindex info.
     """
     
-    def __init__(self, name, size, background=None):
+    def __init__(self, name, size, background=""):
         """Init a level object with a name and a dimension.
         If a background file name is given, this image is loaded as background.
         If you don't give a background then the level name (converted in a lowecase, less separated png file name)
@@ -25,10 +25,12 @@ class GameLevel(object):
         self.name = name
         self.levelSize = size
         self.group_charas = None
-        if background is None:
+        if background == '':
             background = name.lower().replace(" ","-")+".png"
         if background:
             self._background = utils.load_image(background, directory="levels")
+        else:
+            self._background = None
         self._topleft = (0,0)
         self._centeringSpeed = 50
         self._centeringHeading = None

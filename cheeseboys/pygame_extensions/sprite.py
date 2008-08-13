@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -
 
 import pygame
+from cheeseboys import utils
 
 class GameSprite(pygame.sprite.Sprite):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
@@ -70,7 +71,34 @@ class GameSprite(pygame.sprite.Sprite):
         self.currentLevel = level
         self.x, self.y = firstPosition
         rectPosition = level.transformToScreenCoordinate(firstPosition)
-        self.rect = self.image.get_rect(topleft=rectPosition)
+        try:
+            self.rect = self.image.get_rect(topleft=rectPosition)
+        except AttributeError:
+            pass
+
+    def checkCollision(self, x, y):
+        """Check collision of this sprite with other.
+        Params x and y are used to adjust the collire_rect before detection.
+        BBB: move this logic in the Level?
+        BBB: use of the zindex info?
+        """
+        x, y = utils.normalizeXY(x, y)
+        
+        collide_rect = self.collide_rect
+        collide_rect.move_ip(x,y)
+        collideGroups = (self.currentLevel['physical'],)
+        for group in collideGroups:
+            rects = [x.collide_rect for x in group.sprites() if x is not self]
+            for rect in rects:
+                if collide_rect.colliderect(rect):
+                    return True
+        return False
+
+    @property
+    def collide_rect(self):
+        """For base sprite, the collide rect is the same as the rect attribute. You probably wanna overwrite this
+        """
+        return self.rect
 
     def move(self, x, y):
         """Move the sprite, relative to current point"""

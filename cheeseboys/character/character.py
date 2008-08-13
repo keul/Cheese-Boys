@@ -220,23 +220,6 @@ class Character(GameSprite):
         offsetX, offsetY, w, h = self._heatRectData
         return pygame.Rect( (physical_rect.x+offsetX, physical_rect.y+offsetY), (w, h) )
 
-    def checkCollision(self, x, y):
-        """Check collision of this sprite with other.
-        Params x and y are used to adjust the collire_rect before detection.
-        BBB: move this logic in the Level?
-        """
-        x, y = utils.normalizeXY(x, y)
-        
-        collide_rect = self.collide_rect
-        collide_rect.move_ip(x,y)
-        collideGroups = (self.currentLevel['charas'],)
-        for group in collideGroups:
-            rects = [x.collide_rect for x in group.sprites() if x is not self]
-            for rect in rects:
-                if collide_rect.colliderect(rect):
-                    return True
-        return False
-
     def checkValidCoord(self, x=0, y=0):
         """Check if the character coords are valid for current Level
         You can also use x,y adjustement to check a different relative position of the character
