@@ -71,7 +71,7 @@ def main():
     testLevel.addSprite(enemy1, (600, 790))
     testLevel.addSprite(enemy2, (400, 300))
     testLevel.addSprite(enemy3, (320, 210))
-    testLevel.addSprite(enemy4, (50, 520))
+    testLevel.addSprite(enemy4, (250, 520))
     testLevel.group_charas = charas
 
     testLevel.addSprite(pb, (0, 208))
@@ -129,9 +129,6 @@ def main():
         #charas.drawPhysicalRect(screen)
         #charas.drawNavPoint(screen)
 
-        #dead.draw(screen)
-
-        #all.draw(screen)
         charas.drawAttacks(screen, time_passed)
 
         #charas.drawHeatRect(screen)
@@ -141,7 +138,7 @@ def main():
             displayable.drawPointsInfos(screen)
 
         # textTips
-        for displayable in [x for x in all.sprites() if x.getTip()]:
+        for displayable in [x for x in charas.sprites() if x.getTip()]:
             screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
         # mouse cursor hover on enemy

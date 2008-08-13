@@ -71,10 +71,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.currentLevel = level
         self.x, self.y = firstPosition
         rectPosition = level.transformToScreenCoordinate(firstPosition)
-        try:
-            self.rect = self.image.get_rect(topleft=rectPosition)
-        except AttributeError:
-            pass
+        self.rect = self.image.get_rect(topleft=rectPosition)
 
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.
