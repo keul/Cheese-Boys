@@ -6,13 +6,18 @@ from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.sprites import PhysicalBackground
 
 class GameLevel(object):
     """This repr a game level.
     Character move inside a level using some of its methods.
     
-    When the level is draw, after the background image, all groups stored in thi level
+    When the level is draw, after the background image, all groups stored in this level
     are drawn ordered by zindex info.
+    
+    A GameLevel object can store a lot of groups; those groups (of time GameGroup) can be updatable or not.
+    When a level is updated - calling the update(time_passed) method - on all groups of updatable tipe is
+    called the update method.
     """
     
     def __init__(self, name, size, background=""):
@@ -35,6 +40,7 @@ class GameLevel(object):
         self._centeringSpeed = 50
         self._centeringHeading = None
         self._groups = []
+        self._groups_toupdate = []
 
     def __getitem__(self, key):
         """Get a group by its name"""
@@ -48,6 +54,9 @@ class GameLevel(object):
         """
         self._groups.append( (zindex,group) )
         self._groups.sort(lambda x,y: x[0]-y[0])
+        if group.updatable:
+            self._groups_toupdate.append( (zindex,group) )
+            self._groups_toupdate.sort(lambda x,y: x[0]-y[0])            
 
     def _setTopLeft(self, topleft):
         self._topleft = self._normalizeDrawPart(topleft)
@@ -133,8 +142,8 @@ class GameLevel(object):
             pygame.draw.rect(screen, (50,250,250), (xy, wh), 2)
 
     def update(self, time_passed):
-        """Call the group update method on all group stored in this level"""
-        for group in self._groups:
+        """Call the group update method on all (updatable) groups stored in this level"""
+        for group in self._groups_toupdate:
             group[1].update(time_passed)
 
     def _normalizeDrawPart(self, topleft=None, size=None):
@@ -230,3 +239,15 @@ class GameLevel(object):
         x, y = position
         tx, ty = self.topleft
         return (x-tx, y-ty)
+
+    def addPhysicalBackground(self, position, dimension, groups=['physical']):
+        """Add a PhysicalBackground instance to the current level.
+        Use groups param to add the sprite to some groups stored in the level also.
+        See PhysicalBackground for more info.
+        """
+        pb = PhysicalBackground( position, dimension )
+        for group_name in groups:
+            group = self[group_name]
+            group.add(pb)
+            self.addSprite(pb, position)
+            

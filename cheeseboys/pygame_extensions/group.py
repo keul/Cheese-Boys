@@ -7,9 +7,15 @@ class GameGroup(sprite.Group):
     """Game specific version of PyGame Group class, adding some functionality needed by this game.
     """
     
-    def __init__(self, name):
+    def __init__(self, name, updatable=False):
         sprite.Group.__init__(self)
         self.name = name
+        self._updatable = updatable
+    
+    @property
+    def updatable(self):
+        """Updatable groups stored in GameLevel object will be updated calling the update method"""
+        return self._updatable
     
     # ******* DEBUG HELPER METHODS *******
     def drawCollideRect(self, surface, color=(0,255,255), width=1):

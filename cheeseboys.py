@@ -23,29 +23,23 @@ print "All required libraries are present!"
 
 from pygame.locals import *
 
-from cheeseboys import cblocals, utils
-from cheeseboys import character
+from cheeseboys import cblocals, utils, character
 from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine
 from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import GameGroup
-from cheeseboys.sprites import PhysicalBackground
 
 def main():
     clock = pygame.time.Clock()
     
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
-    #cblocals.screen = screen
     pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
     
     all = GameGroup("all")
-    dead = GameGroup("dead")
-    physical = GameGroup("physical")
+    dead = GameGroup("dead", updatable=True)
+    physical = GameGroup("physical", updatable=True)
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
-
-    pb = PhysicalBackground( (0,208), (230, 1130) )
-    physical.add(pb)
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -74,13 +68,13 @@ def main():
     testLevel.addSprite(enemy4, (250, 520))
     testLevel.group_charas = charas
 
-    testLevel.addSprite(pb, (0, 208))
-
     testLevel.addGroup(dead, zindex=5)
     testLevel.addGroup(physical, zindex=10)
     testLevel.addGroup(charas, zindex=10)
 
-    background = pygame.Surface( cblocals.GAME_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
+    testLevel.addPhysicalBackground( (0,208), (235, 1130) )
+    testLevel.addPhysicalBackground( (487,208), (310, 1130) )    
+
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
     while True:
@@ -96,6 +90,7 @@ def main():
                     sys.exit()
 
             if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
+                logging.debug("Click on %s,%s" % pygame.mouse.get_pos())
                 lb, cb, rb = pygame.mouse.get_pressed()
                 if lb and not cblocals.global_leftButtonIsDown:
                     cblocals.global_leftButtonIsDown = True
@@ -120,7 +115,6 @@ def main():
         time_passed = clock.tick() / 1000.
         testLevel.update(time_passed)
         
-        screen.blit(background, (0,0) )
         testLevel.draw(screen)
         testLevel.normalizeDrawPositionBasedOn(hero, time_passed)
 
