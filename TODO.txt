@@ -1,0 +1,9 @@
+== CheeseBoys - TODO ==
+
+ * Click outside the game area must not move the hero.
+ 
+ * Retreath outside the game area mut be impossible.
+ 
+ * Add the rain effects.
+ 
+ * Add the wave effects on water.
