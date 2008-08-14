@@ -6,4 +6,4 @@
  
  * Add the rain effects.
  
- * Add the wave effects on water.
+ * Add the wave effect on water.
