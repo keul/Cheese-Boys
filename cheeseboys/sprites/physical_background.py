@@ -8,6 +8,9 @@ from cheeseboys import cblocals
 class PhysicalBackground(GameSprite):
     """This is a fake sprite. Object of this class doesn't draw anything but are (commonly)
     placed where the background draw something physical (a pit, a wall, ...).
+    
+    Physical background sprites holds a fake image property, that is a transparent pygame Sprite of the given
+    dimension.
     """
     
     def __init__(self, position, dimension, *containers):
