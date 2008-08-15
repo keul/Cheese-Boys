@@ -12,12 +12,12 @@ except ImportError:
            "http://pygame.org/download.shtml")
     sys.exit(1)
 try:
-    from cheeseboys.utils import Vector2
+    from gameobjects.vector2 import Vector2
 except ImportError:
     print ("Vector2 class of gameobjects not found.\n"
-           "Please download it from:\n"
+           "I'll use a local version of the library.\n"
+           "Please consider to download Will McGugan's original code from:\n"
            "http://code.google.com/p/gameobjects/")
-    sys.exit(1)
 print "All required libraries are present!"
 # #######
 
@@ -40,6 +40,7 @@ def main():
     physical = GameGroup("physical", updatable=True)
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
+    animations = GameGroup("animations", updatable=True)
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -71,9 +72,12 @@ def main():
     testLevel.addGroup(dead, zindex=5)
     testLevel.addGroup(physical, zindex=10)
     testLevel.addGroup(charas, zindex=10)
+    testLevel.addGroup(animations, zindex=15)
 
     testLevel.addPhysicalBackground( (0,208), (235, 1130) )
-    testLevel.addPhysicalBackground( (487,208), (310, 1130) )    
+    testLevel.addPhysicalBackground( (487,208), (310, 1130) )
+    
+    testLevel.addAnimation( (50,900), 'water-wave' )   
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
@@ -90,14 +94,16 @@ def main():
                     sys.exit()
 
             if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
-                logging.debug("Click on %s,%s" % pygame.mouse.get_pos())
-                lb, cb, rb = pygame.mouse.get_pressed()
-                if lb and not cblocals.global_leftButtonIsDown:
-                    cblocals.global_leftButtonIsDown = True
-                if lb:
-                    cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
-                elif rb:
-                    cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
+                mouse_pos = pygame.mouse.get_pos()
+                if utils.checkPointIsInsideRectType(mouse_pos, ( (0,0),cblocals.GAME_SCREEN_SIZE ) ):
+                    logging.debug("Click on %s,%s" % mouse_pos)
+                    lb, cb, rb = pygame.mouse.get_pressed()
+                    if lb and not cblocals.global_leftButtonIsDown:
+                        cblocals.global_leftButtonIsDown = True
+                    if lb:
+                        cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
+                    elif rb:
+                        cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
             if event.type==MOUSEBUTTONUP:
                 cblocals.global_leftButtonIsDown = False
 

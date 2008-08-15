@@ -1,9 +1,31 @@
-== CheeseBoys - TODO ==
+== Cheese Boys - TODO ==
 
- * Click outside the game area must not move the hero.
- 
- * Retreath outside the game area mut be impossible.
+The project begin to grow a little. I will record here all open problems and issues to do.
+
+=== Open entries ===
+
+Entries I will fix/implement someday.
  
  * Add the rain effects.
- 
- * Add the wave effect on water.
+
+ * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
+
+=== Fixed entries ===
+
+Already closed and fixed.
+
+==== 0.0.6 ====
+
+ * Click outside the game area must not move the hero.
+
+ * Retreat outside the game area must be impossible.
+
+ * BUG - Attack with CTRL pressed.
+   Sometimes enemies begin a withdraw when are outside the hero range of attack, just because CTRL is pressed.
+
+ * Added the wave effect on water terrain, and introduced a new utility for a fast add of animations effects.
+
+ * Added an internal Vector2 class for users without the Will McGugan's gameobjects library.
+
+
+

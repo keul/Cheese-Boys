@@ -4,9 +4,12 @@ import pygame
 import cblocals
 from cheeseboys.cbrandom import cbrandom
 
-# BBB: I import this way because I'm planning to remove dependencies of WillMcGugan game-objects library.
-# Better: if original vector2 class is available keep using it!
-from gameobjects.vector2 import Vector2
+# I import Vector2 this way because I wanna that user install the original Will's library.
+# If not present, I use a local copy included with Cheese Boys.
+try:
+    from gameobjects.vector2BROKEN import Vector2
+except ImportError:
+    from cheeseboys.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False):
     """Load an image from filesystem, from standard directory.
@@ -71,6 +74,15 @@ def getRandomImageFacingUp(images):
         return pygame.transform.rotate(image, -90)
     return pygame.transform.rotate(image, 90)
 
+def checkPointIsInsideRectType(point, rect):
+    """Given a point and a rect, check if the point is inside this rect.
+    Rect can be a pair of tuple (position, dimension) or a real pygame.Rect instance.
+    """
+    if type(rect)==tuple or type(rect)==list:
+        rect = pygame.Rect( rect[0], rect[1] )
+    # Here rect is a pygame.Rect
+    return rect.collidepoint(point)
+
 # ******* CURSOR *******
 def changeMouseCursor(type):
     """Load a mouse cursor of the given type"""
@@ -87,3 +99,17 @@ def drawCursor(screen, (x, y) ):
     y-= mouse_cursor.get_height() / 2
     screen.blit(mouse_cursor, (x,y))
 # **********************
+
+VALID_ANIMATIONS = ('water-wave',)
+
+def loadAnimationByName(name, position, *containers):
+    """Try to load an animation sprite know to the application.
+    This method know how big is the animation dimension.
+    """
+    if name not in VALID_ANIMATIONS:
+        raise KeyError("Animation name must be one of (%s)" % ','.join(VALID_ANIMATIONS))
+    if name=='water-wave':
+        from cheeseboys.sprites import WaterWave
+        return WaterWave(position, (120,80), *containers)
+    else:
+        raise ValueError("Value %s is not a know animation." % name)

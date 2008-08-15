@@ -251,3 +251,14 @@ class GameLevel(object):
             group.add(pb)
             self.addSprite(pb, position)
             
+    def addAnimation(self, position, animation, groups=['animations']):
+        """Add an animation sprite to this level.
+        If animation parameter is a string, the engine try to load an animation with that name.
+        """
+        if type(animation)==str:
+            animation = utils.loadAnimationByName(animation, position)    
+        for group_name in groups:
+            group = self[group_name]
+            group.add(animation)
+            self.addSprite(animation, position)
+        

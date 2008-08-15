@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -
 
 import pygame
+from pygame.locals import *
 from cheeseboys import utils
 
 class GameSprite(pygame.sprite.Sprite):
@@ -103,3 +104,10 @@ class GameSprite(pygame.sprite.Sprite):
         self.y+=y
         #self.rect.move_ip(x, y)
         self.refresh()
+
+    @classmethod
+    def _loadEmptySprite(self, dimension):
+        """Return a fake, empty and transparent Surface"""
+        surface = pygame.Surface(dimension, flags=SRCALPHA, depth=32)
+        surface.set_alpha(0)
+        return surface

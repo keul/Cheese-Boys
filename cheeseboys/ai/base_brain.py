@@ -76,8 +76,9 @@ class BaseStateHunting(State):
         if character.distanceFrom(enemy)>character.sightRange*2:
             return "waiting"
         
-        # BBB...
-        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget==character:
+        # BBB... withdraw
+        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget==character and \
+                enemy.distanceFrom(character) < enemy.attackRange:
             return "retreat"
         
         if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(character.distanceFrom(enemy), character.attackRange):

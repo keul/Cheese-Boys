@@ -15,6 +15,8 @@ from cheeseboys.th0 import TH0
 
 class Character(GameSprite):
     """Base character class"""
+
+    _imageDirectory = "charas"
     
     def __init__(self, name, img, containers,
                  realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=100,):
@@ -24,7 +26,6 @@ class Character(GameSprite):
         self.name = name
         self.characterType = "Guy"
         self.img = img
-        self._imageDirectory = "charas"
         
         self._brain = None
         
@@ -222,9 +223,11 @@ class Character(GameSprite):
 
     def checkValidCoord(self, x=0, y=0):
         """Check if the character coords are valid for current Level
-        You can also use x,y adjustement to check a different relative position of the character
+        You can also use x,y adjustement to check a different position of the character, relative
+        to the current one.
         """
         r = self.physical_rect.move(x,y)
+        r.center = self.currentLevel.transformToLevelCoordinate(r.center)
         return self.currentLevel.checkRectIsInLevel(r)
 
     def isNearTo(self, point):
