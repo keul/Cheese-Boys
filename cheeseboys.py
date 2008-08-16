@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys, logging
+import sys, logging, optparse
 
 # CHECKING GAME DEPENDENCIES
 print "Checking dependencies..."
@@ -29,18 +29,21 @@ from cheeseboys.ai.base_brain import BaseStateMachine
 from cheeseboys.ai.hero import HeroStateMachine
 from cheeseboys.pygame_extensions import GameGroup
 
+from cheeseboys.sprites import *
+
 def main():
     clock = pygame.time.Clock()
-    
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
-    pygame.display.set_caption("Cheese Boys - pre-alpha version %s" % cblocals.__version__)
+
+    level = GameLevel("The South Bridge", (800, 1500))
+    pygame.display.set_caption("Cheese Boys pre-alpha version %s - %s" % (cblocals.__version__, level.name))
     
     all = GameGroup("all")
-    dead = GameGroup("dead", updatable=True)
-    physical = GameGroup("physical", updatable=True)
+    dead = GameGroup("dead", drawable=True, updatable=True)
+    physical = GameGroup("physical", drawable=True, updatable=True)
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
-    animations = GameGroup("animations", updatable=True)
+    animations = GameGroup("animations", drawable=True, updatable=True)
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -59,25 +62,24 @@ def main():
     enemy4.setBrain(BaseStateMachine)
     enemy4.setCombatValues(0, 5)
 
-    testLevel = GameLevel("The South Bridge", (800, 1500))
-    testLevel.topleft = (100, 900)
+    level.topleft = (100, 900)
     
-    testLevel.addSprite(hero, (350, 1450))
-    testLevel.addSprite(enemy1, (600, 790))
-    testLevel.addSprite(enemy2, (400, 300))
-    testLevel.addSprite(enemy3, (320, 210))
-    testLevel.addSprite(enemy4, (250, 520))
-    testLevel.group_charas = charas
+    level.addSprite(hero, (350, 1450))
+    level.addSprite(enemy1, (418, 1242))
+    level.addSprite(enemy2, (400, 300))
+    level.addSprite(enemy3, (320, 210))
+    level.addSprite(enemy4, (250, 520))
 
-    testLevel.addGroup(dead, zindex=5)
-    testLevel.addGroup(physical, zindex=10)
-    testLevel.addGroup(charas, zindex=10)
-    testLevel.addGroup(animations, zindex=15)
+    level.addGroup(dead, zindex=5)
+    level.addGroup(physical, zindex=10)
+    level.addGroup(charas, zindex=10)
+    level.addGroup(animations, zindex=9)
 
-    testLevel.addPhysicalBackground( (0,208), (235, 1130) )
-    testLevel.addPhysicalBackground( (487,208), (310, 1130) )
+    level.addPhysicalBackground( (0,208), (235, 1130) )
+    level.addPhysicalBackground( (487,208), (310, 1130) )
     
-    testLevel.addAnimation( (50,900), 'water-wave' )   
+    level.addAnimations(((50,900),(563, 1204),(654, 1069),(-30, 1219),(550, 789),(97, 447),(582, 277),(-55, 283)), 'water-wave')
+    level.addAnimation( (455,1422), CodigoroSign((200,1200), (80,53), animations, physical) )
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
@@ -96,14 +98,14 @@ def main():
             if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
                 mouse_pos = pygame.mouse.get_pos()
                 if utils.checkPointIsInsideRectType(mouse_pos, ( (0,0),cblocals.GAME_SCREEN_SIZE ) ):
-                    logging.debug("Click on %s,%s" % mouse_pos)
+                    logging.debug("Click on %s (%s on level)" % (mouse_pos, level.transformToLevelCoordinate(mouse_pos)))
                     lb, cb, rb = pygame.mouse.get_pressed()
                     if lb and not cblocals.global_leftButtonIsDown:
                         cblocals.global_leftButtonIsDown = True
                     if lb:
-                        cblocals.global_lastMouseLeftClickPosition = pygame.mouse.get_pos()
+                        cblocals.global_lastMouseLeftClickPosition = mouse_pos
                     elif rb:
-                        cblocals.global_lastMouseRightClickPosition = pygame.mouse.get_pos()
+                        cblocals.global_lastMouseRightClickPosition = mouse_pos
             if event.type==MOUSEBUTTONUP:
                 cblocals.global_leftButtonIsDown = False
 
@@ -119,19 +121,21 @@ def main():
                         print "  missed %s" % hit.name
 
         time_passed = clock.tick() / 1000.
-        testLevel.update(time_passed)
+        level.update(time_passed)
         
-        testLevel.draw(screen)
-        testLevel.normalizeDrawPositionBasedOn(hero, time_passed)
+        level.draw(screen)
+        level.normalizeDrawPositionBasedOn(hero, time_passed)
 
-        #charas.drawCollideRect(screen)
-        #charas.drawMainRect(screen) 
-        #charas.drawPhysicalRect(screen)
-        #charas.drawNavPoint(screen)
+        if cblocals.DEBUG:
+            physical.drawCollideRect(screen)
+            physical.drawMainRect(screen) 
+            physical.drawPhysicalRect(screen)
+            charas.drawNavPoint(screen)
 
         charas.drawAttacks(screen, time_passed)
 
-        #charas.drawHeatRect(screen)
+        if cblocals.DEBUG:
+            charas.drawHeatRect(screen)
 
         # points
         for displayable in [x for x in charas.sprites() if x.isAlive]:
@@ -161,7 +165,28 @@ def main():
 
 def cheeseBoysInit():
     """Init of this game engine"""
-    logging.getLogger().setLevel(logging.DEBUG)
+    
+    LOGLEVEL_CHOICES = ('ERROR','WARN','DEBUG')
+    p = optparse.OptionParser( )
+    p.add_option('--version', '-v', action='store_true', help='print software version then exit')
+    p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
+    p.add_option('--logverbosity', '-l', default="ERROR", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
+
+    options, arguments = p.parse_args( )
+    
+    if options.version:
+        print "Cheese Boys version %s" % cblocals.__version__
+        sys.exit(0)
+
+    if options.logverbosity=="ERROR":
+        logging.getLogger().setLevel(logging.ERROR)
+    elif options.logverbosity=="WARN":
+        logging.getLogger().setLevel(logging.WARN)
+    elif options.logverbosity=="DEBUG":
+        logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        print "%s is an invalid option for --logverbosity option, use one of %s" % (options.logverbosity, ",".join(LOGLEVEL_CHOICES))  
+
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
 

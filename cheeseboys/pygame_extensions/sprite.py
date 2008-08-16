@@ -94,7 +94,17 @@ class GameSprite(pygame.sprite.Sprite):
 
     @property
     def collide_rect(self):
-        """For base sprite, the collide rect is the same as the rect attribute. You probably wanna overwrite this
+        """Return a rect used for collision in movement. This must be equals to sprite "basement" area.
+        For general GameSprite, the collide rect is the same as the rect attribute.
+        You probably wanna (must) overwrite this in all subclass!
+        """
+        return self.rect
+
+    @property
+    def physical_rect(self):
+        """Return a rect used for collision (not collision with movement!)
+        This must be equals to image's character total area.
+        You probably wanna (must) overwrite this in all subclass!
         """
         return self.rect
 

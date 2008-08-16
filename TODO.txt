@@ -9,6 +9,11 @@ Entries I will fix/implement someday.
  * Add the rain effects.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
+ 
+ * Enhance the enemies random movements.
+   Enemies simply must not move to an invalid position.
+ 
+ * Surnames!!
 
 === Fixed entries ===
 
@@ -26,6 +31,11 @@ Already closed and fixed.
  * Added the wave effect on water terrain, and introduced a new utility for a fast add of animations effects.
 
  * Added an internal Vector2 class for users without the Will McGugan's gameobjects library.
+ 
+ * (!!!) Now the GameGroup.sprites method overwrite the base pygame.Sprite.sprites; sprites are returned ordereb by
+   their Y position! This is important for game drawing procedure!
+ 
+ * Add line command option parser
 
 
 

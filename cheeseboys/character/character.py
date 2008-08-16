@@ -192,8 +192,8 @@ class Character(GameSprite):
 
     @property
     def collide_rect(self):
-        """Return a rect used for collision in movement. This must be equals to charas "foot" area.
-        The foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
+        """See GameSprite.collide_rect.
+        for characters, the foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
         # BBB: some bigger or different images can behave other rect as "foot"?
         """
         rect = self.rect
@@ -206,7 +206,9 @@ class Character(GameSprite):
 
     @property
     def physical_rect(self):
-        """Return a rect used for collision in combat. This must be equals to image's character total area.
+        """See GameSprite.physical_rect.
+        Return a rect used for collision in combat (not movement).
+        This must be equals to image's character total area.
         """
         rect = self.rect
         diffW = rect.w-self.dimension[0]

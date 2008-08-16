@@ -29,7 +29,6 @@ class GameLevel(object):
         """
         self.name = name
         self.levelSize = size
-        self.group_charas = None
         if background == '':
             background = name.lower().replace(" ","-")+".png"
         if background:
@@ -41,6 +40,7 @@ class GameLevel(object):
         self._centeringHeading = None
         self._groups = []
         self._groups_toupdate = []
+        self._groups_todraw = []
 
     def __getitem__(self, key):
         """Get a group by its name"""
@@ -56,7 +56,10 @@ class GameLevel(object):
         self._groups.sort(lambda x,y: x[0]-y[0])
         if group.updatable:
             self._groups_toupdate.append( (zindex,group) )
-            self._groups_toupdate.sort(lambda x,y: x[0]-y[0])            
+            self._groups_toupdate.sort(lambda x,y: x[0]-y[0])
+        if group.drawable:
+            self._groups_todraw.append( (zindex,group) )
+            self._groups_todraw.sort(lambda x,y: x[0]-y[0])          
 
     def _setTopLeft(self, topleft):
         self._topleft = self._normalizeDrawPart(topleft)
@@ -117,7 +120,7 @@ class GameLevel(object):
         if not sight:
             sight = character.sightRange
         
-        group = self.group_charas
+        group = self['charas']
         enemies = []
         for charas in group.sprites():
             if character.side!=charas.side and character.distanceFrom(charas)<=sight:
@@ -133,7 +136,7 @@ class GameLevel(object):
         if self._background:
             screen.blit(self._background.subsurface(pygame.Rect(self.topleft, cblocals.GAME_SCREEN_SIZE) ), (0,0) )
         # 2 * Draw all sprite groups
-        for group in self._groups:
+        for group in self._groups_todraw:
             group[1].draw(screen)
         # 3 * Draw screen center (if in DEBUG mode)
         if cblocals.DEBUG:
@@ -232,7 +235,7 @@ class GameLevel(object):
         """Given a screen position, transform this to level absolute position"""
         x, y = position
         tx, ty = self.topleft
-        return (tx+x, ty+y)
+        return (int(tx+x), int(ty+y))
     
     def transformToScreenCoordinate(self, position):
         """Given an XY position, transform this to screen position"""
@@ -261,4 +264,10 @@ class GameLevel(object):
             group = self[group_name]
             group.add(animation)
             self.addSprite(animation, position)
-        
+
+    def addAnimations(self, positions, animation, groups=['animations']):
+        """Service method for call addAnimation multiple times, for fast add the same animation in many
+        places on the level.
+        """
+        for position in positions:
+            self.addAnimation(position, animation, groups=groups)

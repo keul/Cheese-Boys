@@ -15,7 +15,7 @@ class WaterWave(GameSprite):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, dimension)
         self._image = None
-        self._wave_phase = 0
+        self._wave_phase = cbrandom.choice([0,1,2,3])
         self._timeCollected = self._nextRandomWaveTime()
 
     def _nextRandomWaveTime(self):
@@ -38,6 +38,10 @@ class WaterWave(GameSprite):
             self._wave_phase = 2            
             return self._image
         if wave_phase==2:
+            self._image = utils.load_image("water-wave3.png", "miscellaneous")
+            self._wave_phase = 3            
+            return self._image
+        if wave_phase==3:
             self._image = self._loadEmptySprite(self.rect.size)
             self._wave_phase = 0
             return self._image
@@ -50,5 +54,8 @@ class WaterWave(GameSprite):
         self._timeCollected-= time_passed
         if self._timeCollected<=0:
             self._timeCollected = self._nextRandomWaveTime()
+            # More time for animation phase 0
+            if self._wave_phase==3:
+                self._timeCollected*=3
             self._image = None
         

@@ -83,6 +83,18 @@ def checkPointIsInsideRectType(point, rect):
     # Here rect is a pygame.Rect
     return rect.collidepoint(point)
 
+def groupSortingByYAxis(sprite1, sprite2):
+    """This function is made to be used by the sort procedure of the GameGroup.sprites().
+    Order 2 sprites by their Y position (using the GameSprite.collide_rect.centery)
+    """
+    y1 = sprite1.collide_rect.centery
+    y2 = sprite2.collide_rect.centery
+    if y1>y2:
+        return 1
+    elif y1==y2:
+        return 0
+    return -1
+
 # ******* CURSOR *******
 def changeMouseCursor(type):
     """Load a mouse cursor of the given type"""
