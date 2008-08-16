@@ -36,7 +36,7 @@ def main():
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
 
     level = GameLevel("The South Bridge", (800, 1500))
-    pygame.display.set_caption("Cheese Boys pre-alpha version %s - %s" % (cblocals.__version__, level.name))
+    pygame.display.set_caption("Cheese Boys alpha version %s - %s" % (cblocals.__version__, level.name))
     
     all = GameGroup("all")
     dead = GameGroup("dead", drawable=True, updatable=True)

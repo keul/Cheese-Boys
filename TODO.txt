@@ -21,7 +21,7 @@ Already closed and fixed.
 
 ==== 0.0.6 ====
 
- * Click outside the game area must not move the hero.
+ * BUG - Click outside the game area must not move the hero.
 
  * Retreat outside the game area must be impossible.
 
@@ -32,10 +32,10 @@ Already closed and fixed.
 
  * Added an internal Vector2 class for users without the Will McGugan's gameobjects library.
  
- * (!!!) Now the GameGroup.sprites method overwrite the base pygame.Sprite.sprites; sprites are returned ordereb by
+ * (!!!) Now the GameGroup.sprites method overwrite the base pygame.Sprite.sprites; sprites are returned ordered by
    their Y position! This is important for game drawing procedure!
  
- * Add line command option parser
+ * Added line command option parser
 
 
 
