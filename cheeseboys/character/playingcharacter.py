@@ -16,7 +16,7 @@ class PlayingCharacter(Character):
         self.side = "Veneto"
         self._trackedEnemy = None
         self.attackDamage = "1d6+2"
-        self.hitPoints = self.hitPointsLeft = 40
+        self.hitPoints = self.hitPointsLeft = 30
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

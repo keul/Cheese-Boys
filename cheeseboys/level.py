@@ -6,7 +6,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
-from cheeseboys.sprites import PhysicalBackground
+from cheeseboys.sprites import PhysicalBackground, Rain
 
 class GameLevel(object):
     """This repr a game level.
@@ -41,6 +41,7 @@ class GameLevel(object):
         self._groups = []
         self._groups_toupdate = []
         self._groups_todraw = []
+        self._rain = None
 
     def __getitem__(self, key):
         """Get a group by its name"""
@@ -148,6 +149,8 @@ class GameLevel(object):
         """Call the group update method on all (updatable) groups stored in this level"""
         for group in self._groups_toupdate:
             group[1].update(time_passed)
+        if self._rain:
+            self._rain.update(time_passed)
 
     def _normalizeDrawPart(self, topleft=None, size=None):
         """Called to be sure that the draw portion of level isn't out of the level total surface"""
@@ -271,3 +274,14 @@ class GameLevel(object):
         """
         for position in positions:
             self.addAnimation(position, animation, groups=groups)
+
+    def enableRainEffect(self):
+        """Enable the rain effects in this level"""
+        self._rain = Rain(self.levelSize)
+
+    def drawRain(self, surface, time_passed):
+        """Draw the rain effect on the surface passed.
+        This call do something only if the level has inited the rain effect calling GameLevel.enableRainEffect()
+        """
+        if self._rain:
+            self._rain.draw(surface)

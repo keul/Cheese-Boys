@@ -18,7 +18,7 @@ except ImportError:
            "I'll use a local version of the library.\n"
            "Please consider to download Will McGugan's original code from:\n"
            "http://code.google.com/p/gameobjects/")
-print "All required libraries are present!"
+print "All required libraries are present."
 # #######
 
 from pygame.locals import *
@@ -36,7 +36,7 @@ def main():
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
 
     level = GameLevel("The South Bridge", (800, 1500))
-    pygame.display.set_caption("Cheese Boys alpha version %s - %s" % (cblocals.__version__, level.name))
+    pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
     
     all = GameGroup("all")
     dead = GameGroup("dead", drawable=True, updatable=True)
@@ -80,6 +80,8 @@ def main():
     
     level.addAnimations(((50,900),(563, 1204),(654, 1069),(-30, 1219),(550, 789),(97, 447),(582, 277),(-55, 283)), 'water-wave')
     level.addAnimation( (455,1422), CodigoroSign((200,1200), (80,53), animations, physical) )
+
+    level.enableRainEffect()
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
@@ -156,6 +158,8 @@ def main():
             if cblocals.global_mouseCursor is not None:
                 utils.changeMouseCursor(None)
             hero.seeking = None
+
+        level.drawRain(screen, time_passed)
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
         console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )

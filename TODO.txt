@@ -6,14 +6,20 @@ The project begin to grow a little. I will record here all open problems and iss
 
 Entries I will fix/implement someday.
  
- * Add the rain effects.
+ * Add the rain effect.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
  
  * Enhance the enemies random movements.
    Enemies simply must not move to an invalid position.
  
- * Surnames!!
+ * Surnames from Veneto region!
+ 
+ * Stealth mode.
+
+ * REFACTORING - replace the term "dimension" with "size".
+ 
+ * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
 
 === Fixed entries ===
 

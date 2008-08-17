@@ -3,3 +3,4 @@
 from physical_background import PhysicalBackground
 from water import WaterWave
 from signs import CodigoroSign
+from rain import Rain

@@ -14,7 +14,9 @@ from cheeseboys.attack import Attack
 from cheeseboys.th0 import TH0
 
 class Character(GameSprite):
-    """Base character class"""
+    """Base character class.
+    A GameSprite extension with hit points and other properties for combat.
+    """
 
     _imageDirectory = "charas"
     
@@ -354,7 +356,9 @@ class Character(GameSprite):
             self._mustChangeImage = True
 
     def walk(self, distance, direction=None):
-        """Walk the character to a direction"""
+        """Walk the character to a direction
+        BBB: not used anymore; Delete this?
+        """
         if not direction:
             direction = self.direction
         if not self._isMoving:

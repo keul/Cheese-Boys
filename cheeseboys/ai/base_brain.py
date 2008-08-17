@@ -175,7 +175,7 @@ class BaseStateHit(State):
         self.collected_rest_time = 0
 
 class BaseStateRetreat(State):
-    """The character will perform a withdraw.
+    """The character will perform a withdraw/dodge.
     """
 
     def __init__(self, character):
@@ -209,6 +209,7 @@ class BaseStateRetreat(State):
         character.navPoint = None
         character.moving(False)
         self.old_state_name = old_state_name
+        print "%s dodge" % character.name
 
     def exit_actions(self, new_state_name):
         self.collected_distance = 0
