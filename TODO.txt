@@ -5,8 +5,6 @@ The project begin to grow a little. I will record here all open problems and iss
 === Open entries ===
 
 Entries I will fix/implement someday.
- 
- * Add the rain effect.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
  
@@ -24,6 +22,10 @@ Entries I will fix/implement someday.
 === Fixed entries ===
 
 Already closed and fixed.
+
+==== 0.1.0 ====
+
+ * Added the rain effect.
 
 ==== 0.0.6 ====
 

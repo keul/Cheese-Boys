@@ -170,7 +170,7 @@ def main():
 def cheeseBoysInit():
     """Init of this game engine"""
     
-    LOGLEVEL_CHOICES = ('ERROR','WARN','DEBUG')
+    LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
@@ -186,6 +186,8 @@ def cheeseBoysInit():
         logging.getLogger().setLevel(logging.ERROR)
     elif options.logverbosity=="WARN":
         logging.getLogger().setLevel(logging.WARN)
+    elif options.logverbosity=="INFO":
+        logging.getLogger().setLevel(logging.INFO)
     elif options.logverbosity=="DEBUG":
         logging.getLogger().setLevel(logging.DEBUG)
     else:
