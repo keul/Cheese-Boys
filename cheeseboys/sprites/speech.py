@@ -6,6 +6,9 @@ from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys import cblocals
 
 CLOUD_MAX_WIDTH = 200
+MAX_TEXTLINES = 5
+PER_LINE_PADDING = 3
+BORDER_PADDING = 5
 T4WORD = 1
 
 class SpeechCloud(GameSprite):
@@ -13,21 +16,26 @@ class SpeechCloud(GameSprite):
     is used by characters to speak, say something.
     """
     
-    def __init__(self, character, bkcolor=(0,0,0,180), textcolor=(255,255,255)):
+    def __init__(self, character, bkcolor=(50,50,50,180), textcolor=(255,255,255)):
         GameSprite.__init__(self)
         self._character = character
         self.bkcolor = bkcolor
         self.textcolor = textcolor
         self._text = ""
         self._time_left = 0
+        self._last_charX = self._last_charY = None
+        self._image = None
     
     def initSpeech(self):
-        level = self._character.currentLevel
+        character = self._character
+        level = character.currentLevel
         self.rect = self._getRect()
         level['speech'].add(self)
+        self._last_charX = self._last_charY = character.position_int
         self.addToGameLevel(level, firstPosition=self.rect.topleft)
 
     def _setText(self, text):
+        self._image = None # break memoization
         if self._text:
             # Append text if needed
             self._text += "\n"
@@ -38,18 +46,32 @@ class SpeechCloud(GameSprite):
     text = property(lambda self: self._text, _setText, doc="""The text of the SpeechCloud""")
 
     def _getRect(self):
-        """Calc the first rect position"""
+        """Calc the rect position"""
+        speech_font = cblocals.speech_font
+        speech_font_h = speech_font.get_height()
+        textlines = self.text.split("\n")[:MAX_TEXTLINES]
+        w = BORDER_PADDING + max( [speech_font.size(x)[0] for x in textlines] ) + BORDER_PADDING
+        h = BORDER_PADDING + len(textlines)*speech_font_h + PER_LINE_PADDING*(len(textlines)-1) + BORDER_PADDING
         character = self._character
-        text_posx, text_posy = character.position_int
-        rect = pygame.Rect( (text_posx-30,text_posy-100 ), (CLOUD_MAX_WIDTH,100) )
+        text_posx, text_posy = character.rect.midtop
+        rect = pygame.Rect( (text_posx-w/2,text_posy-15), (w,h) )
         return rect
 
     @property
     def image(self):
-        rect = self.rect
-        srf = self._loadEmptySprite(rect.size, alpha=200)
-        srf.fill(self.bkcolor, rect)
-        srf.blit(cblocals.speech_font.render(self.text, True, self.textcolor), (2,0) )
+        if False and self._image:
+            # memoize it
+            return self._image
+        self.rect = self._getRect()
+        speech_font = cblocals.speech_font
+        speech_font_h = speech_font.get_height()
+        srf = self._loadEmptySprite(self.rect.size, alpha=170)
+        srf.fill(self.bkcolor, self.rect)
+        ptop = BORDER_PADDING
+        for text_line in self.text.split("\n")[:MAX_TEXTLINES]:
+            srf.blit(speech_font.render(text_line, True, self.textcolor), (BORDER_PADDING, ptop) )
+            ptop += speech_font_h + PER_LINE_PADDING
+        self._image = srf
         return srf
     
     def update(self, time_passed):
@@ -58,7 +80,6 @@ class SpeechCloud(GameSprite):
         """
         GameSprite.update(self, time_passed)
         self._time_left-= time_passed
-        print self.rect.topleft, self.rect.size
         if self._time_left<=0:
             self._time_left=0
             self._text = ""
