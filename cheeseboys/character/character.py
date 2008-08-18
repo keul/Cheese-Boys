@@ -12,6 +12,7 @@ from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.attack import Attack
 from cheeseboys.th0 import TH0
+from cheeseboys.sprites import SpeechCloud
 
 class Character(GameSprite):
     """Base character class.
@@ -70,6 +71,8 @@ class Character(GameSprite):
         
         self._baseAC = 1
         self._th0 = None
+
+        self._speech = SpeechCloud(self)
 
         self.afterInit()
 
@@ -525,5 +528,10 @@ class Character(GameSprite):
         topright = (pr.topright[0], pr.bottomright[1] - (pr.height * hitPointsLeft / hitPoints) )
         pygame.draw.line(surface, (0,0,255), pr.bottomright, topright, 3)
 
+    def say(self, text):
+        """Say something, displaying the speech cloud"""
+        self._speech.text = text
+
     def __str__(self):
         return "Character %s" % self.name
+

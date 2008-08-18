@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+#! /usr/bin/python
 
 import sys, logging, optparse
+import gettext
 
 # CHECKING GAME DEPENDENCIES
 print "Checking dependencies..."
@@ -32,10 +34,11 @@ from cheeseboys.pygame_extensions import GameGroup
 from cheeseboys.sprites import *
 
 def main():
+    
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
 
-    level = GameLevel("The South Bridge", (800, 1500))
+    level = GameLevel(_("The South Bridge"), (800, 1500))
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
     
     all = GameGroup("all")
@@ -44,6 +47,7 @@ def main():
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
     animations = GameGroup("animations", drawable=True, updatable=True)
+    speech = GameGroup("speech", drawable=True, updatable=True)
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -74,6 +78,7 @@ def main():
     level.addGroup(physical, zindex=10)
     level.addGroup(charas, zindex=10)
     level.addGroup(animations, zindex=9)
+    level.addGroup(speech, zindex=15)
 
     level.addPhysicalBackground( (0,208), (235, 1130) )
     level.addPhysicalBackground( (487,208), (310, 1130) )
@@ -93,6 +98,9 @@ def main():
             
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
+                
+                if pressed_keys[K_l]:
+                    hero.say(_("Hello world!"))
                 
                 if pressed_keys[K_ESCAPE]:
                     sys.exit()
@@ -170,6 +178,8 @@ def main():
 def cheeseBoysInit():
     """Init of this game engine"""
     
+    gettext.install('cheeseboys', 'data/i18n', unicode=1)
+    
     LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
@@ -195,6 +205,7 @@ def cheeseBoysInit():
 
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
+    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
 
 
 if __name__ == "__main__":

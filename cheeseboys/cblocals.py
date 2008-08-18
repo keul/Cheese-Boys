@@ -46,7 +46,7 @@ TH0_HIT_CRITICAL = "critical hit"
 
 
 # globals
-default_font = default_font_big = None
+default_font = default_font_big = speech_font = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False

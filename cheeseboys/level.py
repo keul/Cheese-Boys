@@ -60,7 +60,7 @@ class GameLevel(object):
             self._groups_toupdate.sort(lambda x,y: x[0]-y[0])
         if group.drawable:
             self._groups_todraw.append( (zindex,group) )
-            self._groups_todraw.sort(lambda x,y: x[0]-y[0])          
+            self._groups_todraw.sort(lambda x,y: x[0]-y[0])     
 
     def _setTopLeft(self, topleft):
         self._topleft = self._normalizeDrawPart(topleft)
@@ -112,7 +112,7 @@ class GameLevel(object):
         levelRect = pygame.Rect( (0,0), self.levelSize)
         return levelRect.contains(r)
 
-    def addSprite(self, sprite, firstPosition):
+    def addSprite(self, sprite, firstPosition=None):
         """Add a sprite to this level at given position"""
         sprite.addToGameLevel(self, firstPosition)
     

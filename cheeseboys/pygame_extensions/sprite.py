@@ -68,11 +68,14 @@ class GameSprite(pygame.sprite.Sprite):
         Override this for subclass if you want this"""
         return ""
 
-    def addToGameLevel(self, level, firstPosition):
+    def addToGameLevel(self, level, firstPosition=None):
         self.currentLevel = level
-        self.x, self.y = firstPosition
-        rectPosition = level.transformToScreenCoordinate(firstPosition)
-        self.rect = self.image.get_rect(topleft=rectPosition)
+        if firstPosition:
+            self.x, self.y = firstPosition
+            rectPosition = level.transformToScreenCoordinate(firstPosition)
+            self.rect = self.image.get_rect(topleft=rectPosition)
+        else:
+            self.rect = self.image.get_rect()
 
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.
@@ -116,8 +119,8 @@ class GameSprite(pygame.sprite.Sprite):
         self.refresh()
 
     @classmethod
-    def _loadEmptySprite(self, dimension):
+    def _loadEmptySprite(self, dimension, alpha=0):
         """Return a fake, empty and transparent Surface"""
         surface = pygame.Surface(dimension, flags=SRCALPHA, depth=32)
-        surface.set_alpha(0)
+        surface.set_alpha(alpha)
         return surface

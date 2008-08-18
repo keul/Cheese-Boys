@@ -18,6 +18,11 @@ Entries I will fix/implement someday.
  * REFACTORING - replace the term "dimension" with "size".
  
  * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
+ 
+ * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
+   things like ranged weapon and other sprites.
+
+ * REFACTORING - Split Character from CombatCharacter?
 
 === Fixed entries ===
 
