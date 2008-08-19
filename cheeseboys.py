@@ -54,11 +54,11 @@ def main():
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
                 
-                if pressed_keys[K_l]:
+                if pressed_keys[K_s]:
                     hero.say(_("Hello world I like to see more of this nice evening"
                                "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefhr iufhaiefhaiufhrei!")
                     )
-                if pressed_keys[K_s]:
+                if pressed_keys[K_s] and pressed_keys[K_LSHIFT]:
                     hero.shout(_("Hello world I like to see more of this nice evening"
                                  "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefh riufhaiefhaiufhrei!")
                     )
