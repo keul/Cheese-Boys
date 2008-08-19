@@ -36,6 +36,7 @@ DEBUG = False
 
 # EVENTS
 ATTACK_OCCURRED_EVENT = USEREVENT +1
+SHOUT_EVENT = USEREVENT +2
 
 
 # TH0
@@ -51,5 +52,6 @@ global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False
 global_mouseCursor = None
+gameLanguage = "en"
 
 #globals = {'default_font': None}

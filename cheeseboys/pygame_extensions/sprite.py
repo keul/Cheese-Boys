@@ -119,8 +119,10 @@ class GameSprite(pygame.sprite.Sprite):
         self.refresh()
 
     @classmethod
-    def _loadEmptySprite(self, dimension, alpha=0):
+    def _loadEmptySprite(self, dimension, alpha=0, fillWith=None):
         """Return a fake, empty and transparent Surface"""
         surface = pygame.Surface(dimension, flags=SRCALPHA, depth=32)
+        if fillWith:
+            surface.fill(fillWith)
         surface.set_alpha(alpha)
         return surface

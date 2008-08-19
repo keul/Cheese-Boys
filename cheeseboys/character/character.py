@@ -532,6 +532,13 @@ class Character(GameSprite):
         """Say something, displaying the speech cloud"""
         self._speech.text = text
 
+    def shout(self, text):
+        """As say() but with uppercase text"""
+        self._speech.text = text.upper()
+        event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position, 'text': text})
+        pygame.event.post(event)
+
+
     def __str__(self):
         return "Character %s" % self.name
 

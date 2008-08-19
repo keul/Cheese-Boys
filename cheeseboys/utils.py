@@ -125,3 +125,28 @@ def loadAnimationByName(name, position, *containers):
         return WaterWave(position, (120,80), *containers)
     else:
         raise ValueError("Value %s is not a know animation." % name)
+
+def normalizeTextLength(text_too_long, font, max_length):
+    """This function take a text too long and split it in a list of smaller text line.
+    The final text max length must be less than max_length parameter, using the font passed.
+    """
+    words = text_too_long.split(" ")
+    words_removed = []
+    tooLong = True
+    txt1 = txt2 = ""
+    while tooLong:
+        try:
+            words_removed.append(words.pop())
+        except IndexError:
+            raise ValueError('Text "%s" is really too long for me to fit a length of %s!' % (text_too_long, max_length))
+        txt1 = " ".join(words)
+        if font.size(txt1)[0]<max_length:
+            tooLong = False
+    words_removed.reverse()
+    txt2 = " ".join(words_removed)
+    if txt2==text_too_long:
+        raise ValueError('Text "%s" is really too long for me to fit a length of %s!' % (text_too_long, max_length))
+    if font.size(txt2)[0]<max_length:
+        return [txt1, txt2]
+    else:
+        return [txt1] + normalizeTextLength(txt2, font, max_length)

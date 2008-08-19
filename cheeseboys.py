@@ -100,8 +100,14 @@ def main():
                 pressed_keys = pygame.key.get_pressed()
                 
                 if pressed_keys[K_l]:
-                    hero.say(_("Hello world!"))
-                
+                    hero.say(_("Hello world I like to see more of this nice evening"
+                               "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefhr iufhaiefhaiufhrei!")
+                    )
+                if pressed_keys[K_s]:
+                    hero.shout(_("Hello world I like to see more of this nice evening"
+                                 "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefh riufhaiefhaiufhrei!")
+                    )
+      
                 if pressed_keys[K_ESCAPE]:
                     sys.exit()
 
@@ -129,6 +135,11 @@ def main():
                         hit.generatePhysicalAttachEffect(attack_origin=event.character, criticity=attackRes)
                     else:
                         print "  missed %s" % hit.name
+
+            if event.type==cblocals.SHOUT_EVENT:
+                logging.info('%s shouted "%s" from position %s.' % (event.character.name,
+                                                              event.text,
+                                                              event.position))
 
         time_passed = clock.tick() / 1000.
         level.update(time_passed)
@@ -205,7 +216,7 @@ def cheeseBoysInit():
 
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
-    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
+    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
 
 
 if __name__ == "__main__":
