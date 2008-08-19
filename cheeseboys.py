@@ -26,70 +26,25 @@ print "All required libraries are present."
 from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
-from cheeseboys.level import GameLevel
-from cheeseboys.ai.base_brain import BaseStateMachine
+from cheeseboys.level import loadLevelByName
 from cheeseboys.ai.hero import HeroStateMachine
-from cheeseboys.pygame_extensions import GameGroup
-
-from cheeseboys.sprites import *
 
 def main():
     
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode( cblocals.SCREEN_SIZE, 0, 32)
+    screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
 
-    level = GameLevel(_("The South Bridge"), (800, 1500))
-    pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
-    
-    all = GameGroup("all")
-    dead = GameGroup("dead", drawable=True, updatable=True)
-    physical = GameGroup("physical", drawable=True, updatable=True)
-    charas = GameGroup("charas")
-    enemies = GameGroup("enemies")
-    animations = GameGroup("animations", drawable=True, updatable=True)
-    speech = GameGroup("speech", drawable=True, updatable=True)
-
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (all,charas,physical), realSize=(18,25), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
     hero.setCombatValues(2, 13)
-    
-    enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=100., weaponInAndOut=True)
-    enemy1.setBrain(BaseStateMachine)
-    enemy1.setCombatValues(0, 5)
-    enemy2 = character.Character("John", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=80., weaponInAndOut=True)
-    enemy2.setBrain(BaseStateMachine)
-    enemy2.setCombatValues(0, 5)
-    enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=125., weaponInAndOut=True)
-    enemy3.setBrain(BaseStateMachine)
-    enemy3.setCombatValues(0, 5)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=160., weaponInAndOut=True)
-    enemy4.setBrain(BaseStateMachine)
-    enemy4.setCombatValues(0, 5)
 
-    level.topleft = (100, 900)
-    
-    level.addSprite(hero, (350, 1450))
-    level.addSprite(enemy1, (418, 1242))
-    level.addSprite(enemy2, (400, 300))
-    level.addSprite(enemy3, (320, 210))
-    level.addSprite(enemy4, (250, 520))
-
-    level.addGroup(dead, zindex=5)
-    level.addGroup(physical, zindex=10)
-    level.addGroup(charas, zindex=10)
-    level.addGroup(animations, zindex=9)
-    level.addGroup(speech, zindex=15)
-
-    level.addPhysicalBackground( (0,208), (235, 1130) )
-    level.addPhysicalBackground( (487,208), (310, 1130) )
-    
-    level.addAnimations(((50,900),(563, 1204),(654, 1069),(-30, 1219),(550, 789),(97, 447),(582, 277),(-55, 283)), 'water-wave')
-    level.addAnimation( (455,1422), CodigoroSign((200,1200), (80,53), animations, physical) )
-
-    level.enableRainEffect()
+    level = loadLevelByName("The South Bridge", hero)
+    pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     
+    charas = level['charas']
+    enemies = level['enemies']
     while True:
         for event in pygame.event.get():
             #print event, event.type

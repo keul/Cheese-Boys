@@ -79,8 +79,12 @@ class SpeechCloud(GameSprite):
         h = BORDER_PADDING + len(textlines)*speech_font_h + PER_LINE_PADDING*(len(textlines)-1) + BORDER_PADDING
         character = self._character
         text_posx, text_posy = character.rect.midtop
-        # BBB: need to six if rect exit the game area
         rect = pygame.Rect( (text_posx-w/2,text_posy-15-h), (w,h) )
+        # Check valid coord in screen
+        if rect.topleft[0]<0: rect.left = 0
+        elif rect.topright[0]>cblocals.GAME_SCREEN_SIZE[0]: rect.right = cblocals.GAME_SCREEN_SIZE[0]
+        if rect.topleft[1]<0: rect.top = 0
+        elif rect.bottomleft[1]>cblocals.GAME_SCREEN_SIZE[1]: rect.bottom = cblocals.GAME_SCREEN_SIZE[1]        
         return rect
 
     @property

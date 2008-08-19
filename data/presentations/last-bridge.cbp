@@ -1,0 +1,5 @@
+# - format version: 1.0.0
+
+[INIT]
+	level.topleft: (100,100)
+[/INIT]

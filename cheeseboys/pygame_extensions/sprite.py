@@ -126,3 +126,8 @@ class GameSprite(pygame.sprite.Sprite):
             surface.fill(fillWith)
         surface.set_alpha(alpha)
         return surface
+
+    def addToGroups(self, *groups):
+        """Add a sprite to multiple groups"""
+        for g in groups:
+            g.add(self)
