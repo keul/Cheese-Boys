@@ -79,6 +79,7 @@ class SpeechCloud(GameSprite):
         h = BORDER_PADDING + len(textlines)*speech_font_h + PER_LINE_PADDING*(len(textlines)-1) + BORDER_PADDING
         character = self._character
         text_posx, text_posy = character.rect.midtop
+        # BBB: need to six if rect exit the game area
         rect = pygame.Rect( (text_posx-w/2,text_posy-15-h), (w,h) )
         return rect
 

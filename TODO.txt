@@ -31,6 +31,8 @@ Already closed and fixed.
 ==== 0.1.0 ====
 
  * Added the rain effect.
+ 
+ * Added speech and shout behaviour for characters.
 
 ==== 0.0.6 ====
 
