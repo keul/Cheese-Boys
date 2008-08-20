@@ -1,5 +1,8 @@
 # - format version: 1.0.0
 
-[INIT]
+[00:00:00 000]
 	level.topleft: (100,100)
-[/INIT]
+
+[00:00:02 000 - 00:00:05 000]
+	level.normalizeDrawPositionBasedOn: (100,700)
+	

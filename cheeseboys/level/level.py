@@ -192,11 +192,16 @@ class GameLevel(object):
         size = cblocals.GAME_SCREEN_SIZE
         return (topleft[0]+size[0]/2, topleft[1]+size[1]/2)
 
-    def normalizeDrawPositionBasedOn(self, sprite, time_passed):
-        """Slowly move drawn portion of the total level, for centering it on the given sprite"""
+    def normalizeDrawPositionBasedOn(self, reference, time_passed):
+        """Slowly move drawn portion of the total level, for centering it on the given reference object.
+        reference can be a GameSprite or a position tuple info.
+        """
         if pygame.key.get_pressed()[K_LCTRL]:
             return
-        referencePointOnScreen = sprite.position_int
+        if type(reference)==tuple:
+            referencePointOnScreen = reference
+        else:
+            referencePointOnScreen = reference.position_int
         if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
