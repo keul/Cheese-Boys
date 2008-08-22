@@ -151,12 +151,13 @@ def cheeseBoysInit():
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
     p.add_option('--logverbosity', '-l', default="ERROR", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
+    p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
 
     options, arguments = p.parse_args( )
     
     if options.version:
         print "Cheese Boys version %s" % cblocals.__version__
-        sys.exit(0)
+        exit()
 
     if options.logverbosity=="ERROR":
         logging.getLogger().setLevel(logging.ERROR)
@@ -169,9 +170,19 @@ def cheeseBoysInit():
     else:
         print "%s is an invalid option for --logverbosity option, use one of %s" % (options.logverbosity, ",".join(LOGLEVEL_CHOICES))  
 
+    if options.tests:
+        tests()
+        exit()
+
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
     cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
+
+
+def tests():
+    import unittest
+    from cheeseboys import tests as cbtests
+    unittest.TextTestRunner(verbosity=2).run(cbtests.test_presentation.alltests)
 
 
 if __name__ == "__main__":
