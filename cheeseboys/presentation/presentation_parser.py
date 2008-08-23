@@ -4,12 +4,15 @@ import re
 
 FIRST_LINE_REGEXP = r"""^#(\s)*version:(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 VERSION_NUMBERS = r"""^(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
-
-TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$"""
-
-
 re_versionLineCheck = re.compile(FIRST_LINE_REGEXP)
 re_versionLine = re.compile(FIRST_LINE_REGEXP)
+
+TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$"""
+re_timeStampCheck = re.compile(TIMESPAMP_LINE_REGEXP)
+
+DATA_BLOCK_REGEXPT = \
+"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$
+((\s)*(#.*)*$)*(\s)*\w(\s)*(#.*)?$[((\s)*(#.*)*$)|(\s)*\w(\s)*(#.*)?]*^$"""
 
 class PresentationParser(object):
     """A parser for cheeseboys presentation (.cbp) files"""
@@ -44,10 +47,8 @@ class PresentationParser(object):
                 if checks['first']:
                     self._checkVersionLineSyntax(line, lnumber)
                     checks['first'] = False
-                else:
-                    continue # ignore comments
-    
-        
+                continue # ignore comments
+            
     
     def _checkVersionLineSyntax(self, line, lnumber):
         """Check that line format is protocol version comment"""
