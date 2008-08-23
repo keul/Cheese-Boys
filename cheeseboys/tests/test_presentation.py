@@ -36,6 +36,7 @@ class TestPresentationParser(CheeseBoysTestCase):
         self.assertRaises(CBPParsingException, self.pparser._checkVersionLineSyntax, line, 6)
         line = self.pparser._lines[3]
         self.assertRaises(CBPParsingException, self.pparser._checkVersionLineSyntax, line, 4)
+        self.assertRaises(CBPParsingException, self.pparser._checkVersionLineSyntax, line.strip()+ "   # no comment on version line", 4)
         self.assertEquals(self.pparser._checkVersionLineSyntax(line.strip(), 4), (1,0,0))
 
 
