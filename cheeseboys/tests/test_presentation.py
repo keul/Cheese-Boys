@@ -15,9 +15,11 @@ FAKE_CBP_FILE = \
 
 [00:00:00 000]
     level.topleft: (100,100)
+    abc
 
 [00:00:02 000 - 00:00:05 000]
     level.normalizeDrawPositionBasedOn: (100,700)
+    ddd
 """
 
 class TestPresentationParser(CheeseBoysTestCase):
@@ -39,6 +41,9 @@ class TestPresentationParser(CheeseBoysTestCase):
         self.assertRaises(CBPParsingException, self.pparser._checkVersionLineSyntax, line.strip()+ "   # no comment on version line", 4)
         self.assertEquals(self.pparser._checkVersionLineSyntax(line.strip(), 4), (1,0,0))
 
+    def testCheckOfWholeFile(self):
+        """Check that application can handle correctly a while file block"""
+        self.assertEquals(self.pparser.checkSyntax(), 2)
 
 suites = []
 

@@ -11,8 +11,16 @@ TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d
 re_timeStampCheck = re.compile(TIMESPAMP_LINE_REGEXP)
 
 DATA_BLOCK_REGEXPT = \
-"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$
-((\s)*(#.*)*$)*(\s)*\w(\s)*(#.*)?$[((\s)*(#.*)*$)|(\s)*\w(\s)*(#.*)?]*^$"""
+"""
+(
+       \[\d\d:\d\d:\d\d[ ]\d\d\d\]
+     |
+       \[\d\d:\d\d:\d\d[ ]\d\d\d[ ]-[ ]\d\d:\d\d:\d\d[ ]\d\d\d\]
+   )
+   [ \t]*?(\#.*?)??[\n]                                                                   # comment after the timespamp line
+([ \t]*?.*?[\n])+?$
+"""
+re_dataBlock = re.compile(DATA_BLOCK_REGEXPT, re.MULTILINE|re.VERBOSE)
 
 class PresentationParser(object):
     """A parser for cheeseboys presentation (.cbp) files"""
@@ -47,8 +55,15 @@ class PresentationParser(object):
                 if checks['first']:
                     self._checkVersionLineSyntax(line, lnumber)
                     checks['first'] = False
-                continue # ignore comments
-            
+                break
+        
+        match_obj = re_dataBlock.search(self._text)
+        all_groups = match_obj.groups()
+        if not all_groups:
+            raise CBPParsingException("No data found in that file.")
+        self.data['timespamps_data'] = tuple(all_groups)
+        print re_dataBlock.split(self._text)
+        return len(all_groups)
     
     def _checkVersionLineSyntax(self, line, lnumber):
         """Check that line format is protocol version comment"""
@@ -59,10 +74,15 @@ class PresentationParser(object):
         self.data['version'] = (int(all_groups[2]),int(all_groups[3]),int(all_groups[4]))
         return self.data['version']
 
+
 class CBPParsingException(Exception):
     """Exception in parsing .cbp files"""
 
-    def __init__(self, msg, line_number):
-        Exception.__init__(self, "line %s: %s" % (line_number,msg))
+    def __init__(self, msg, line_number=None):
+        if line_number:
+            lninfo_str = "line %s: " % line_number
+        else:
+            lninfo_str = ""
+        Exception.__init__(self, "%s%s" % (lninfo_str,msg))
 
 
