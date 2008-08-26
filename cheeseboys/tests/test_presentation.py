@@ -42,8 +42,9 @@ class TestPresentationParser(CheeseBoysTestCase):
         self.assertEquals(self.pparser._checkVersionLineSyntax(line.strip(), 4), (1,0,0))
 
     def testCheckOfWholeFile(self):
-        """Check that application can handle correctly a while file block"""
+        """Check that application can handle correctly a whole file block"""
         self.assertEquals(self.pparser.checkSyntax(), 2)
+        self.assertEquals(self.pparser.data['timestamps_data'][1][0],'level.normalizeDrawPositionBasedOn: (100,700)')
 
 suites = []
 

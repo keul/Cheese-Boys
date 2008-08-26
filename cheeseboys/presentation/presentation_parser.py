@@ -18,7 +18,7 @@ DATA_BLOCK_REGEXPT = \
        \[\d\d:\d\d:\d\d[ ]\d\d\d[ ]-[ ]\d\d:\d\d:\d\d[ ]\d\d\d\]
    )
    [ \t]*?(\#.*?)??[\n]                                                                   # comment after the timespamp line
-([ \t]*?.*?[\n])+?$
+(([ \t]*?.*?[\n])+?)$
 """
 re_dataBlock = re.compile(DATA_BLOCK_REGEXPT, re.MULTILINE|re.VERBOSE)
 
@@ -41,7 +41,11 @@ class PresentationParser(object):
         self._lines = self._text.split("\n")
         self.close()
         self._f.close()
-        
+    
+    def _prepareDataBlock(self, data):
+        """Given a data in raw format, remove white spaces and split it in a list"""
+        return [x.strip() for x in data.split("\n")]
+    
     def checkSyntax(self):
         """Parse file format and return nothing if is valid, error messages otherwise"""
         lnumber = 0
@@ -57,13 +61,13 @@ class PresentationParser(object):
                     checks['first'] = False
                 break
         
-        match_obj = re_dataBlock.search(self._text)
-        all_groups = match_obj.groups()
-        if not all_groups:
+        all_data = re_dataBlock.findall(self._text)
+        self.data['timestamps_data'] = []
+        for fdata in all_data:
+            self.data['timestamps_data'].append(self._prepareDataBlock(fdata[2]))
+        if not all_data:
             raise CBPParsingException("No data found in that file.")
-        self.data['timespamps_data'] = tuple(all_groups)
-        print re_dataBlock.split(self._text)
-        return len(all_groups)
+        return len(all_data)
     
     def _checkVersionLineSyntax(self, line, lnumber):
         """Check that line format is protocol version comment"""
