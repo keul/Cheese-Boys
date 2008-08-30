@@ -10,8 +10,8 @@ re_versionLine = re.compile(FIRST_LINE_REGEXP)
 TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$"""
 re_timeStampCheck = re.compile(TIMESPAMP_LINE_REGEXP)
 
-DATA_BLOCK_REGEXPT = \
-"""
+DATA_BLOCK_REGEXP = \
+r"""
 (
        \[\d\d:\d\d:\d\d[ ]\d\d\d\]
      |
@@ -20,7 +20,10 @@ DATA_BLOCK_REGEXPT = \
    [ \t]*?(\#.*?)??[\n]                                                                   # comment after the timespamp line
 (([ \t]*?.*?[\n])+?)$
 """
-re_dataBlock = re.compile(DATA_BLOCK_REGEXPT, re.MULTILINE|re.VERBOSE)
+re_dataBlock = re.compile(DATA_BLOCK_REGEXP, re.MULTILINE|re.VERBOSE)
+
+TIMESTAMPS_DATA_REGEXP = r"""^\[(\d\d:\d\d:\d\d \d\d\d)\]|\[(\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d)\]"""
+re_timestampsData = re.compile(TIMESTAMPS_DATA_REGEXP)
 
 class PresentationParser(object):
     """A parser for cheeseboys presentation (.cbp) files"""
@@ -33,8 +36,6 @@ class PresentationParser(object):
 
     def load(self):
         """Open presentation file so we are ready for read.
-        This is called automatically in object creation, but you can call
-        this again to read the file from begin.
         """
         self._f = open(self.presentation_dir+"/"+self.presentation_file)
         self._text = self._f.read()
@@ -44,7 +45,7 @@ class PresentationParser(object):
     
     def _prepareDataBlock(self, data):
         """Given a data in raw format, remove white spaces and split it in a list"""
-        return [x.strip() for x in data.split("\n")]
+        return [x.strip() for x in data.split("\n") if x.strip()]
     
     def checkSyntax(self):
         """Parse file format and return nothing if is valid, error messages otherwise"""
@@ -60,14 +61,6 @@ class PresentationParser(object):
                     self._checkVersionLineSyntax(line, lnumber)
                     checks['first'] = False
                 break
-        
-        all_data = re_dataBlock.findall(self._text)
-        self.data['timestamps_data'] = []
-        for fdata in all_data:
-            self.data['timestamps_data'].append(self._prepareDataBlock(fdata[2]))
-        if not all_data:
-            raise CBPParsingException("No data found in that file.")
-        return len(all_data)
     
     def _checkVersionLineSyntax(self, line, lnumber):
         """Check that line format is protocol version comment"""
@@ -78,6 +71,45 @@ class PresentationParser(object):
         self.data['version'] = (int(all_groups[2]),int(all_groups[3]),int(all_groups[4]))
         return self.data['version']
 
+    def _loadData(self):
+        """Load data from the text file to a navigable structure.
+        data = { 'version': (x,y,z), 'operations': operations_arr }
+        operations_arr = [ { 'timestamp_start': timestamp, 'timestamp_end': timestamp, 'commands' : commands_arr }, ... ]
+        commands_arr = [command1, command2, ...]
+        """
+        if self.data:
+            return self.data
+        self.checkSyntax() 
+        operations = []
+        all_data = re_dataBlock.findall(self._text)
+        for fdata in all_data:
+            localData = {}
+            timestamps1, timestamps2 = self._getTimeStampsStartEnd(fdata[0])
+            localData['timestamp_start'] = timestamps1
+            if timestamps2:
+                localData['timestamp_end'] = timestamps2
+            localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
+            operations.append(localData)
+        self.data['operations'] = operations    
+
+    def _getTimeStampsStartEnd(self, data):
+        """Given a timestamps string return (timestamp1, timestamp2) or (timestamp1, None) tuples"""
+        all_data = re_timestampsData.findall(data)
+        for gps in all_data:
+            if not gps[1]:
+                return gps[0], None
+            return tuple(gps[1].split(" - "))
+
+    def _getCommands(self, data):
+        """Given a list of string, obtain a commands-style list.
+        BBB: for now is the list itself!
+        """
+        return data
+
+    def run(self):
+        """Run the presentation this object store"""
+        if not self.data:
+            self._loadData()
 
 class CBPParsingException(Exception):
     """Exception in parsing .cbp files"""

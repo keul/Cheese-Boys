@@ -41,10 +41,19 @@ class TestPresentationParser(CheeseBoysTestCase):
         self.assertRaises(CBPParsingException, self.pparser._checkVersionLineSyntax, line.strip()+ "   # no comment on version line", 4)
         self.assertEquals(self.pparser._checkVersionLineSyntax(line.strip(), 4), (1,0,0))
 
-    def testCheckOfWholeFile(self):
+    def testCheckSyntax(self):
         """Check that application can handle correctly a whole file block"""
-        self.assertEquals(self.pparser.checkSyntax(), 2)
-        self.assertEquals(self.pparser.data['timestamps_data'][1][0],'level.normalizeDrawPositionBasedOn: (100,700)')
+        self.assertEquals(self.pparser.checkSyntax(), None)
+
+    def test_loadTimeStampsStartEnd(self):
+        """Check loading for timestamps value(s)"""
+        self.assertEquals(self.pparser._getTimeStampsStartEnd("[00:00:00 000]"), ("00:00:00 000", None))
+        self.assertEquals(self.pparser._getTimeStampsStartEnd("[00:00:00 001 - 00:01:00 999]"), ("00:00:00 001", "00:01:00 999"))        
+
+    def test_loadData(self):
+        """Test the loading of a complete commands datablock"""
+        self.pparser._loadData()
+        self.assertEquals(self.pparser.data['operations'][1]['commands'][0], "level.normalizeDrawPositionBasedOn: (100,700)")
 
 suites = []
 
