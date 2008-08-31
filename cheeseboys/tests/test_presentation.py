@@ -18,8 +18,10 @@ FAKE_CBP_FILE = \
     abc
 
 [00:00:02 000 - 00:00:05 000]
+        fakeMethod   :   (1,4,5) ;  56  ; "strmns"
     level.normalizeDrawPositionBasedOn: (100,700)
     ddd
+
 """
 
 class TestPresentationParser(CheeseBoysTestCase):
@@ -53,7 +55,8 @@ class TestPresentationParser(CheeseBoysTestCase):
     def test_loadData(self):
         """Test the loading of a complete commands datablock"""
         self.pparser._loadData()
-        self.assertEquals(self.pparser.data['operations'][1]['commands'][0], "level.normalizeDrawPositionBasedOn: (100,700)")
+        self.assertEquals(self.pparser.data['operations'][1]['commands'][0],
+                          {'method': 'fakeMethod', 'params': [(1, 4, 5), 56, 'strmns']})
 
 suites = []
 

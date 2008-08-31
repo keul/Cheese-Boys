@@ -44,7 +44,10 @@ class GameLevel(object):
         self._rain = None
 
     def __getitem__(self, key):
-        """Get a group by its name"""
+        """Get a group by its name.
+        BBB: what if I return here a sprite by name also?
+        BBB: check for KeyError
+        """
         for group in self._groups:
             if group[1].name==key:
                 return group[1]

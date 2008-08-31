@@ -75,7 +75,10 @@ class PresentationParser(object):
         """Load data from the text file to a navigable structure.
         data = { 'version': (x,y,z), 'operations': operations_arr }
         operations_arr = [ { 'timestamp_start': timestamp, 'timestamp_end': timestamp, 'commands' : commands_arr }, ... ]
-        commands_arr = [command1, command2, ...]
+        commands_arr = [command, ...]
+        command = {'method': method, 'params': [param, ...] } or {'property': property, 'value': value }
+                  or {'var': varname, 'value': value }
+        param = tuple or list or int or float or str
         """
         if self.data:
             return self.data
@@ -90,7 +93,8 @@ class PresentationParser(object):
                 localData['timestamp_end'] = timestamps2
             localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
             operations.append(localData)
-        self.data['operations'] = operations    
+        self.data['operations'] = operations
+        print operations  
 
     def _getTimeStampsStartEnd(self, data):
         """Given a timestamps string return (timestamp1, timestamp2) or (timestamp1, None) tuples"""
@@ -100,11 +104,49 @@ class PresentationParser(object):
                 return gps[0], None
             return tuple(gps[1].split(" - "))
 
+    def _getParamsFromStr(self, paramStr):
+        """Given a string with parameter semicolon-separated, return an array of params
+        BBB: security issue here!
+        """
+        rawParams = [x.strip() for x in paramStr.split(";")]
+        for x in range(len(rawParams)):
+            p = rawParams[x]
+            if (p.startswith("(") and p.endswith(")")) or \
+               (p.startswith("[") and p.endswith("]")) or \
+               p.isdigit():
+                rawParams[x] = eval(p)
+            elif p.startswith("\"") and p.endswith("\""):
+                rawParams[x] = p[1:-1]
+        return rawParams
+
     def _getCommands(self, data):
         """Given a list of string, obtain a commands-style list.
-        BBB: for now is the list itself!
+        [ command, ... ]
+        A command can be:
+        {'method': method, 'params': [param, ...] } or {'property': property, 'value': value }
+        or {'var': varname, 'value': value }
+        
+        .methodName: param1, param2          -->  level.methodName(param1,param2)
+        .methodName                          -->  level.methodName()
+        .propertyName= value                 -->  level.propertyName = value
+        var dummy = value                    -->  dummy = value
+        $dummy.methodName: param1, param2    -->  dummy.methodName(param1, param2)
+        $dummy.propertyName = value          -->  dummy.propertyName = value
+        
+        BBB: security issue here!
         """
-        return data
+        retCommands = []
+        for command in data:
+            singleCommand = {}
+            column = command.find(":")
+            if column!=-1:
+                singleCommand['method'] = command[:column].strip()
+                paramsStr = command[column+1:]
+                singleCommand['params'] = self._getParamsFromStr(paramsStr)
+            else:
+                singleCommand['method'] = command.strip()
+            retCommands.append(singleCommand)
+        return retCommands
 
     def run(self):
         """Run the presentation this object store"""

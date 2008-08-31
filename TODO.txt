@@ -7,10 +7,7 @@ The project begin to grow a little. I will record here all open problems and iss
 Entries I will fix/implement someday.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
- 
- * Enhance the enemies random movements.
-   Enemies simply must not move to an invalid position.
- 
+  
  * Surnames from Veneto region!
  
  * Stealth mode.
@@ -19,40 +16,18 @@ Entries I will fix/implement someday.
 
  * REFACTORING - replace the term "dimension" with "size".
  
- * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
- 
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
    things like ranged weapon and other sprites.
 
- * REFACTORING - Split Character from CombatCharacter?
+ === Wishlist entries ===
 
-=== Fixed entries ===
+Issues or enhancement I'd like to do someday.
+Those aren't a needed changes.
 
-Already closed and fixed.
+  * Enhance the enemies random movements.
+    Enemies simply must not move to an invalid position.
 
-==== 0.1.0 ====
+  * REFACTORING - Split Character from CombatCharacter?
 
- * Added the rain effect.
- 
- * Added speech and shout behaviour for characters.
-
-==== 0.0.6 ====
-
- * BUG - Click outside the game area must not move the hero.
-
- * Retreat outside the game area must be impossible.
-
- * BUG - Attack with CTRL pressed.
-   Sometimes enemies begin a withdraw when are outside the hero range of attack, just because CTRL is pressed.
-
- * Added the wave effect on water terrain, and introduced a new utility for a fast add of animations effects.
-
- * Added an internal Vector2 class for users without the Will McGugan's gameobjects library.
- 
- * (!!!) Now the GameGroup.sprites method overwrite the base pygame.Sprite.sprites; sprites are returned ordered by
-   their Y position! This is important for game drawing procedure!
- 
- * Added line command option parser
-
-
-
+  * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
+  

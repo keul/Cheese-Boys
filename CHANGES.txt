@@ -1,0 +1,27 @@
+== Cheese Boys - HISTORY & CHANGES ==
+
+A (un)complete list of changes in every release.
+
+=== 0.1.0 ===
+
+ * Added the rain and wind effects.
+ 
+ * Added speech and shout behaviour for characters.
+
+=== 0.0.6 ===
+
+ * BUG - Click outside the game area must not move the hero.
+
+ * Retreat outside the game area must be impossible.
+
+ * BUG - Attack with CTRL pressed.
+   Sometimes enemies begin a withdraw when are outside the hero range of attack, just because CTRL is pressed.
+
+ * Added the wave effect on water terrain, and introduced a new utility for a fast add of animations effects.
+
+ * Added an internal Vector2 class for users without the Will McGugan's gameobjects library.
+ 
+ * (!!!) Now the GameGroup.sprites method overwrite the base pygame.Sprite.sprites; sprites are returned ordered by
+   their Y position! This is important for game drawing procedure!
+ 
+ * Added line command option parser
