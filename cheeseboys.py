@@ -39,6 +39,14 @@ def main():
     hero.setCombatValues(2, 13)
 
     level = loadLevelByName("The South Bridge", hero)
+    
+
+    from cheeseboys.presentation import Presentation
+    pp = Presentation(level, "funny-intro.cbp")
+    pp.run()
+    return
+
+    
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
@@ -189,4 +197,5 @@ if __name__ == "__main__":
     pygame.init()
     cheeseBoysInit()
     main()
-
+    
+    

@@ -18,3 +18,9 @@ class Presentation(object):
             level = loadLevelByName(level)
         self.level = level
         self.parser = PresentationParser(presentation_file, presentation_dir)
+        self.parser.load()
+        self.data = self.parser.data
+
+    def run(self):
+        """Run the presentation this object store"""
+        print self.data

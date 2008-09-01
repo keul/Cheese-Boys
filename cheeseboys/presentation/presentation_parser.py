@@ -40,8 +40,8 @@ class PresentationParser(object):
         self._f = open(self.presentation_dir+"/"+self.presentation_file)
         self._text = self._f.read()
         self._lines = self._text.split("\n")
-        self.close()
         self._f.close()
+        self._loadData()
     
     def _prepareDataBlock(self, data):
         """Given a data in raw format, remove white spaces and split it in a list"""
@@ -94,7 +94,6 @@ class PresentationParser(object):
             localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
             operations.append(localData)
         self.data['operations'] = operations
-        print operations  
 
     def _getTimeStampsStartEnd(self, data):
         """Given a timestamps string return (timestamp1, timestamp2) or (timestamp1, None) tuples"""
@@ -134,7 +133,10 @@ class PresentationParser(object):
         $dummy.propertyName = value          -->  dummy.propertyName = value
         
         BBB: security issue here!
+        BBB: not implemented for now... just use python in cbp files.
         """
+        return data
+        
         retCommands = []
         for command in data:
             singleCommand = {}
@@ -148,10 +150,6 @@ class PresentationParser(object):
             retCommands.append(singleCommand)
         return retCommands
 
-    def run(self):
-        """Run the presentation this object store"""
-        if not self.data:
-            self._loadData()
 
 class CBPParsingException(Exception):
     """Exception in parsing .cbp files"""

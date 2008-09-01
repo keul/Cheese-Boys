@@ -146,23 +146,26 @@ class Character(GameSprite):
         if self._brain:
             self._brain.think(time_passed)
 
-    def moveBasedOnNavPoint(self, time_passed, destination=None):
+    def moveBasedOnNavPoint(self, time_passed, destination=None, speed=None):
         """Common method for move character using navPoint infos.
         If a destination is not specified, then the current character navPoint is used.
+        You can also user a custom speed instead of the character speed.
         """
         if not destination:
             destination = self.navPoint
         else:
             if type(destination)==tuple:
                 destination = Vector2(destination)
-            self.navPoint = destination    
+            self.navPoint = destination
+        if not speed:
+            speed = self.speed
         self.heading = Vector2.from_points(self.position, destination)
         self.heading.normalize()
         direction = self._generateDirectionFromHeading(self.heading)
         self._checkDirectionChange(direction)
 
         self.moving(True)
-        distance = time_passed * self.speed
+        distance = time_passed * speed
         movement = self.heading * distance
         self.addDistanceWalked(distance)
         x = movement.get_x()
