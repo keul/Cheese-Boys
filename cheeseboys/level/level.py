@@ -7,6 +7,7 @@ from cheeseboys.cbrandom import cbrandom
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.sprites import PhysicalBackground, Rain
+from cheeseboys.presentation import Presentation
 
 class GameLevel(object):
     """This repr a game level.
@@ -44,13 +45,18 @@ class GameLevel(object):
         self._rain = None
 
     def __getitem__(self, key):
-        """Get a group by its name.
+        """Get a group by its name, or look for a GameSprite with that name if no group is found.
         BBB: what if I return here a sprite by name also?
         BBB: check for KeyError
         """
         for group in self._groups:
             if group[1].name==key:
                 return group[1]
+        # not found a group; check for a GameSprite
+        for group in self._groups:
+            for sprite in group[1].sprites():
+                if sprite.name==key:
+                    return sprite
 
     def addGroup(self, group, zindex=10):
         """Add a new group the this level.
@@ -293,3 +299,11 @@ class GameLevel(object):
         """
         if self._rain:
             self._rain.draw(surface)
+
+    def getPresentation(self, presentation):
+        """Load a presentation using its name and return a Presentation object"""
+        if not presentation.endswith(".cbp"):
+            presentation+=".cbp"
+        pp = Presentation(self, presentation)
+        return pp
+

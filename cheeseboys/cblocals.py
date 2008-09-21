@@ -52,6 +52,7 @@ global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False
 global_mouseCursor = None
+global_controlsEnabled = False
 gameLanguage = "en"
 
 #globals = {'default_font': None}

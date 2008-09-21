@@ -3,23 +3,9 @@
 # This intro is still a test
 
 [00:00:00 000]
-	level.topleft: (100,500)														# position in a place
-	enemy1 = enemy1 = character.Character("Max", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=100., weaponInAndOut=True)
-	level.addSprite(enemy1, (418, 1500))
-    
-    level.addGroup(dead, zindex=5)
-    level.addGroup(physical, zindex=10)
-    level.addGroup(charas, zindex=10)
-    level.addGroup(enemies)
-    level.addGroup(animations, zindex=9)
-    level.addGroup(speech, zindex=15)
+	level.topleft: (100,500)							# position in a place
+	enemy1 = level['Max']
 
-    level.addPhysicalBackground( (0,208), (235, 1130) )
-    level.addPhysicalBackground( (487,208), (310, 1130) )
-    
-    level.addAnimations(((50,900),(563, 1204),(654, 1069),(-30, 1219),(550, 789),(97, 447),(582, 277),(-55, 283)), 'water-wave')
-    level.addAnimation( (455,1422), CodigoroSign((200,1200), (80,53), animations, physical) )
-
-[00:00:05 000 - 00:00:10 000] 											# move the enemy on the visible screen
-	enemy1.moveBasedOnNavPoint((200, 800), %SPEED)
+[00:00:05 000] 											# move the enemy on the visible screen
+	enemy1.moveBasedOnNavPoint((200, 800))
 

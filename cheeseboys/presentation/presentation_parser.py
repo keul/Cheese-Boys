@@ -76,9 +76,6 @@ class PresentationParser(object):
         data = { 'version': (x,y,z), 'operations': operations_arr }
         operations_arr = [ { 'timestamp_start': timestamp, 'timestamp_end': timestamp, 'commands' : commands_arr }, ... ]
         commands_arr = [command, ...]
-        command = {'method': method, 'params': [param, ...] } or {'property': property, 'value': value }
-                  or {'var': varname, 'value': value }
-        param = tuple or list or int or float or str
         """
         if self.data:
             return self.data
@@ -120,35 +117,13 @@ class PresentationParser(object):
 
     def _getCommands(self, data):
         """Given a list of string, obtain a commands-style list.
-        [ command, ... ]
-        A command can be:
-        {'method': method, 'params': [param, ...] } or {'property': property, 'value': value }
-        or {'var': varname, 'value': value }
-        
-        .methodName: param1, param2          -->  level.methodName(param1,param2)
-        .methodName                          -->  level.methodName()
-        .propertyName= value                 -->  level.propertyName = value
-        var dummy = value                    -->  dummy = value
-        $dummy.methodName: param1, param2    -->  dummy.methodName(param1, param2)
-        $dummy.propertyName = value          -->  dummy.propertyName = value
-        
-        BBB: security issue here!
-        BBB: not implemented for now... just use python in cbp files.
+        Just return strings!
         """
+        # The idea WAS to obtain a new language for the presentation format, but this was very
+        # difficult... ok not impossible, but I've not much time for cheeseboys so I need to
+        # stay simple!
+        #BBB: security issue here!
         return data
-        
-        retCommands = []
-        for command in data:
-            singleCommand = {}
-            column = command.find(":")
-            if column!=-1:
-                singleCommand['method'] = command[:column].strip()
-                paramsStr = command[column+1:]
-                singleCommand['params'] = self._getParamsFromStr(paramsStr)
-            else:
-                singleCommand['method'] = command.strip()
-            retCommands.append(singleCommand)
-        return retCommands
 
 
 class CBPParsingException(Exception):

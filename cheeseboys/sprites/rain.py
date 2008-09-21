@@ -108,7 +108,7 @@ class Rain(object):
             ndrops = 4
         elif ndrops>MAX_RAINDROPS:
             ndrops = MAX_RAINDROPS
-        logging.info("Rain frequency changed from %s to %s" % (self._raindrops_length, ndrops))
+        logging.info("Rain frequence changed from %s to %s" % (self._raindrops_length, ndrops))
         self._raindrops_length = ndrops
 
     def changeWindStrength(self):

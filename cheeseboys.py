@@ -39,13 +39,8 @@ def main():
     hero.setCombatValues(2, 13)
 
     level = loadLevelByName("The South Bridge", hero)
+    presentation = level.getPresentation('funny-intro')
     
-
-    from cheeseboys.presentation import Presentation
-    pp = Presentation(level, "funny-intro.cbp")
-    pp.run()
-    return
-
     
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
@@ -62,42 +57,35 @@ def main():
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
                 
-                if pressed_keys[K_s]:
-                    hero.say(_("Hello world I like to see more of this nice evening"
-                               "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefhr iufhaiefhaiufhrei!")
-                    )
-                if pressed_keys[K_s] and pressed_keys[K_LSHIFT]:
-                    hero.shout(_("Hello world I like to see more of this nice evening"
-                                 "gdsfdsfhj sdfhdskjfheuifhr eifheriuhfiefh riufhaiefhaiufhrei!")
-                    )
-      
                 if pressed_keys[K_ESCAPE]:
                     sys.exit()
 
-            if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
-                mouse_pos = pygame.mouse.get_pos()
-                if utils.checkPointIsInsideRectType(mouse_pos, ( (0,0),cblocals.GAME_SCREEN_SIZE ) ):
-                    logging.debug("Click on %s (%s on level)" % (mouse_pos, level.transformToLevelCoordinate(mouse_pos)))
-                    lb, cb, rb = pygame.mouse.get_pressed()
-                    if lb and not cblocals.global_leftButtonIsDown:
-                        cblocals.global_leftButtonIsDown = True
-                    if lb:
-                        cblocals.global_lastMouseLeftClickPosition = mouse_pos
-                    elif rb:
-                        cblocals.global_lastMouseRightClickPosition = mouse_pos
-            if event.type==MOUSEBUTTONUP:
-                cblocals.global_leftButtonIsDown = False
-
-            if event.type==cblocals.ATTACK_OCCURRED_EVENT:
-                print "Attack from %s" % event.character.name
-                hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
-                for hit in hit_list:
-                    attackRes = event.character.roll_for_hit(hit)
-                    if attackRes==cblocals.TH0_HIT or attackRes==cblocals.TH0_HIT_CRITICAL:
-                        print "  hit %s" % hit.name
-                        hit.generatePhysicalAttachEffect(attack_origin=event.character, criticity=attackRes)
-                    else:
-                        print "  missed %s" % hit.name
+            if cblocals.global_controlsEnabled:
+                # No mouse control during presentations
+                if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if utils.checkPointIsInsideRectType(mouse_pos, ( (0,0),cblocals.GAME_SCREEN_SIZE ) ):
+                        logging.debug("Click on %s (%s on level)" % (mouse_pos, level.transformToLevelCoordinate(mouse_pos)))
+                        lb, cb, rb = pygame.mouse.get_pressed()
+                        if lb and not cblocals.global_leftButtonIsDown:
+                            cblocals.global_leftButtonIsDown = True
+                        if lb:
+                            cblocals.global_lastMouseLeftClickPosition = mouse_pos
+                        elif rb:
+                            cblocals.global_lastMouseRightClickPosition = mouse_pos
+                if event.type==MOUSEBUTTONUP:
+                    cblocals.global_leftButtonIsDown = False
+    
+                if event.type==cblocals.ATTACK_OCCURRED_EVENT:
+                    print "Attack from %s" % event.character.name
+                    hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
+                    for hit in hit_list:
+                        attackRes = event.character.roll_for_hit(hit)
+                        if attackRes==cblocals.TH0_HIT or attackRes==cblocals.TH0_HIT_CRITICAL:
+                            print "  hit %s" % hit.name
+                            hit.generatePhysicalAttachEffect(attack_origin=event.character, criticity=attackRes)
+                        else:
+                            print "  missed %s" % hit.name
 
             if event.type==cblocals.SHOUT_EVENT:
                 logging.info('%s shouted "%s" from position %s.' % (event.character.name,
@@ -108,7 +96,9 @@ def main():
         level.update(time_passed)
         
         level.draw(screen)
-        level.normalizeDrawPositionBasedOn(hero, time_passed)
+        
+        if cblocals.global_controlsEnabled:
+            level.normalizeDrawPositionBasedOn(hero, time_passed)
 
         if cblocals.DEBUG:
             physical.drawCollideRect(screen)
@@ -130,16 +120,17 @@ def main():
             screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
         # mouse cursor hover on enemy
-        for enemy in enemies.sprites():
-            if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
-                hero.seeking = enemy
-                utils.changeMouseCursor(cblocals.IMAGE_CURSOR_ATTACK_TYPE)
-                utils.drawCursor(screen, pygame.mouse.get_pos())
-                break
-        else:
-            if cblocals.global_mouseCursor is not None:
-                utils.changeMouseCursor(None)
-            hero.seeking = None
+        if cblocals.global_controlsEnabled:
+            for enemy in enemies.sprites():
+                if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
+                    hero.seeking = enemy
+                    utils.changeMouseCursor(cblocals.IMAGE_CURSOR_ATTACK_TYPE)
+                    utils.drawCursor(screen, pygame.mouse.get_pos())
+                    break
+            else:
+                if cblocals.global_mouseCursor is not None:
+                    utils.changeMouseCursor(None)
+                hero.seeking = None
 
         level.drawRain(screen, time_passed)
 
