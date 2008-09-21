@@ -25,6 +25,17 @@ re_dataBlock = re.compile(DATA_BLOCK_REGEXP, re.MULTILINE|re.VERBOSE)
 TIMESTAMPS_DATA_REGEXP = r"""^\[(\d\d:\d\d:\d\d \d\d\d)\]|\[(\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d)\]"""
 re_timestampsData = re.compile(TIMESTAMPS_DATA_REGEXP)
 
+def timestamp_sort(x, y):
+    """Service method for sort by timestamp a list"""
+    t1 = x['timestamp_start']
+    t2 = y['timestamp_start']
+    if t1<t2:
+        return -1
+    elif t1==t2:
+        return 0
+    else:
+        return 1
+
 class PresentationParser(object):
     """A parser for cheeseboys presentation (.cbp) files"""
     
@@ -73,9 +84,12 @@ class PresentationParser(object):
 
     def _loadData(self):
         """Load data from the text file to a navigable structure.
+        
         data = { 'version': (x,y,z), 'operations': operations_arr }
         operations_arr = [ { 'timestamp_start': timestamp, 'timestamp_end': timestamp, 'commands' : commands_arr }, ... ]
         commands_arr = [command, ...]
+        
+        operations_arr list is sorted by timestamp_start info
         """
         if self.data:
             return self.data
@@ -90,6 +104,8 @@ class PresentationParser(object):
                 localData['timestamp_end'] = timestamps2
             localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
             operations.append(localData)
+        # sort of the list, in case that the file isn't sorted itself
+        operations.sort(timestamp_sort)
         self.data['operations'] = operations
 
     def _getTimeStampsStartEnd(self, data):

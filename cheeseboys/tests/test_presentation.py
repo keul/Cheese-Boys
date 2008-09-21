@@ -56,10 +56,35 @@ class TestPresentationParser(CheeseBoysTestCase):
         """Test the loading of a complete commands datablock"""
         self.pparser._loadData()
         self.assertEquals(self.pparser.data['operations'][1]['commands'][0],
-                          {'method': 'fakeMethod', 'params': [(1, 4, 5), 56, 'strmns']})
+                          'fakeMethod   :   (1,4,5) ;  56  ; "strmns"')
+
+
+
+class TestPresentation(CheeseBoysTestCase):
+    """Test the use of a Presentation class/object"""
+
+    def test_timestampValueToString(self):
+        """Test that a value is converted to a timestamp string"""
+        self.assertEquals(Presentation.timestampValueToString(0), '00:00:00 000')
+        self.assertEquals(Presentation.timestampValueToString(123), '00:00:00 123')
+        self.assertEquals(Presentation.timestampValueToString(12*1000 + 123), '00:00:12 123')
+        self.assertEquals(Presentation.timestampValueToString(30*1000*60 + 24*1000 + 123), '00:30:24 123')        
+        self.assertEquals(Presentation.timestampValueToString(2*1000*60*60 + 30*1000*60 + 24*1000 + 123), '02:30:24 123')
+              
+    def test_timestampStringToValue(self):
+        """Test conversion of a timestamps string to an amount of milliseconds"""
+        self.assertEquals(Presentation.timestampStringToValue('00:00:00 000'), 0)
+        self.assertEquals(Presentation.timestampStringToValue('00:00:00 050'), 50)
+        self.assertEquals(Presentation.timestampStringToValue('00:00:02 050'), 2*1000 + 50)
+        self.assertEquals(Presentation.timestampStringToValue('00:13:02 050'), 13*1000*60 + 2*1000 + 50)
+        self.assertEquals(Presentation.timestampStringToValue('05:00:02 050'), 5*1000*60*60 + 2*1000 + 50)
+        self.assertRaises(ValueError, Presentation.timestampStringToValue, '05:f0:02 050')
+        self.assertRaises(ValueError, Presentation.timestampStringToValue, '05:10:02')
+        self.assertRaises(ValueError, Presentation.timestampStringToValue, '05:10:02    ')
 
 suites = []
 
 suites.append(unittest.TestLoader().loadTestsFromTestCase(TestPresentationParser))
+suites.append(unittest.TestLoader().loadTestsFromTestCase(TestPresentation))
 
 alltests = unittest.TestSuite(suites)
