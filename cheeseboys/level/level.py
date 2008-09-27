@@ -43,10 +43,11 @@ class GameLevel(object):
         self._groups_toupdate = []
         self._groups_todraw = []
         self._rain = None
+        # The presentation object running
+        self.presentation = None
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
-        BBB: what if I return here a sprite by name also?
         BBB: check for KeyError
         """
         for group in self._groups:
@@ -301,9 +302,12 @@ class GameLevel(object):
             self._rain.draw(surface)
 
     def getPresentation(self, presentation):
-        """Load a presentation using its name and return a Presentation object"""
+        """Load a presentation using its name and return a Presentation object.
+        Also store current level presentation
+        """
         if not presentation.endswith(".cbp"):
             presentation+=".cbp"
         pp = Presentation(self, presentation)
+        self.presentation = pp
         return pp
 

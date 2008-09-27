@@ -17,7 +17,7 @@ class Presentation(object):
     This will lead to security issues! If you write a python command that will erase your HD in a .cbp file
     this will be executed by the game!
 
-    AUTHOR ISN'T RESPONSIBLE FOR DAMAGE YOU GET FROM A BAD PRESENTATION FILE!!!    
+    AUTHOR(s) OF CHEESE BOYS GAME AREN'T RESPONSIBLE FOR DAMAGE YOU GET FROM A BAD PRESENTATION FILE!!!    
     """
     
     def __init__(self, level, presentation_file, presentation_dir="data/presentations"):
@@ -61,3 +61,14 @@ class Presentation(object):
         ss = int(timestamp[6:8])
         ml = int(timestamp[9:12])
         return ml + ss*1000 + mm*1000*60 + hh*1000*60*60
+    
+    def update(self, time_passed):
+        """Update presentation run timer"""
+        self._time_collected+= time_passed
+        
+        next_ops = self.data['operations'][0]
+        next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])
+        if self._time_collected>=next_op_timestamp_value:
+            # I'm late, I must run next operation!
+            next_op = next_ops['commands'].pop(0)
+            # BBB TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO

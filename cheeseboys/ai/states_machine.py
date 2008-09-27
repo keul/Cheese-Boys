@@ -25,6 +25,9 @@ class StateMachine(object):
         self.states[state.name] = state
         
     def think(self, time_passed):
+        """Self explanatory.
+        Run AI logic of the state machine.
+        Do nothing if the state machine has not active state."""
         if self.active_state is None:
             return
         

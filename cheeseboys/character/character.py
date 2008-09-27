@@ -143,7 +143,7 @@ class Character(GameSprite):
         A non playing character check his own AI here.
         """
         GameSprite.update(self, time_passed)
-        if self._brain:
+        if self._brain and self.currentLevel.presentation is None:
             self._brain.think(time_passed)
 
     def moveBasedOnNavPoint(self, time_passed, destination=None, speed=None):
