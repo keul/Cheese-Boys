@@ -37,7 +37,6 @@ class Rain(object):
         self._raindrops_length = ndrops
         self._time_rain_frequency = 0
         self._time_wind_strength = 0
-        
 
     @property
     def emptyRainDrop(self):

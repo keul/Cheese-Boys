@@ -6,7 +6,7 @@ import pygame
 from pygame.locals import *
 
 from cheeseboys.cbrandom import cbrandom
-from cheeseboys.ai import StateMachine
+from cheeseboys.ai import StateMachine, PresentationStateMachine
 from cheeseboys import cblocals, utils
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
@@ -31,6 +31,7 @@ class Character(GameSprite):
         self.img = img
         
         self._brain = None
+        self._presentationBrain = PresentationStateMachine(self)
         
         self._load_images(img, weaponInAndOut)
         self.lastUsedImage = 'head_east_1'
@@ -137,19 +138,26 @@ class Character(GameSprite):
                 self.images['head_attack_east'], self.images['attack_east_2'], self.images['attack_south_1'], self.images['head_attack_south'], \
                 self.images['attack_south_2'], self.images['attack_west_1'], self.images['head_attack_west'], \
                 self.images['attack_west_2'] = utils.load_image(img, directory, charasFormatImage=True, weaponInAndOut=weaponInAndOut)
-                
+
+    @property
+    def brain(self):
+        """The brain of the character.
+        This will be a PresentationStateMachine instance if a presentation is running
+        """
+        if self.currentLevel.presentation is not None:
+            return self._presentationBrain
+        return self._brain
+     
     def update(self, time_passed):
         """Update method of pygame Sprite class.
         A non playing character check his own AI here.
         """
         GameSprite.update(self, time_passed)
-        if self._brain and self.currentLevel.presentation is None:
-            self._brain.think(time_passed)
+        self.brain.think(time_passed)
 
-    def moveBasedOnNavPoint(self, time_passed, destination=None, speed=None):
+    def moveBasedOnNavPoint(self, time_passed, destination=None):
         """Common method for move character using navPoint infos.
         If a destination is not specified, then the current character navPoint is used.
-        You can also use a custom speed instead of the character speed.
         """
         if not destination:
             destination = self.navPoint
@@ -157,15 +165,13 @@ class Character(GameSprite):
             if type(destination)==tuple:
                 destination = Vector2(destination)
             self.navPoint = destination
-        if not speed:
-            speed = self.speed
         self.heading = Vector2.from_points(self.position, destination)
         self.heading.normalize()
         direction = self._generateDirectionFromHeading(self.heading)
         self._checkDirectionChange(direction)
 
         self.moving(True)
-        distance = time_passed * speed
+        distance = time_passed * self.speed
         movement = self.heading * distance
         self.addDistanceWalked(distance)
         x = movement.get_x()
@@ -460,7 +466,7 @@ class Character(GameSprite):
     @property
     def active_state(self):
         """Get the current brain active state"""
-        return self._brain.active_state.name
+        return self.brain.active_state.name
     
     def _setEnemyTarget(self, enemy):
         self._enemyTarget = enemy
@@ -512,15 +518,27 @@ class Character(GameSprite):
         damage = cbrandom.throwDices(attack_origin.attackDamage)
         critic = ""
         if criticity and criticity==cblocals.TH0_HIT_CRITICAL:
+            if cbrandom.randint(1,2)==1:
+                self.shout(_("Ouch!"))
             damage = int(damage * 1.5)
             critic = "CRITICAL! "
         self.hitPointsLeft-= damage
         print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.hitPointsLeft)
         # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
         self.damageHeading = attack_origin.lastAttackHeading
-        self._brain.setState("hitten")
+        self.brain.setState("hitten")
         if not self.checkAliveState():
             print "%s is dead." % self.name
+
+    @classmethod
+    def getHealtColor(cls, total, left):
+        """Given two value return a tuple RBG that repr a color for points left.
+        More point left, more the color will be green.
+        With point decrease, this will lead to red.
+        """
+        # 255 : total = x : left
+        v1 = 255*left/total
+        return (255-v1,v1,0)
 
     def drawPointsInfos(self, surface):
         """Draw infos about this character point left on the surface"""
@@ -529,7 +547,7 @@ class Character(GameSprite):
         pr = self.physical_rect
         # hitPoints : pr.height = hitPointsLeft : x
         topright = (pr.topright[0], pr.bottomright[1] - (pr.height * hitPointsLeft / hitPoints) )
-        pygame.draw.line(surface, (0,0,255), pr.bottomright, topright, 3)
+        pygame.draw.line(surface, self.getHealtColor(hitPoints, hitPointsLeft), pr.bottomright, topright, 3)
 
     def say(self, text):
         """Say something, displaying the speech cloud"""

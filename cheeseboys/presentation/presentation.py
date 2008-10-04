@@ -33,12 +33,16 @@ class Presentation(object):
         Exception for ESC key and SPACE.
         """
         cblocals.global_controlsEnabled = False
+        cblocals.globals['text_tips'] = False
+        cblocals.globals['points'] = False
     
     def disablePresentationMode(self):
         """Enable all keys and buttons that user can press. Commonly called at the end of the presentation so the player can
         obtain controls back.
         """
         cblocals.global_controlsEnabled = True
+        cblocals.globals['text_tips'] = True
+        cblocals.globals['points'] = True
 
     @classmethod
     def timestampValueToString(cls, value):
@@ -73,7 +77,7 @@ class Presentation(object):
             self.disablePresentationMode()
             return None
         next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])
-        if self._time_collected*1000>=next_op_timestamp_value:
+        if self._time_collected*1000.>=next_op_timestamp_value:
             # I'm late, I must run next operation!
             try: 
                 next_op = next_ops['commands'].pop(0)

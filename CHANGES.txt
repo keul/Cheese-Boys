@@ -7,6 +7,8 @@ A (un)complete list of changes in every release.
  * Added the rain and wind effects.
  
  * Added speech and shout behaviour for characters.
+ 
+ * Hit point color now change whit healt value.
 
 === 0.0.6 ===
 

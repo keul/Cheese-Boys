@@ -43,6 +43,7 @@ class GameLevel(object):
         self._groups_toupdate = []
         self._groups_todraw = []
         self._rain = None
+        self.screenReferenceSprite = None
         # The presentation object running
         self.presentation = None
 
@@ -224,7 +225,7 @@ class GameLevel(object):
             speed = speed*2
         elif magnitude<250:
             speed = speed*3
-        elif magnitude<300:
+        elif magnitude>=250:
             speed = speed*4                        
         
         heading.normalize()

@@ -41,7 +41,6 @@ def main():
     level = loadLevelByName("The South Bridge", hero)
     level.enablePresentation('funny-intro')
     
-    
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
@@ -92,7 +91,11 @@ def main():
                                                               event.text,
                                                               event.position))
 
-        time_passed = clock.tick() / 1000.
+        if level.presentation is None or not pygame.key.get_pressed()[K_LCTRL]:
+            time_passed = clock.tick() / 1000.
+        else:
+            continue
+        
         level.update(time_passed)
         
         if level.presentation:
@@ -106,6 +109,8 @@ def main():
         
         if cblocals.global_controlsEnabled:
             level.normalizeDrawPositionBasedOn(hero, time_passed)
+        elif level.screenReferenceSprite:
+            level.normalizeDrawPositionBasedOn(level.screenReferenceSprite, time_passed)
 
         if cblocals.DEBUG:
             physical.drawCollideRect(screen)
@@ -119,12 +124,14 @@ def main():
             charas.drawHeatRect(screen)
 
         # points
-        for displayable in [x for x in charas.sprites() if x.isAlive]:
-            displayable.drawPointsInfos(screen)
+        if cblocals.globals['points']:
+            for displayable in [x for x in charas.sprites() if x.isAlive]:
+                displayable.drawPointsInfos(screen)
 
         # textTips
-        for displayable in [x for x in charas.sprites() if x.getTip()]:
-            screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
+        if cblocals.globals['text_tips']:
+            for displayable in [x for x in charas.sprites() if x.getTip()]:
+                screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
         # mouse cursor hover on enemy
         if cblocals.global_controlsEnabled:
@@ -156,10 +163,10 @@ def cheeseBoysInit():
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
-    p.add_option('--logverbosity', '-l', default="INFO", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
+    p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
 
-    options, arguments = p.parse_args( )
+    options, arguments = p.parse_args()
     
     if options.version:
         print "Cheese Boys version %s" % cblocals.__version__

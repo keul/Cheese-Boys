@@ -3,11 +3,12 @@
 # This intro is still a test
 
 [00:00:00 000]
-	level.topleft = (100,500)							# position in a place
+	level.topleft = (100,500)									# position in a place
 	enemy1 = level['Max']
+	level.screenReferenceSprite = enemy1
 
-[00:00:05 000] 											# move the enemy on the visible screen
-	enemy1.moveBasedOnNavPoint(time_passed, (200, 800), speed=300)
+[00:00:02 000] 													# move the enemy on the visible screen
+	enemy1.moveBasedOnNavPoint(time_passed, (200, 800))
 
 [00:00:10 000]
 	pass

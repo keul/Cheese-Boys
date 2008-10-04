@@ -55,4 +55,6 @@ global_mouseCursor = None
 global_controlsEnabled = True
 gameLanguage = "en"
 
-#globals = {'default_font': None}
+globals = {'text_tips': True,
+           'points': True,
+           }
