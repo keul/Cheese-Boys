@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -
 
+import logging
 from presentation_parser import PresentationParser
 from cheeseboys import cblocals
 
@@ -63,12 +64,22 @@ class Presentation(object):
         return ml + ss*1000 + mm*1000*60 + hh*1000*60*60
     
     def update(self, time_passed):
-        """Update presentation run timer"""
+        """Update presentation run timer, and run commands if needed"""
         self._time_collected+= time_passed
-        
-        next_ops = self.data['operations'][0]
+        try:
+            next_ops = self.data['operations'][0]
+        except IndexError:
+            # Presentation is finisched
+            self.disablePresentationMode()
+            return None
         next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])
-        if self._time_collected>=next_op_timestamp_value:
+        if self._time_collected*1000>=next_op_timestamp_value:
             # I'm late, I must run next operation!
-            next_op = next_ops['commands'].pop(0)
-            # BBB TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+            try: 
+                next_op = next_ops['commands'].pop(0)
+                logging.info("Presentation: running command: %s" % next_op)
+                return next_op
+            except IndexError:
+                # No more commands for this timestamp
+                self.data['operations'].pop(0)
+        return ""

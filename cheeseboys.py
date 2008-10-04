@@ -39,7 +39,7 @@ def main():
     hero.setCombatValues(2, 13)
 
     level = loadLevelByName("The South Bridge", hero)
-    presentation = level.getPresentation('funny-intro')
+    level.enablePresentation('funny-intro')
     
     
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
@@ -95,6 +95,13 @@ def main():
         time_passed = clock.tick() / 1000.
         level.update(time_passed)
         
+        if level.presentation:
+            command = level.presentation.update(time_passed)
+            if command:
+                exec command
+            if command is None:
+                level.presentation = None
+        
         level.draw(screen)
         
         if cblocals.global_controlsEnabled:
@@ -149,7 +156,7 @@ def cheeseBoysInit():
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
-    p.add_option('--logverbosity', '-l', default="ERROR", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
+    p.add_option('--logverbosity', '-l', default="INFO", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
 
     options, arguments = p.parse_args( )

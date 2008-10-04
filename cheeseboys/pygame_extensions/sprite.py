@@ -14,6 +14,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.currentLevel = None
         self._x = self._y = None
         self.rect = None
+        self.name = None
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

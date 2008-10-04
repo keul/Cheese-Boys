@@ -149,7 +149,7 @@ class Character(GameSprite):
     def moveBasedOnNavPoint(self, time_passed, destination=None, speed=None):
         """Common method for move character using navPoint infos.
         If a destination is not specified, then the current character navPoint is used.
-        You can also user a custom speed instead of the character speed.
+        You can also use a custom speed instead of the character speed.
         """
         if not destination:
             destination = self.navPoint

@@ -301,7 +301,7 @@ class GameLevel(object):
         if self._rain:
             self._rain.draw(surface)
 
-    def getPresentation(self, presentation):
+    def enablePresentation(self, presentation):
         """Load a presentation using its name and return a Presentation object.
         Also store current level presentation
         """
@@ -309,5 +309,6 @@ class GameLevel(object):
             presentation+=".cbp"
         pp = Presentation(self, presentation)
         self.presentation = pp
+        pp.enablePresentationMode()
         return pp
 
