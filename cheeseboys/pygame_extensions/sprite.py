@@ -132,3 +132,4 @@ class GameSprite(pygame.sprite.Sprite):
         """Add a sprite to multiple groups"""
         for g in groups:
             g.add(self)
+

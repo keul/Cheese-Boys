@@ -18,6 +18,7 @@ def load(name, hero):
     enemies = GameGroup("enemies")
     animations = GameGroup("animations", drawable=True, updatable=True)
     speech = GameGroup("speech", drawable=True, updatable=True)
+    level_text = GameGroup("level_text", drawable=True)
 
     hero.addToGroups(all, charas, physical)
 
@@ -46,6 +47,7 @@ def load(name, hero):
     level.addGroup(enemies)
     level.addGroup(animations, zindex=9)
     level.addGroup(speech, zindex=15)
+    level.addGroup(level_text, zindex=30)
 
     level.addPhysicalBackground( (0,208), (235, 1130) )
     level.addPhysicalBackground( (487,208), (310, 1130) )

@@ -8,6 +8,7 @@ from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.sprites import PhysicalBackground, Rain
 from cheeseboys.presentation import Presentation
+from level_text import LevelText
 
 class GameLevel(object):
     """This repr a game level.
@@ -163,6 +164,13 @@ class GameLevel(object):
         if self._rain:
             self._rain.update(time_passed)
 
+    def update_text(self, time_passed):
+        """An update method that only works with the 'level_text' group"""
+        if len(self['level_text'])>0:
+            self['level_text'].update(time_passed)
+            return True
+        return False
+
     def _normalizeDrawPart(self, topleft=None, size=None):
         """Called to be sure that the draw portion of level isn't out of the level total surface"""
         x,y = topleft or self._topleft
@@ -313,3 +321,8 @@ class GameLevel(object):
         pp.enablePresentationMode()
         return pp
 
+    
+    # Level text methods
+    def levelTextIntro(self, text):
+        level_text = LevelText(text, self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
+        self.addSprite(level_text)

@@ -25,6 +25,7 @@ MIN_PX_4_IMAGES_CHANGE = 20
 HIT_MOVEMENT_SPEED = 500
 
 DEFAULT_FONT = "Vera.ttf"
+DEFAULT_LEVELTEXT_FONT = "Vera.ttf"
 
 FONTS_DIR_PATH = "data/font"
 IMAGES_DIR_PATH = "data/images"
@@ -45,9 +46,12 @@ TH0_HIT = "hit"
 TH0_MISS_CRITICAL = "miss (critical)"
 TH0_HIT_CRITICAL = "critical hit"
 
+# LEVEL TEXT
+LEVEL_TEXT_TYPE_BLACKSCREEN = 'blackscreen'
+LEVEL_TEXT_TYPE_NORMAL = 'normal'
 
 # globals
-default_font = default_font_big = speech_font = None
+default_font = default_font_big = speech_font = leveltext_font = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False

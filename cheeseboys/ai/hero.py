@@ -70,6 +70,7 @@ class HeroStateAttacking(BaseStateAttacking):
             return None
 
         if enemy and not enemy.isAlive:
+            character.navPoint = None
             return "controlled"
 
         if character.distanceFrom(enemy)>character.attackRange:

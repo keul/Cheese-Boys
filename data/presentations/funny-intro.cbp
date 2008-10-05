@@ -4,6 +4,7 @@
 
 [00:00:00 000]
 	level.topleft = (100,500)									# position in a place
+	level.levelTextIntro("Ciao cippalippa!!!")
 	enemy1 = level['Max']
 	level.screenReferenceSprite = enemy1
 

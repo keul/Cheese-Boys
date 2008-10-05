@@ -8,7 +8,7 @@
 # is used instead.
 
 # BBB: 14 Aug, 2008
-# I fixed the __nonzero__ implementation. Something is changed in the code and original version breake all.
+# I fixed the __nonzero__ implementation. Something is changed in the code and original version break all.
 
 from math import sqrt
 from math import pi

@@ -44,6 +44,7 @@ def main():
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
+    console_area.set_alpha(255)
     
     charas = level['charas']
     enemies = level['enemies']
@@ -95,7 +96,11 @@ def main():
             time_passed = clock.tick() / 1000.
         else:
             continue
-        
+
+        if level.update_text(time_passed):
+            level.draw(screen)
+            continue
+
         level.update(time_passed)
         
         if level.presentation:
@@ -190,7 +195,7 @@ def cheeseBoysInit():
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
     cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
-
+    cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 26)
 
 def tests():
     import unittest

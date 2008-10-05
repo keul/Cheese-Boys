@@ -33,7 +33,7 @@ class GameGroup(sprite.Group):
 
     @property
     def drawable(self):
-        """Drawable groups stored in GameLevel object will be drawn on screen"""
+        """Drawable groups stored in GameLevel object will be draw on screen"""
         return self._drawable
 
     def drawAttacks(self, surface, time_passed):
