@@ -9,6 +9,10 @@ A (un)complete list of changes in every release.
  * Added speech and shout behaviour for characters.
  
  * Hit point color now change whit healt value.
+ 
+ * (!!!) Added the presentation support feature!
+ 
+ * Added the text level intro feature.
 
 === 0.0.6 ===
 

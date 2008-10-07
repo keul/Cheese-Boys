@@ -50,7 +50,6 @@ class GameLevel(object):
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
-        BBB: check for KeyError
         """
         for group in self._groups:
             if group[1].name==key:
@@ -324,5 +323,10 @@ class GameLevel(object):
     
     # Level text methods
     def levelTextIntro(self, text):
-        level_text = LevelText(text, self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
+        level_text = LevelText(_(text), self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
         self.addSprite(level_text)
+
+    def levelText(self, text):
+        level_text = LevelText(_(text), self)
+        self.addSprite(level_text)
+

@@ -73,7 +73,7 @@ class Presentation(object):
         try:
             next_ops = self.data['operations'][0]
         except IndexError:
-            # Presentation is finisched
+            # Presentation is finished
             self.disablePresentationMode()
             return None
         next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])

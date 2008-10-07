@@ -45,6 +45,9 @@ def main():
 
     console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
     console_area.set_alpha(255)
+    console_area.fill( (20,20,20) )
+    console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )
+    console_area.blit(cblocals.default_font_big.render("console/command area", True, (255, 255, 255)), (2,30) )
     
     charas = level['charas']
     enemies = level['enemies']
@@ -96,20 +99,19 @@ def main():
             time_passed = clock.tick() / 1000.
         else:
             continue
-
+        
         if level.update_text(time_passed):
             level.draw(screen)
             continue
-
-        level.update(time_passed)
         
         if level.presentation:
             command = level.presentation.update(time_passed)
             if command:
                 exec command
-            if command is None:
+            elif command is None:
                 level.presentation = None
-        
+
+        level.update(time_passed)        
         level.draw(screen)
         
         if cblocals.global_controlsEnabled:
@@ -154,8 +156,6 @@ def main():
         level.drawRain(screen, time_passed)
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
-        console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )
-        console_area.blit(cblocals.default_font_big.render("console/command area", True, (255, 255, 255)), (2,30) )
 
         pygame.display.update()
 
@@ -195,7 +195,7 @@ def cheeseBoysInit():
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
     cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
-    cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 26)
+    cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 30)
 
 def tests():
     import unittest
