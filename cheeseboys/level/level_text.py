@@ -6,8 +6,8 @@ from cheeseboys import cblocals
 from cheeseboys.cblocals import LEVEL_TEXT_TYPE_NORMAL, LEVEL_TEXT_TYPE_BLACKSCREEN
 from cheeseboys.pygame_extensions import GameSprite
 
-V_DIFF = 20
-H_DIFF = 30
+V_DIFF = 30
+H_DIFF = 50
 
 BORDER_PADDING_H = 40
 BORDER_PADDING_V = 20
@@ -28,7 +28,7 @@ class LevelText(GameSprite):
     
     def _getRect(self):
         x,y = self.level.topleft
-        sw, sh = 300, 300 #cblocals.GAME_SCREEN_SIZE
+        sw, sh = cblocals.GAME_SCREEN_SIZE
         if self._type==LEVEL_TEXT_TYPE_BLACKSCREEN:
             return pygame.Rect( (x,y), (sw, sh) )
         else:
@@ -41,10 +41,11 @@ class LevelText(GameSprite):
             return self._image
         print self.rect.topleft
         if self._type == LEVEL_TEXT_TYPE_BLACKSCREEN:
-            srf = self._loadEmptySprite(self.rect.size, alpha=255 ,fillWith=(0,0,0))
+            srf = self._loadEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0))
         else:
             w,h = self.rect.size
-            srf = self._loadEmptySprite( (w-H_DIFF*2, h-V_DIFF*2), alpha=200, fillWith=(0,0,0))
+            self.rect.move_ip(0,-V_DIFF)
+            srf = self._loadEmptySprite( (w, h), alpha=200, fillWith=(0,0,0))
         text = cblocals.leveltext_font.render(self._text, True, (255,255,255))
         srf.blit(text, (BORDER_PADDING_H, BORDER_PADDING_V))
         self._image = srf

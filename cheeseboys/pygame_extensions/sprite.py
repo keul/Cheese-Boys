@@ -70,12 +70,19 @@ class GameSprite(pygame.sprite.Sprite):
         return ""
 
     def addToGameLevel(self, level, firstPosition=None):
+        """Add this sprite the a level.
+        You can also set an initial position that become the midbottom position of the sprite rect.
+        BBB: rect generationd is done here... I don't like this!
+        """
         self.currentLevel = level
         if firstPosition:
             self.x, self.y = firstPosition
             rectPosition = level.transformToScreenCoordinate(firstPosition)
-            self.rect = self.image.get_rect(topleft=rectPosition)
-        else:
+            if self.rect:
+                self.rect.midbottom = rectPosition
+            else:
+                self.rect = self.image.get_rect(midbottom=rectPosition)
+        elif not self.rect:
             self.rect = self.image.get_rect()
 
     def checkCollision(self, x, y):
