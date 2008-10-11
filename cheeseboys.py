@@ -61,7 +61,12 @@ def main():
                 pressed_keys = pygame.key.get_pressed()
                 
                 if pressed_keys[K_ESCAPE]:
-                    sys.exit()
+                    if level.presentation is not None:
+                        # BBB: this is a bad and broken way to do this
+                        level.presentation.disablePresentationMode()
+                        level.presentation = None
+                    else:
+                        sys.exit()
 
             if cblocals.global_controlsEnabled:
                 # No mouse control during presentations
@@ -100,10 +105,12 @@ def main():
         else:
             continue
         
+        # Level text overlay
         if level.update_text(time_passed):
             level.draw(screen)
             continue
         
+        # Presentation
         if level.presentation:
             command = level.presentation.update(time_passed)
             if command:
@@ -152,8 +159,6 @@ def main():
                 if cblocals.global_mouseCursor is not None:
                     utils.changeMouseCursor(None)
                 hero.seeking = None
-
-        level.drawRain(screen, time_passed)
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
 

@@ -28,33 +28,25 @@ class LevelText(GameSprite):
     
     def _getRect(self):
         x,y = self.level.topleft
-        sw, sh = cblocals.GAME_SCREEN_SIZE
+        sw, sh = 300, 300 #cblocals.GAME_SCREEN_SIZE
         if self._type==LEVEL_TEXT_TYPE_BLACKSCREEN:
-            self.x = x+sw/2
-            self.y = y+sh
-            return pygame.Rect( (x,y), cblocals.GAME_SCREEN_SIZE)
+            return pygame.Rect( (x,y), (sw, sh) )
         else:
-            w,h = cblocals.GAME_SCREEN_SIZE
-            self.x = x+sw/2
-            self.y = y+sh - V_DIFF
-            return pygame.Rect( (x+H_DIFF,y+V_DIFF), (w-2*H_DIFF, h-2*V_DIFF) ) 
+            return pygame.Rect( (x+H_DIFF,y+V_DIFF), (sw-2*H_DIFF, sh-2*V_DIFF) ) 
     
     @property
     def image(self):
         if self._image:
             # memoized image
             return self._image
+        print self.rect.topleft
         if self._type == LEVEL_TEXT_TYPE_BLACKSCREEN:
-            srf = self._loadEmptySprite(cblocals.GAME_SCREEN_SIZE, alpha=255 ,fillWith=(0,0,0))
-            text = cblocals.leveltext_font.render(self._text, True, (255,255,255))
-            srf.blit(text, (BORDER_PADDING_H, BORDER_PADDING_V))
+            srf = self._loadEmptySprite(self.rect.size, alpha=255 ,fillWith=(0,0,0))
         else:
-            w,h = cblocals.GAME_SCREEN_SIZE
-            w-= H_DIFF*2
-            h-= V_DIFF*2
-            srf = self._loadEmptySprite( (w,h), alpha=200, fillWith=(0,0,0))
-            text = cblocals.leveltext_font.render(self._text, True, (255,255,255))
-            srf.blit(text, (BORDER_PADDING_H, BORDER_PADDING_V))
+            w,h = self.rect.size
+            srf = self._loadEmptySprite( (w-H_DIFF*2, h-V_DIFF*2), alpha=200, fillWith=(0,0,0))
+        text = cblocals.leveltext_font.render(self._text, True, (255,255,255))
+        srf.blit(text, (BORDER_PADDING_H, BORDER_PADDING_V))
         self._image = srf
         return srf
 

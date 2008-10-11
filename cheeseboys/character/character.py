@@ -28,7 +28,6 @@ class Character(GameSprite):
 
         self.name = name
         self.characterType = "Guy"
-        self.img = img
         
         self._brain = None
         self._presentationBrain = PresentationStateMachine(self)

@@ -59,6 +59,7 @@ class GameLevel(object):
             for sprite in group[1].sprites():
                 if sprite.name==key:
                     return sprite
+        raise KeyError("Not found group or sprite named '%s'" % key)
 
     def addGroup(self, group, zindex=10):
         """Add a new group the this level.
@@ -77,9 +78,15 @@ class GameLevel(object):
         self._topleft = self._normalizeDrawPart(topleft)
     topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
     
+    @property
+    def midbottom(self):
+        x,y = self.topleft
+        w,h = cblocals.GAME_SCREEN_SIZE
+        return (x+w/2, y+h-1)
+    
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
-        You can use this giving a distance and s start point to get a random point near that position.
+        You can use this giving a distance and a start point to get a random point near that position.
         Normally the point is taken at random on level dimension.
         """
         if fromPoint and maxdistance:
@@ -155,6 +162,10 @@ class GameLevel(object):
             xy, wh = self._getScreenCenter()
             xy = self.transformToScreenCoordinate(xy)
             pygame.draw.rect(screen, (50,250,250), (xy, wh), 2)
+        self.drawRain(screen)
+        # Special use of the level_text group
+        if self['level_text']:
+            self['level_text'].draw(screen)
 
     def update(self, time_passed):
         """Call the group update method on all (updatable) groups stored in this level"""
@@ -229,11 +240,11 @@ class GameLevel(object):
         if magnitude<150:
             pass
         elif magnitude<200:
-            speed = speed*2
-        elif magnitude<250:
             speed = speed*3
+        elif magnitude<250:
+            speed = speed*4
         elif magnitude>=250:
-            speed = speed*4                        
+            speed = speed*5                        
         
         heading.normalize()
         distance = time_passed * speed
@@ -302,7 +313,7 @@ class GameLevel(object):
         """Enable the rain effects in this level"""
         self._rain = Rain(self.levelSize)
 
-    def drawRain(self, surface, time_passed):
+    def drawRain(self, surface):
         """Draw the rain effect on the surface passed.
         This call do something only if the level has inited the rain effect calling GameLevel.enableRainEffect()
         """
@@ -324,9 +335,11 @@ class GameLevel(object):
     # Level text methods
     def levelTextIntro(self, text):
         level_text = LevelText(_(text), self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
-        self.addSprite(level_text)
+        level_text.addToGameLevel(self, self.midbottom)
+        #self.addSprite(level_text)
 
     def levelText(self, text):
         level_text = LevelText(_(text), self)
-        self.addSprite(level_text)
+        level_text.addToGameLevel(self, self.midbottom)
+        #self.addSprite(level_text)
 
