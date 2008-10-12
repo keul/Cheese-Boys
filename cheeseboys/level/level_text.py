@@ -51,6 +51,9 @@ class LevelText(GameSprite):
         self._image = srf
         return srf
 
+    def addText(self, text):
+        """Add more text in a new line on this level text"""
+        self._image = None # memoization invalidation
 
     def update(self, time_passed):
         """Do nothing, but kill me when SPACE is hit"""

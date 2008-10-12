@@ -45,8 +45,10 @@ class GameLevel(object):
         self._groups_todraw = []
         self._rain = None
         self.screenReferenceSprite = None
+        
         # The presentation object running
         self.presentation = None
+        self.level_text = None
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
@@ -333,11 +335,17 @@ class GameLevel(object):
 
     
     # Level text methods
+    def _useLevelText(self, text, type=cblocals.LEVEL_TEXT_TYPE_NORMAL):
+        level_text = self.level_text
+        if not level_text:
+            level_text = LevelText(_(text), self, type)
+            level_text.addToGameLevel(self, self.midbottom)
+            self.level_text = level_text
+        else:
+            level_text.addText(_(text))
+
     def levelTextIntro(self, text):
-        level_text = LevelText(_(text), self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
-        level_text.addToGameLevel(self, self.midbottom)
+        self._useLevelText(text, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
 
     def levelText(self, text):
-        level_text = LevelText(_(text), self)
-        level_text.addToGameLevel(self, self.midbottom)
-
+        self._useLevelText(text)
