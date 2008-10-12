@@ -63,7 +63,7 @@ class SpeechCloud(GameSprite):
         # I've a problem, one or more lines are too long.
         newtextlines = []
         for line in textlines:
-            w = BORDER_PADDING + speech_font.size(x)[0] + BORDER_PADDING
+            w = BORDER_PADDING + speech_font.size(line)[0] + BORDER_PADDING
             if w>CLOUD_MAX_WIDTH:
                 newtextlines.extend(utils.normalizeTextLength(line, speech_font, CLOUD_MAX_WIDTH-BORDER_PADDING*2))
             else:

@@ -338,11 +338,11 @@ class GameLevel(object):
     def _useLevelText(self, text, type=cblocals.LEVEL_TEXT_TYPE_NORMAL):
         level_text = self.level_text
         if not level_text:
-            level_text = LevelText(_(text), self, type)
+            level_text = LevelText(self, text, type)
             level_text.addToGameLevel(self, self.midbottom)
             self.level_text = level_text
         else:
-            level_text.addText(_(text))
+            level_text.addText(text)
 
     def levelTextIntro(self, text):
         self._useLevelText(text, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)

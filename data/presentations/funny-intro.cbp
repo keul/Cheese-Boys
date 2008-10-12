@@ -3,8 +3,12 @@
 # This intro is still a test
 
 [00:00:00 000]
-	level.topleft = (100,500)									# position in a place
-	level.levelText("Ciao cippalippa!!!")
+	level.topleft = (100,500)									# position the scene in a place
+	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (255,100,255)})
+	level.levelTextIntro("When: In the year of the Cheese Boys 12")
+	level.levelTextIntro("Where: The South Bridge, Codigoro")
+	level.levelTextIntro("...know all over the Earth to be the Cheese Boys main domain, where the Cheese Wars begin and spread through the planet...")
+	
 	enemy1 = level['Max']
 	level.screenReferenceSprite = enemy1
 
