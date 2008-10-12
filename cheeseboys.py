@@ -112,10 +112,11 @@ def main():
         
         # Presentation
         if level.presentation:
-            command = level.presentation.update(time_passed)
-            if command:
-                exec command
-            elif command is None:
+            commands = level.presentation.update(time_passed)
+            if commands:
+                for command in commands:
+                    exec command
+            elif commands is None:
                 level.presentation = None
 
         level.update(time_passed)        

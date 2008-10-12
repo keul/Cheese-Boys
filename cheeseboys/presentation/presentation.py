@@ -78,12 +78,13 @@ class Presentation(object):
             return None
         next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])
         if self._time_collected*1000.>=next_op_timestamp_value:
-            # I'm late, I must run next operation!
-            try: 
+            # I'm late, I must run next operations!
+            toExecList = []
+            while next_ops['commands']:
                 next_op = next_ops['commands'].pop(0)
+                toExecList.append(next_op)
                 logging.info("Presentation: running command: %s" % next_op)
-                return next_op
-            except IndexError:
-                # No more commands for this timestamp
-                self.data['operations'].pop(0)
+            # No more commands for this timestamp
+            self.data['operations'].pop(0)
+            return toExecList
         return ""
