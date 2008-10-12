@@ -13,8 +13,8 @@ class GameSprite(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, *containers)
         self.currentLevel = None
         self._x = self._y = None
-        self.rect = None
         self.name = None
+        self.rect = None
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -69,21 +69,14 @@ class GameSprite(pygame.sprite.Sprite):
         Override this for subclass if you want this"""
         return ""
 
-    def addToGameLevel(self, level, firstPosition=None):
+    def addToGameLevel(self, level, firstPosition):
         """Add this sprite the a level.
-        You can also set an initial position that become the midbottom position of the sprite rect.
-        BBB: rect generationd is done here... I don't like this!
+        You must set an initial position that become the midbottom position of the sprite rect.
         """
         self.currentLevel = level
-        if firstPosition:
-            self.x, self.y = firstPosition
-            rectPosition = level.transformToScreenCoordinate(firstPosition)
-            if self.rect:
-                self.rect.midbottom = rectPosition
-            else:
-                self.rect = self.image.get_rect(midbottom=rectPosition)
-        elif not self.rect:
-            self.rect = self.image.get_rect()
+        self.x, self.y = firstPosition
+        rectPosition = level.transformToScreenCoordinate(firstPosition)
+        self.rect.midbottom = rectPosition
 
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.
@@ -105,7 +98,7 @@ class GameSprite(pygame.sprite.Sprite):
 
     @property
     def collide_rect(self):
-        """Return a rect used for collision in movement. This must be equals to sprite "basement" area.
+        """Return a rect used for collision in movement. This must be equals to sprite "foot" area.
         For general GameSprite, the collide rect is the same as the rect attribute.
         You probably wanna (must) overwrite this in all subclass!
         """

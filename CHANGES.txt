@@ -13,6 +13,8 @@ A (un)complete list of changes in every release.
  * (!!!) Added the presentation support feature!
  
  * Added the text level intro feature.
+ 
+ * BUG - the console area (again, not used) was blitted in a wrong way.
 
 === 0.0.6 ===
 

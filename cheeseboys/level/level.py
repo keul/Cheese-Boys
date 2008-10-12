@@ -336,10 +336,8 @@ class GameLevel(object):
     def levelTextIntro(self, text):
         level_text = LevelText(_(text), self, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
         level_text.addToGameLevel(self, self.midbottom)
-        #self.addSprite(level_text)
 
     def levelText(self, text):
         level_text = LevelText(_(text), self)
         level_text.addToGameLevel(self, self.midbottom)
-        #self.addSprite(level_text)
 

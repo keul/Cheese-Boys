@@ -24,7 +24,9 @@ class Character(GameSprite):
     def __init__(self, name, img, containers,
                  realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=100,):
         
-        GameSprite.__init__(self, *containers) 
+        GameSprite.__init__(self, *containers)
+        self._x = self._y = 0
+        self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_DIMENSION) )
 
         self.name = name
         self.characterType = "Guy"
@@ -33,11 +35,11 @@ class Character(GameSprite):
         self._presentationBrain = PresentationStateMachine(self)
         
         self._load_images(img, weaponInAndOut)
-        self.lastUsedImage = 'head_east_1'
+        self.lastUsedImage = 'head_south_1'
 
         self._distanceWalked = 0
         self._mustChangeImage = False
-        self.direction = self._lastUsedDirection = cblocals.DIRECTION_E
+        self.direction = self._lastUsedDirection = cblocals.DIRECTION_S
         self._isMoving = False
         self.maxSpeed = self.speed = speed
         self.sightRange = sightRange

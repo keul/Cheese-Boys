@@ -15,7 +15,8 @@ PER_LINE_PADDING = 10
 
 class LevelText(GameSprite):
     """Sprite that displaying a big popup window that contains text.
-    Normally used by GameLevel method during presentations.
+    Normally used by GameLevel method during presentations, or in game action for important information for the player.
+    This sprite freese the game execution until the space bar is clicked.
     """
     
     def __init__(self, text, level, type=LEVEL_TEXT_TYPE_NORMAL):
@@ -39,7 +40,6 @@ class LevelText(GameSprite):
         if self._image:
             # memoized image
             return self._image
-        print self.rect.topleft
         if self._type == LEVEL_TEXT_TYPE_BLACKSCREEN:
             srf = self._loadEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0))
         else:
