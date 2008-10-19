@@ -24,6 +24,7 @@ class SpeechCloud(GameSprite):
         self.bkcolor = bkcolor
         self.textcolor = textcolor
         self._text = ""
+        self._text_queue = []
         self._time_left = 0
         self._last_charX = self._last_charY = None
         self._image = None
@@ -43,11 +44,11 @@ class SpeechCloud(GameSprite):
         self._image = None # break memoization
         if self._text:
             # Append text if needed
-            self._text += "\n"
+            self._text_queue.append(text)
         else:
             self.initSpeech()
-        self._updateTimeLeft(text)
-        self._text += text
+            self._text = text
+            self._updateTimeLeft(text)
     text = property(lambda self: self._text, _setText, doc="""The text of the SpeechCloud""")
 
     def additionalTime(self, additional_time):
@@ -123,8 +124,13 @@ class SpeechCloud(GameSprite):
     def endSpeech(self):
         """Terminate currently running speech"""
         self._time_left=0
-        self._text = ""
-        self.kill()
+        try:
+            text = self._text_queue.pop(0)
+            self._text = text
+            self._updateTimeLeft(text)
+        except IndexError:
+            self._text = ""
+            self.kill()
 
     def _updateTimeLeft(self, text):
         """Base on text length, the _time_left member of this object will be updated"""

@@ -152,7 +152,7 @@ class BaseStateHit(State):
             self.collected_distance += time_passed * character.speed
         else:
             # phase 2: stunned for a while
-            self.collected_rest_time += time_passed    
+            self.collected_rest_time += time_passed
 
     def check_conditions(self):
         """Always return to last action before the Hit.

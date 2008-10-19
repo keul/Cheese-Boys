@@ -52,6 +52,7 @@ LEVEL_TEXT_TYPE_NORMAL = 'normal'
 
 # globals
 default_font = default_font_big = speech_font = leveltext_font = None
+game_speed = 1.
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False

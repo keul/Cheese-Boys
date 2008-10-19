@@ -55,6 +55,11 @@ class GameSprite(pygame.sprite.Sprite):
         x,y = self.position
         return Vector2(x, y)
 
+    def isNearTo(self, point):
+        """Check if the sprite collision rect (the basement) is near to a point."""
+        x, y = self.currentLevel.transformToScreenCoordinate(point)
+        return self.collide_rect.collidepoint(x, y-3)
+
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""
         x, y = self.toScreenCoordinate()

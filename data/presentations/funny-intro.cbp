@@ -3,19 +3,177 @@
 # This intro is still a test
 
 [00:00:00 000]
+	cblocals.game_speed = 20.
 	level.topleft = (100,500)									# position the scene in a place
-	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (255,100,255)})
+	max = level['Max']
+	john = level['John']
+	jack = level['Jack']
+	roger = level['Roger']
+	hero.x = 400
+	hero.y = 1700
+	max.x = 400
+	max.y = 1600
+	john.x = 300
+	john.y = 600
+	jack.x = 350
+	jack.y = 550
+	roger.x = 400
+	roger.y = 600
+
+[00:00:00 001]
+	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (150,255,150)})
 	level.levelTextIntro("When: In the year of the Cheese Boys 12")
 	level.levelTextIntro("Where: The South Bridge, Codigoro")
 	level.levelTextIntro("...know all over the Earth to be the Cheese Boys main domain, where the Cheese Wars begin and spread through the planet...")
-	
-	enemy1 = level['Max']
-	level.screenReferenceSprite = enemy1
+	level.levelTextIntro("")
+	level.levelTextIntro({'text':'...BY THE WAY...', 'color': (150,255,150)})
+	level.levelTextIntro("This is only a test presentation... I don't think this will be there in the final game!")
 
-[00:00:02 000] 													# move the enemy on the visible screen
-	enemy1.moveBasedOnNavPoint(time_passed, (200, 800))
-	enemy1.say("It's raining men...")
+[00:00:03 000]
+	level.screenReferenceSprite = max
 
-[00:00:10 000]
+[00:00:04 000]
+	max.moveBasedOnNavPoint(time_passed, (345, 670))
+
+[00:00:06 000]
+	max.say("It's raining men...")
+
+[00:00:09 000]
+	max.say("...Hallelujah it's raining men...")
+
+[00:00:14 000]
+	max.say("Hi all guys!")
+
+[00:00:17 000]
+	max.say("...guys?")
+
+[00:00:20 000]
+	max.say("... ahem... Something's wrong?!")
+
+[00:00:23 000]
+	roger.say("Something's wrong?! You don't know what is happening?!")
+
+[00:00:28 000]
+	max.say("... no... some unexpected party tonight?")
+
+[00:00:35 000]
+	john.say("Ok... let's say it the better way I can...")
+
+[00:00:38 000]
+	john.say("...we will be killed shortly.")
+
+[00:00:41 000]
+	max.shout("Killed?!?!?!")
+
+[00:00:44 000]
+	max.say("... who? Who will kill you all?!?")
+
+[00:00:48 000]
+	roger.say("No my dear... he's meaning that someone is coming to kill US ALL!")
+
+[00:00:52 000]
+	roger.say("...we...")
+
+[00:00:55 000]
+	roger.shout("... and you!")
+
+[00:00:59 000]
+	max.shout("What?!?!?!?")
+
+[00:01:02 000]
+	max.say("What the hell mean this? Who in the world wanna kill you... US all?!")
+
+[00:01:05 000]
+	max.shutup()
+	john.say("Are you one of us or not?! We are the bad guys here!", additional_time=2)
+
+[00:01:09 000]
+	john.say("A Hero is coming! The Hero from Veneto!")
+
+[00:01:14 000]
+	max.shout("A hero? From Veneto?!?! Here?!?!?")
+
+[00:01:19 000]
+	max.faceTo(cblocals.DIRECTION_S)
+
+[00:01:21 000]
+	max.moveBasedOnNavPoint(time_passed, (5, 30), relative=True)
+
+[00:01:24 000]
+	max.say("I can't believe this...")
+
+[00:01:28 000]
+	max.say("My girlfirend said me \"move to Codigoro, it's safe!\"")
+
+[00:01:33 000]
+	max.say("The capital of the Cheese Empire... no enemy here. No war!", silenceFirst=True)
+
+[00:01:38 000]
+	max.say("Yes, Ferrara is bigger (and has some commercial centers too) but it's too near to the frontier with Veneto...", silenceFirst=True)
+
+[00:01:45 000]
+	max.moveBasedOnNavPoint(time_passed, (0, 20), relative=True)
+	max.shout("And now a real Hero is coming?!?!", silenceFirst=True)
+
+[00:01:50 000]
+	max.moveBasedOnNavPoint(time_passed, (50, 0), relative=True)
+	max.say("I'm going to be slayed in combat...")
+
+[00:01:55 000]
+	max.moveBasedOnNavPoint(time_passed, (-70, 0), relative=True)
+	max.say("...from someone that don't drink apricot jiuce!")
+
+[00:02:00 000]
+	max.moveBasedOnNavPoint(time_passed, (20, 0), relative=True)
+	max.shout("...is this the dark doom of a videogames character?!", silenceFirst=True)
+
+[00:02:05 000]
+	max.shout("Wait!!!", silenceFirst=True)
+	max.moveBasedOnNavPoint(time_passed, (0, -55), relative=True)
+
+[00:02:09 000]
+	max.say("This isn't possible!")
+
+[00:02:13 000]
+	roger.say("What you mean?")
+
+[00:02:17 000]
+	max.say("I know an old character from the 0.0.2 release of the game!")
+
+[00:02:21 000]
+	max.say("He tell me something about the screenplay!")
+
+[00:02:25 000]
+	max.say("The first presentation will be run in a level called \"The Last Bridge\"!")
+	max.say("And we are in \"The South Bridge\" now!")
+	max.say("So is impossible that the hero is really coming here!")
+
+[00:02:45 000]
+	john.say("Yes...")
+	john.say("But the production of this game is late, so someone decided to release the 0.1.0 version like a sort of...")
+	john.shout("...game trailer!")
+
+[00:03:00 000]
+	cblocals.game_speed = 1.
+	max.say("What?!?!")
+
+[00:03:05 000]
+	jack.say("It's true... those stupid game programmers...")
+	roger.faceTo(cblocals.DIRECTION_W)
+
+[00:03:10 000]
+	jack.shutup()
+	roger.say("...ehr...")
+	roger.say("I don't think this is a good idea...")
+
+[00:03:15 000]
+	jack.say("What idea?!")
+
+[00:03:18 000]
+	roger.say("Say bad thing about our programmer...")
+
+[00:03:22 000]
+	jack.say("Bah... it's only a silly boy with a limited social activity that...")
+
+[00:10:59 000]
 	pass
-

@@ -156,14 +156,20 @@ class Character(GameSprite):
         GameSprite.update(self, time_passed)
         self.brain.think(time_passed)
 
-    def moveBasedOnNavPoint(self, time_passed, destination=None):
-        """Common method for move character using navPoint infos.
+    def moveBasedOnNavPoint(self, time_passed, destination=None, relative=False):
+        """Main method for move character using navPoint infos.
         If a destination is not specified, then the current character navPoint is used.
+        You can also specify a destination as relative coordinate starting from the current navPoint, using the
+        relative parameter.
         """
         if not destination:
             destination = self.navPoint
         else:
             if type(destination)==tuple:
+                if relative:
+                    ox, oy = destination
+                    cx, cy = self.position
+                    destination = (cx+ox, cy+oy)
                 destination = Vector2(destination)
             self.navPoint = destination
         self.heading = Vector2.from_points(self.position, destination)
@@ -246,14 +252,6 @@ class Character(GameSprite):
         r = self.physical_rect.move(x,y)
         r.center = self.currentLevel.transformToLevelCoordinate(r.center)
         return self.currentLevel.checkRectIsInLevel(r)
-
-    def isNearTo(self, point):
-        """Check if the "whole" character is near to a point.
-        This is not good for movement collision because if the charas movement is y-negative,
-        but it's used for navPoint based movements.
-        """
-        x, y = self.currentLevel.transformToScreenCoordinate(point)
-        return self.rect.collidepoint(x, y-3)
     
     @property
     def image(self):
@@ -288,6 +286,10 @@ class Character(GameSprite):
             image = self._getImageFromDirectionFaced(direction, weaponOut)
             self.lastUsedImage = image
             return self.images[image]
+
+    def faceTo(self, direction):
+        """Change the character direction faced"""
+        self._lastUsedDirection = direction
 
     def _generateDirectionFromHeading(self, new_heading):
         """Looking at heading, generate a valid direction string"""
@@ -550,16 +552,28 @@ class Character(GameSprite):
         topright = (pr.topright[0], pr.bottomright[1] - (pr.height * hitPointsLeft / hitPoints) )
         pygame.draw.line(surface, self.getHealtColor(hitPoints, hitPointsLeft), pr.bottomright, topright, 3)
 
-    def say(self, text):
+    # Talking methods
+    def say(self, text, additional_time=0, silenceFirst=False):
         """Say something, displaying the speech cloud"""
+        if silenceFirst:
+            self._speech.endSpeech()
         self._speech.text = text
+        if additional_time:
+            self._speech.additionalTime(additional_time)
 
-    def shout(self, text):
+    def shout(self, text, additional_time=0, silenceFirst=False):
         """As say() but with uppercase text"""
+        if silenceFirst:
+            self._speech.endSpeech()
         self._speech.text = text.upper()
+        if additional_time:
+            self._speech.additionalTime(additional_time)
         event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position, 'text': text})
         pygame.event.post(event)
 
+    def shutup(self):
+        """Immediatly shut up the character"""
+        self._speech.endSpeech()
 
     def __str__(self):
         return "Character %s" % self.name

@@ -6,7 +6,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.cblocals import LEVEL_TEXT_TYPE_NORMAL, LEVEL_TEXT_TYPE_BLACKSCREEN
 from cheeseboys.pygame_extensions import GameSprite
 
-# only used for windowed display
+# only used for non-fullscreen level text
 V_DIFF = 30
 H_DIFF = 50
 
@@ -86,7 +86,6 @@ class LevelText(GameSprite):
         y = BORDER_PADDING_V
         h = cblocals.leveltext_font.size("xxx")[1]
         for line in self._text:
-            print line, type(line)
             if type(line)!=dict:
                 line_text = line
                 line_color = COLOR_DEFAULT

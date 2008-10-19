@@ -51,6 +51,7 @@ def main():
     
     charas = level['charas']
     enemies = level['enemies']
+    physical = level['physical']
     while True:
         for event in pygame.event.get():
             #print event, event.type
@@ -101,7 +102,7 @@ def main():
                                                               event.position))
 
         if level.presentation is None or not pygame.key.get_pressed()[K_LCTRL]:
-            time_passed = clock.tick() / 1000.
+            time_passed = clock.tick() / 1000.  * cblocals.game_speed
         else:
             continue
         
@@ -200,7 +201,7 @@ def cheeseBoysInit():
 
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
-    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
+    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 30)
 
 def tests():
