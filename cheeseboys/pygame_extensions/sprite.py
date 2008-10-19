@@ -42,7 +42,7 @@ class GameSprite(pygame.sprite.Sprite):
 
     @property
     def position(self):
-        """Character position as tuple"""
+        """Character position (midbottom) as tuple"""
         return (self.x + self.rect.width/2, self.y+self.rect.height)
     @property
     def position_int(self):
@@ -75,7 +75,7 @@ class GameSprite(pygame.sprite.Sprite):
         return ""
 
     def addToGameLevel(self, level, firstPosition):
-        """Add this sprite the a level.
+        """Add this sprite to a level.
         You must set an initial position that become the midbottom position of the sprite rect.
         """
         self.currentLevel = level

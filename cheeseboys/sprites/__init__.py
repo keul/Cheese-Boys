@@ -5,3 +5,4 @@ from water import WaterWave
 from signs import CodigoroSign
 from rain import Rain
 from speech import SpeechCloud
+from storm import Thunders, Lighting
