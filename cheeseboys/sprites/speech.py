@@ -5,7 +5,7 @@ from pygame.locals import *
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys import cblocals, utils
 
-CLOUD_MAX_WIDTH = 200
+CLOUD_MAX_WIDTH = 250
 MAX_TEXTLINES = 5
 MAX_SPEECH_TIME = 20
 PER_LINE_PADDING = 3
@@ -50,8 +50,13 @@ class SpeechCloud(GameSprite):
         self._text += text
     text = property(lambda self: self._text, _setText, doc="""The text of the SpeechCloud""")
 
-    def _getTextLines(self, text):
-        """Get the text stored, but return it splitted in a list at every line break.
+    def additionalTime(self, additional_time):
+        """Add some more time to the speech display time"""
+        self._time_left+=additional_time
+
+    @classmethod 
+    def _generateTextLines(cls, text):
+        """Generate text to be displayed, but return it splitted in a list at every line break.
         Also, if a line is too long (longer than CLOUD_MAX_WIDTH constant) the line itself is
         splitted again.
         """
@@ -74,7 +79,7 @@ class SpeechCloud(GameSprite):
         """Return the right rect dimension for current text to show"""
         speech_font = cblocals.speech_font
         speech_font_h = speech_font.get_height()
-        textlines = self._getTextLines(self.text)
+        textlines = self._generateTextLines(self.text)
         w = BORDER_PADDING + max( [speech_font.size(x)[0] for x in textlines] ) + BORDER_PADDING
         h = BORDER_PADDING + len(textlines)*speech_font_h + PER_LINE_PADDING*(len(textlines)-1) + BORDER_PADDING
         character = self._character
@@ -100,7 +105,7 @@ class SpeechCloud(GameSprite):
         speech_font_h = speech_font.get_height()
         srf = self._loadEmptySprite(self.rect.size, alpha=200, fillWith=self.bkcolor)
         ptop = BORDER_PADDING
-        for text_line in self._getTextLines(self.text):
+        for text_line in self._generateTextLines(self.text):
             srf.blit(speech_font.render(text_line, True, self.textcolor), (BORDER_PADDING, ptop) )
             ptop += speech_font_h + PER_LINE_PADDING
         self._image = srf
@@ -113,10 +118,14 @@ class SpeechCloud(GameSprite):
         GameSprite.update(self, time_passed)
         self._time_left-= time_passed
         if self._time_left<=0:
-            self._time_left=0
-            self._text = ""
-            self.kill()
-    
+            self.endSpeech()
+
+    def endSpeech(self):
+        """Terminate currently running speech"""
+        self._time_left=0
+        self._text = ""
+        self.kill()
+
     def _updateTimeLeft(self, text):
         """Base on text length, the _time_left member of this object will be updated"""
         # BBB: the alghoritm here can be very silly
@@ -124,3 +133,5 @@ class SpeechCloud(GameSprite):
         self._time_left+= T4WORD * len([w for w in words if len(w)>3])
         if self._time_left>MAX_SPEECH_TIME:
             self._time_left=MAX_SPEECH_TIME
+
+
