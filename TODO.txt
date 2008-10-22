@@ -21,7 +21,7 @@ Entries I will fix/implement someday.
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
    things like ranged weapon and other sprites.
 
- === Wishlist entries ===
+=== Wishlist entries ===
 
 Issues or enhancement I'd like to do someday.
 Those aren't a needed changes.

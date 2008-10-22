@@ -7,6 +7,7 @@ from cheeseboys import cblocals, utils
 
 CLOUD_MAX_WIDTH = 250
 MAX_TEXTLINES = 5
+MIN_SPEECH_TIME = 2
 MAX_SPEECH_TIME = 20
 PER_LINE_PADDING = 3
 BORDER_PADDING = 5
@@ -139,5 +140,7 @@ class SpeechCloud(GameSprite):
         self._time_left+= T4WORD * len([w for w in words if len(w)>3])
         if self._time_left>MAX_SPEECH_TIME:
             self._time_left=MAX_SPEECH_TIME
+        elif self._time_left<MIN_SPEECH_TIME:
+            self._time_left=MIN_SPEECH_TIME
 
 

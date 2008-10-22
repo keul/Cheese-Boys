@@ -32,7 +32,10 @@ from cheeseboys.ai.hero import HeroStateMachine
 def main():
     
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
+    if cblocals.FULLSCREEN:
+        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN, 32)
+    else:
+        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -178,6 +181,7 @@ def cheeseBoysInit():
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
     p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
+    p.add_option('--fullscreen', '-f', action='store_true', help='load the game in fullscreen mode') 
 
     options, arguments = p.parse_args()
     
@@ -200,9 +204,12 @@ def cheeseBoysInit():
         tests()
         exit()
 
+    if options.fullscreen:
+        cblocals.FULLSCREEN = True
+
     cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
-    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
+    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 18)
     cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 30)
 
 def tests():

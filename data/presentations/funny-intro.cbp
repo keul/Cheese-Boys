@@ -3,7 +3,7 @@
 # This intro is still a test
 
 [00:00:00 000]
-	cblocals.game_speed = 20.
+	#cblocals.game_speed = 20.
 	level.topleft = (100,500)									# position the scene in a place
 	max = level['Max']
 	john = level['John']
@@ -173,14 +173,207 @@
 	roger.say("Say bad thing about our programmer...")
 
 [00:03:17 000]
-	cblocals.game_speed = 1.
 	jack.say("Bah... it's only a silly boy with a limited social activity that...")
 
 [00:03:21 000]
 	jack.shutup()
+	jack.hitPointsLeft = int(jack.hitPointsLeft*.3)
 	level.addAnimation( level.midbottom, "thunders" )
 	level.addAnimation( jack.position, "lighting", groups=['top_animations',] )
-	level.addAnimation( jack.position, "dark-largestain")
+	level.addAnimation( jack.position, "dark-largestain" )
+	john.faceTo(cblocals.DIRECTION_E)
 
-[00:10:00 000]
+[00:03:27 000]
+	roger.say("...are you...")
+	roger.say("...ok?")
+
+[00:03:31 000]
+	jack.say("I...")
+	jack.say("I'm...")
+	jack.say("... is this? Is this the final level?")
+
+[00:03:40 000]
+	roger.say("Final level?")
+
+[00:03:45 000]
+	jack.say("Isn't this \"Sensible Soccer\" game?")
+
+[00:03:50 000]
+	john.say("Ok... I think we can leave him alone for a while...")
+
+[00:03:55 000]
+	roger.say("Yeah...")
+
+[00:03:58 000]
+	roger.moveBasedOnNavPoint(time_passed, (0, 300), relative=True)
+	john.moveBasedOnNavPoint(time_passed, (0, 300), relative=True)
+	max.moveBasedOnNavPoint(time_passed, (0, 300), relative=True)
+	level.screenReferenceSprite = roger
+
+[00:04:04 000]
+	roger.faceTo(cblocals.DIRECTION_W)
+	john.faceTo(cblocals.DIRECTION_E)
+	max.faceTo(cblocals.DIRECTION_N)
+
+[00:04:08 000]
+	max.say("So... can we fight togheter and beat this Hero?")
+
+[00:04:15 000]
+	roger.say("Of course we will fight him, but...")
+
+[00:04:20 000]
+	max.say("...but...?")
+
+[00:04:25 000]
+	roger.say("But this is the first level... we are expected to be the most dumb and weak enemies here...")
+
+[00:04:35 000]
+	roger.faceTo(cblocals.DIRECTION_S)
+	john.faceTo(cblocals.DIRECTION_S)
+	max.moveBasedOnNavPoint(time_passed, (0, 70), relative=True)
+	max.say("So... this is the end", additional_time=1)
+	max.say("I'll going back to my game start position", additional_time=2)
+	max.say("I will be the first codigorese that the hero will face...", additional_time=2)
+	max.say("I will be the the first one defeated...", additional_time=2)	
+	max.say("But I will do my duty...", additional_time=1)
+
+[00:05:05 000]
+	max.shout("...in the name of the Cheese Boys, our Dark Lords!!!!")
+	level.addAnimation( level.midbottom, "thunders" )
+
+[00:05:12 000]
+	john.say("Are you sure?")
+
+[00:05:15 000]
+	max.say("Yes... only let me go... alone.")
+
+[00:05:19 000]
+	max.say("Good bye my friends... we will meet again in the aftercheeselife...")
+
+[00:05:25 000]
+	max.moveBasedOnNavPoint(time_passed, (450, 1450))
+
+[00:05:32 000]
+	john.moveBasedOnNavPoint(time_passed, (0, -300), relative=True)
+	roger.moveBasedOnNavPoint(time_passed, (0, -300), relative=True)
+
+[00:05:36 000]
+	roger.faceTo(cblocals.DIRECTION_S)
+	john.faceTo(cblocals.DIRECTION_S)
+
+[00:05:40 000]
+	john.say("I can't believe this guy was so brave...")
+
+[00:05:45 000]
+	roger.say("Yes... we are doomed, but if all brothers here will sacrifice as he's going to do...")
+	roger.say("Veneto and his people will loose the war")
+
+[00:06:00 000]
+	jack.say("... yes...")
+	jack.say("Yes... we can always try to win the next league...")
+
+[00:06:08 000]
+	roger.faceTo(cblocals.DIRECTION_W)
+	john.faceTo(cblocals.DIRECTION_E)
+
+[00:06:12 000]
+	roger.faceTo(cblocals.DIRECTION_S)
+	john.faceTo(cblocals.DIRECTION_S)
+
+[00:06:15 000]
+	level.screenReferenceSprite = max
+
+[00:06:23 000]
+	max.faceTo(cblocals.DIRECTION_N)
+	max.say("I can't believe they are so stupid!")
+
+[00:06:30 000]
+	hero.moveBasedOnNavPoint(time_passed, (350, 1450))
+	max.shout("AHAHAHAHAH!!!!")
+
+[00:06:33 000]
+	hero.faceTo(cblocals.DIRECTION_E)
+
+[00:06:35 000]
+	hero.say("Excuse me...")
+	max.faceTo(cblocals.DIRECTION_W)
+
+[00:06:39 000]
+	max.shout("Yes!!!")
+	max.say("Erh... yes...")
+	max.say("How... how can I help you?")
+
+[00:06:49 000]
+	hero.say("Is this place Codigoro? The capital of the Empire?")
+
+[00:06:55 000]
+	max.shout("Yes!!!")
+	max.say("Erh... yes...")
+	max.say("Yes... a friend of mine told me that is this...")
+
+[00:07:05 000]
+	hero.say("Ok... thanks you!")
+
+[00:07:08 000]
+	hero.moveBasedOnNavPoint(time_passed, (50, -200), relative=True)
+	hero.say("Bye!")
+
+[00:07:12 000]
+	hero.faceTo(cblocals.DIRECTION_S)
+	max.faceTo(cblocals.DIRECTION_N)
+	hero.say("Excuse me again...")
+
+[00:07:15 000]
+	max.shout("Yes!!!")
+	max.say("Erh... yes...")
+	max.say("How can I help you again?!?")
+
+[00:07:22 000]
+	hero.say("Are you... you live here?")
+
+[00:07:24 000]
+	hero.moveBasedOnNavPoint(time_passed, (20, 70), relative=True)
+
+[00:07:27 000]
+	max.shout("What?")
+	max.say("Erh... no...")
+	max.say("It's a strange story but...")
+
+[00:07:33 000]
+	max.say("I am...", additional_time=1)
+
+[00:07:38 000]
+	hero.say("Yes...?")
+	hero.moveBasedOnNavPoint(time_passed, (5, 25), relative=True)
+
+[00:07:43 000]
+	max.say("I'm not a character of this game!")
+
+[00:07:49 000]
+	hero.say("What?!?")
+
+[00:07:53 000]
+	max.say("Yes... I'm a football player... from \"Sensible Soccer\" old school game!")
+	max.say("Really!")
+	max.say("I lost my way home...")
+
+[00:08:06 000]
+	hero.say("Ok...")
+
+[00:08:10 000]
+	hero.say("So... goodbye again")
+
+[00:08:14 000]
+	max.shout("Bye!!!")
+	max.moveBasedOnNavPoint(time_passed, (0, 200), relative=True)
+
+[00:08:19 000]
+	hero.faceTo(cblocals.DIRECTION_N)
+	hero.say("Good...")
+	max.kill()
+
+[00:08:24 000]
+	hero.say("Let's do it")
+
+[00:08:28 000]
 	pass

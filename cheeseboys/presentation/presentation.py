@@ -43,6 +43,7 @@ class Presentation(object):
         cblocals.global_controlsEnabled = True
         cblocals.globals['text_tips'] = True
         cblocals.globals['points'] = True
+        cblocals.game_speed = 1.
 
     @classmethod
     def timestampValueToString(cls, value):

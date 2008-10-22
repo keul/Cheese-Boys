@@ -15,6 +15,12 @@ A (un)complete list of changes in every release.
  * Added the text level intro feature.
  
  * BUG - the console area (again, not used) was blitted in a wrong way.
+ 
+ * Added thunder, lighting and stains sprites. 
+
+ * BUG - position primitives of GameSprite classes were very messy.
+
+ * The game can be now launched in fullscreen mode with the -f option.
 
 === 0.0.6 ===
 
