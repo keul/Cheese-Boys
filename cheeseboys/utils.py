@@ -112,14 +112,10 @@ def drawCursor(screen, (x, y) ):
     screen.blit(mouse_cursor, (x,y))
 # **********************
 
-VALID_ANIMATIONS = ('water-wave','thunders','lighting')
-
 def loadAnimationByName(name, position, *containers):
     """Try to load an animation sprite know to the application.
     This method know how big is the animation dimension.
     """
-    if name not in VALID_ANIMATIONS:
-        raise KeyError("Animation name must be one of (%s)" % ','.join(VALID_ANIMATIONS))
     if name=='water-wave':
         from cheeseboys.sprites import WaterWave
         return WaterWave(position, (120,80), *containers)
@@ -129,6 +125,10 @@ def loadAnimationByName(name, position, *containers):
     if name=='lighting':
         from cheeseboys.sprites import Lighting
         return Lighting(position, (103, 652), *containers)
+    if name=='dark-largestain':
+        from cheeseboys.sprites import DarkLargeStain
+        x,y = position
+        return DarkLargeStain((x, y+21), (62, 42), *containers)
     else:
         raise ValueError("Value %s is not a know animation." % name)
 

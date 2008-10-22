@@ -66,6 +66,7 @@ def main():
                         # BBB: this is a bad and broken way to do this
                         level.presentation.disablePresentationMode()
                         level.presentation = None
+                        cblocals.game_speed = 1.
                     else:
                         sys.exit()
 

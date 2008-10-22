@@ -170,16 +170,17 @@
 	jack.say("What idea?!")
 
 [00:03:13 000]
-	cblocals.game_speed = 1.
 	roger.say("Say bad thing about our programmer...")
 
 [00:03:17 000]
+	cblocals.game_speed = 1.
 	jack.say("Bah... it's only a silly boy with a limited social activity that...")
 
 [00:03:21 000]
 	jack.shutup()
-	level.addAnimation( level.topleft, "thunders" )
-	level.addAnimation( jack.position, "lighting" )
+	level.addAnimation( level.midbottom, "thunders" )
+	level.addAnimation( jack.position, "lighting", groups=['top_animations',] )
+	level.addAnimation( jack.position, "dark-largestain")
 
 [00:10:00 000]
 	pass

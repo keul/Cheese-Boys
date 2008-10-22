@@ -43,7 +43,9 @@ class GameSprite(pygame.sprite.Sprite):
     @property
     def position(self):
         """Character position (midbottom) as tuple"""
-        return (self.x + self.rect.width/2, self.y+self.rect.height)
+        if not self.x and not self.y:
+            return ()
+        return (self.x, self.y)
     @property
     def position_int(self):
         """Same as position but in integer format"""

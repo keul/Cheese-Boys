@@ -18,6 +18,8 @@ class Thunders(GameSprite):
     def __init__(self, position, dimension, *containers):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, dimension)
+        self.x, self.y = position
+        self.rect.midbottom = position
         self._image = None
         self._timeCollected = 0
         self._nextLightChange = randomTime()
@@ -61,10 +63,11 @@ class Lighting(GameSprite):
     """
     
     def __init__(self, position, dimension, *containers):
+        """The position used is the lighting strike point of the ground (midbottom)"""
         GameSprite.__init__(self, *containers)
-        midbottom_position = (position[0]-dimension[0]/2, position[1]-dimension[1])
         self.rect = pygame.Rect(position, dimension)
-        self.rect.midbottom = midbottom_position # BBB: non va...?!?!?
+        self.x, self.y = position
+        self.rect.midbottom = position
         self._image = None
         self._timeCollected = 0
         self._nextLightChange = randomTime()

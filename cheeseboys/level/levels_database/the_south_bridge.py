@@ -17,6 +17,7 @@ def load(name, hero):
     charas = GameGroup("charas")
     enemies = GameGroup("enemies")
     animations = GameGroup("animations", drawable=True, updatable=True)
+    top_animations = GameGroup("top_animations", drawable=True, updatable=True)
     speech = GameGroup("speech", drawable=True, updatable=True)
     level_text = GameGroup("level_text")
 
@@ -45,15 +46,16 @@ def load(name, hero):
     level.addGroup(physical, zindex=10)
     level.addGroup(charas, zindex=10)
     level.addGroup(enemies)
-    level.addGroup(animations, zindex=9)
+    level.addGroup(animations, zindex=3)
+    level.addGroup(top_animations, zindex=20)
     level.addGroup(speech, zindex=15)
     level.addGroup(level_text, zindex=30)
 
-    level.addPhysicalBackground( (0,208), (235, 1130) )
-    level.addPhysicalBackground( (487,208), (310, 1130) )
+    level.addPhysicalBackground( (118,1338), (235, 1130) )
+    level.addPhysicalBackground( (642,1338), (310, 1130) )
     
-    level.addAnimations(((50,900),(563, 1204),(654, 1069),(-30, 1219),(550, 789),(97, 447),(582, 277),(-55, 283)), 'water-wave')
-    level.addAnimation( (455,1422), CodigoroSign((200,1200), (80,53), animations, physical) )
+    level.addAnimations(((110,980),(623, 1284),(704, 1149),(30, 1299),(610, 869),(157, 527),(642, 357),(5, 363)), 'water-wave')
+    level.addAnimation( (535,1475), CodigoroSign((535,1475), (80,53), animations, physical) )
 
     level.enableRainEffect()
     

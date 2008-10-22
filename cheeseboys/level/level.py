@@ -82,6 +82,7 @@ class GameLevel(object):
     
     @property
     def midbottom(self):
+        """Midbottom of the screen"""
         x,y = self.topleft
         w,h = cblocals.GAME_SCREEN_SIZE
         return (x+w/2, y+h-1)
@@ -209,12 +210,11 @@ class GameLevel(object):
         sprite = GameSprite()
         sprite.image = utils.getRandomImageFacingUp(corpse.images)
         curRect = corpse.rect
-        newRect = pygame.Rect( (curRect.centerx-curRect.height/2, curRect.bottom-curRect.width), (curRect.height,curRect.width) )
-        sprite.rect = pygame.Rect(newRect)
+        newRect = pygame.Rect( curRect.topleft, sprite.image.get_rect().size )
+        newRect.midbottom = corpse.position
+        sprite.rect = newRect
         self["dead"].add(sprite)
-        x,y = self.topleft
-        y+=curRect.width/2
-        sprite.addToGameLevel(self, corpse.topleft(x,y))
+        sprite.addToGameLevel(self, corpse.position)
 
     @property
     def center(self):
@@ -302,6 +302,9 @@ class GameLevel(object):
         for group_name in groups:
             group = self[group_name]
             group.add(animation)
+            # some animation can change original position
+            if animation.position:
+                position = animation.position
             self.addSprite(animation, position)
 
     def addAnimations(self, positions, animation, groups=['animations']):

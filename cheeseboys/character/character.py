@@ -67,7 +67,7 @@ class Character(GameSprite):
         self.damageHeading = None
         
         self.dimension = realSize
-        self._heatRectData = (5, 5, 8,13)
+        self._heatRectData = (5, 5, 10,15)
 
         self.hitPoints = self.hitPointsLeft = 20
         
@@ -154,7 +154,8 @@ class Character(GameSprite):
         A non playing character check his own AI here.
         """
         GameSprite.update(self, time_passed)
-        self.brain.think(time_passed)
+        if self.brain:
+            self.brain.think(time_passed)
 
     def moveBasedOnNavPoint(self, time_passed, destination=None, relative=False):
         """Main method for move character using navPoint infos.
@@ -469,7 +470,9 @@ class Character(GameSprite):
     @property
     def active_state(self):
         """Get the current brain active state"""
-        return self.brain.active_state.name
+        if self.brain:
+            return self.brain.active_state.name
+        return None
     
     def _setEnemyTarget(self, enemy):
         self._enemyTarget = enemy
@@ -529,7 +532,8 @@ class Character(GameSprite):
         print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.hitPointsLeft)
         # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
         self.damageHeading = attack_origin.lastAttackHeading
-        self.brain.setState("hitten")
+        if self.brain:
+            self.brain.setState("hitten")
         if not self.checkAliveState():
             print "%s is dead." % self.name
 
