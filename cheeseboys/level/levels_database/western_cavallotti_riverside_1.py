@@ -19,9 +19,29 @@ def load(name, hero):
     animations = level['animations']
     hero.addToGroups(all, charas, physical)
 
-    # TODO
+    boss = character.Character("The Boss", ("enemy2_sword.png","enemy2.png"), (all,charas,enemies,physical), realSize=(18,25), speed=110., weaponInAndOut=True)
+    boss.setBrain(BaseStateMachine)
+    boss.setCombatValues(2, 10)
+    boss.hitPoints = boss.hitPointsLeft = 25
 
+    level.addSprite(hero, hero.position)
+    level.addSprite(boss, (740, 320))
 
+    level.addPhysicalBackground( (1000,700), (800, 250) )
+    level.addPhysicalBackground( (136,318), (273, 118) )
+    level.addPhysicalBackground( (487,375), (430, 180) )
+    level.addPhysicalBackground( (300,700), (600, 380) )
+    level.addPhysicalBackground( (146,40), (127, 40) )
+    level.addPhysicalBackground( (349,40), (114, 40) )
+
+    exits1 = LevelExit( (1382,452), (36,410), "The South Bridge", (-200, 100), (100,150), (0, 0), exits)
+    level.addSprite(exits1, (1382,452) )
+    exits2 = LevelExit( (249,28), (84,30), None, None, None, None, exits)
+    level.addSprite(exits2, (249,28) )
+    exits3 = LevelExit( (618,452), (36,76), None, None, None, None, exits)
+    level.addSprite(exits3, (618,452) )
+    exits4 = LevelExit( (15,200), (30,162), None, None, None, None, exits)
+    level.addSprite(exits4, (15,200) )
 
     level.enableRainEffect()
     

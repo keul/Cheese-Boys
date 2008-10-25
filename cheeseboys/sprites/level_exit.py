@@ -8,7 +8,7 @@ from cheeseboys import cblocals, utils
 class LevelExit(GameSprite):
     """Important sprite that allow change of the level"""
     
-    def __init__(self, position, dimension, exit_to, start_position, firstNavPoint, *containers):
+    def __init__(self, position, dimension, exit_to, start_position, firstNavPoint, topleft, *containers):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, dimension)
         self.image = self._loadEmptySprite(dimension, fillWith=(240,240,240))
@@ -17,6 +17,7 @@ class LevelExit(GameSprite):
         self.to_level = exit_to
         self.start_position = start_position
         self.firstNavPoint = firstNavPoint
+        self.nextTopleft = topleft
 
     def update(self, time_passed):
         """Update methods does:
@@ -41,6 +42,7 @@ class LevelExit(GameSprite):
                     self._focus = False
 
             # Change level
-            if self.to_level and self.physical_rect.colliderect(self.currentLevel.hero.physical_rect):
+            if self.to_level and self.physical_rect.colliderect(self.currentLevel.hero.physical_rect) and \
+                        self.currentLevel.timeIn > 5.:
                 event = pygame.event.Event(cblocals.LEVEL_CHANGE_EVENT, {'exit':self, })
                 pygame.event.post(event)

@@ -8,7 +8,6 @@ from cheeseboys.sprites import CodigoroSign, LevelExit
 
 def load(name, hero):
     level = GameLevel(_(str(name)), (800, 1500))
-    level.topleft = (100, 900)
     level.hero = hero
 
     all = level['all']
@@ -32,7 +31,7 @@ def load(name, hero):
     enemy4.setBrain(BaseStateMachine)
     enemy4.setCombatValues(0, 5)
 
-    exits1 = LevelExit( (18,208), (36,170), "Western Cavallotti Riverside 1", (1200, 310), (100,290), exits)
+    exits1 = LevelExit( (18,208), (36,170), "Western Cavallotti Riverside 1", (1500, 310), (1200,290), (1500, 310), exits)
     level.addSprite(exits1, (18,208) )
 
     level.addSprite(hero, (350, 1450))

@@ -5,9 +5,9 @@ import logging
 import pygame
 from pygame.locals import *
 
+from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import StateMachine, PresentationStateMachine
-from cheeseboys import cblocals, utils
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.attack import Attack

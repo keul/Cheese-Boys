@@ -21,6 +21,12 @@ A (un)complete list of changes in every release.
  * BUG - position primitives of GameSprite classes were very messy.
 
  * The game can be now launched in fullscreen mode with the -f option.
+ 
+ * (!!!) Now the game is multi-level, and you can switch levels using LevelExit sprites.
+ 
+ * Added a second enemy image set. Special thanks to "The Mage" from charasproject.net.
+ 
+ * BUG - fixed the "infinite hitten" behaviour.
 
 === 0.0.6 ===
 

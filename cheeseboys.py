@@ -112,8 +112,14 @@ def main():
             if event.type==cblocals.LEVEL_CHANGE_EVENT:
                 exit = event.exit
                 level = loadLevelByName(exit.to_level, hero)
+                level.topleft = exit.nextTopleft
+                level.timeIn=0.
                 hero.position = exit.start_position
                 hero.navPoint = exit.firstNavPoint
+                utils.changeMouseCursor(None)
+                charas = level['charas']
+                enemies = level['enemies']
+                physical = level['physical']
                 break
 
         # ******* EVENTS LOOP END *******

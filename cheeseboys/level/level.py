@@ -46,6 +46,7 @@ class GameLevel(object):
         self._rain = None
         self.screenReferenceSprite = None
         self.hero = None
+        self.timeIn = 0.
         
         # The presentation object running
         self.presentation = None
@@ -199,6 +200,7 @@ class GameLevel(object):
             group[1].update(time_passed)
         if self._rain:
             self._rain.update(time_passed)
+        self.timeIn+=time_passed
 
     def update_text(self, time_passed):
         """An update method that only works with the 'level_text' group"""

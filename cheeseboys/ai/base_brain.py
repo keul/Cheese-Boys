@@ -159,7 +159,7 @@ class BaseStateHit(State):
         If the last was an attack then we return to the hunting state (or an "attack in the air" is performed).
         """
         if self.collected_rest_time>=self.rest_time:
-            if self.old_state_name == "attacking":
+            if self.old_state_name == "attacking" or self.old_state_name == "hitten":
                 return "hunting"
             return self.old_state_name
         return None
