@@ -46,7 +46,7 @@ class Character(GameSprite):
         self.side = 'Cheese Boys'
         self._enemyTarget = None
         
-        self.navPoint = None
+        self._navPoint = None
         self.heading =  None
 
         # Attack infos
@@ -89,7 +89,14 @@ class Character(GameSprite):
         """Common method for set all combat infos of the character, as far as base AC and TH0 infos are readonly"""
         self._th0 = TH0(level_bonus)
         self._baseAC = AC
-    
+
+
+    def _setNavPoint(self, value):
+        if type(value)==tuple:
+            value = Vector2(value)
+        self._navPoint = value
+    navPoint = property(lambda self: self._navPoint, _setNavPoint, doc="""The character navigation point""")
+
     @property
     def th0(self):
         return self._th0

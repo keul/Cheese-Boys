@@ -40,12 +40,16 @@ class GameSprite(pygame.sprite.Sprite):
         self._y = newy
     y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
 
-    @property
-    def position(self):
-        """Character position (midbottom) as tuple"""
+    def _setPosition(self, new_position):
+        x, y = new_position
+        self.x = x
+        self.y = y        
+    def _getPosition(self):
         if not self.x and not self.y:
             return ()
         return (self.x, self.y)
+    position = property(_getPosition, _setPosition, doc="""Character position (midbottom) as tuple""")
+    
     @property
     def position_int(self):
         """Same as position but in integer format"""

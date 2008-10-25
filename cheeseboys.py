@@ -15,11 +15,13 @@ except ImportError:
     sys.exit(1)
 try:
     from gameobjects.vector2 import Vector2
+    print "Found gameobjects library in the system. I'll use it."
 except ImportError:
     print ("Vector2 class of gameobjects not found.\n"
            "I'll use a local version of the library.\n"
            "Please consider to download Will McGugan's original code from:\n"
            "http://code.google.com/p/gameobjects/")
+print "*** Note *** whathever you read above, I'll use local version of gameobjects library, due to a library bug."
 print "All required libraries are present."
 # #######
 
@@ -36,6 +38,7 @@ def main():
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN, 32)
     else:
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
+    cblocals.screen = screen
 
     hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -56,8 +59,8 @@ def main():
     enemies = level['enemies']
     physical = level['physical']
     while True:
+        # ******* EVENTS LOOP BEGIN *******
         for event in pygame.event.get():
-            #print event, event.type
             if event.type == QUIT:
                 sys.exit()
             
@@ -104,6 +107,17 @@ def main():
                 logging.info('%s shouted "%s" from position %s.' % (event.character.name,
                                                               event.text,
                                                               event.position))
+
+            # Change current level
+            if event.type==cblocals.LEVEL_CHANGE_EVENT:
+                exit = event.exit
+                level = loadLevelByName(exit.to_level, hero)
+                hero.position = exit.start_position
+                hero.navPoint = exit.firstNavPoint
+                break
+
+        # ******* EVENTS LOOP END *******
+
 
         if level.presentation is None or not pygame.key.get_pressed()[K_LCTRL]:
             time_passed = clock.tick() / 1000.  * cblocals.game_speed
@@ -153,18 +167,21 @@ def main():
             for displayable in [x for x in charas.sprites() if x.getTip()]:
                 screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
-        # mouse cursor hover on enemy
+        # mouse cursor hover an enemy
+        ### BBB: can I check this in the enemy update method?
         if cblocals.global_controlsEnabled:
             for enemy in enemies.sprites():
                 if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
                     hero.seeking = enemy
                     utils.changeMouseCursor(cblocals.IMAGE_CURSOR_ATTACK_TYPE)
-                    utils.drawCursor(screen, pygame.mouse.get_pos())
                     break
             else:
-                if cblocals.global_mouseCursor is not None:
+                if cblocals.global_mouseCursorType==cblocals.IMAGE_CURSOR_ATTACK_TYPE:
                     utils.changeMouseCursor(None)
                 hero.seeking = None
+
+        if cblocals.global_mouseCursorType:
+            utils.drawCursor(screen, pygame.mouse.get_pos())
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
 

@@ -5,7 +5,7 @@ from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.utils import Vector2
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions import GameSprite, GameGroup
 from cheeseboys.sprites import PhysicalBackground, Rain
 from cheeseboys.presentation import Presentation
 from level_text import LevelText
@@ -45,10 +45,33 @@ class GameLevel(object):
         self._groups_todraw = []
         self._rain = None
         self.screenReferenceSprite = None
+        self.hero = None
         
         # The presentation object running
         self.presentation = None
         self.level_text = None
+        
+        # Groups!
+        all = GameGroup("all")
+        dead = GameGroup("dead", drawable=True, updatable=True)
+        physical = GameGroup("physical", drawable=True, updatable=True)
+        charas = GameGroup("charas")
+        enemies = GameGroup("enemies")
+        animations = GameGroup("animations", drawable=True, updatable=True)
+        top_animations = GameGroup("top_animations", drawable=True, updatable=True)
+        speech = GameGroup("speech", drawable=True, updatable=True)
+        level_text = GameGroup("level_text")
+        exits = GameGroup("exits", drawable=True, updatable=True)
+        self.addGroup(all)
+        self.addGroup(dead, zindex=5)
+        self.addGroup(physical, zindex=10)
+        self.addGroup(charas, zindex=10)
+        self.addGroup(enemies)
+        self.addGroup(animations, zindex=3)
+        self.addGroup(top_animations, zindex=20)
+        self.addGroup(speech, zindex=15)
+        self.addGroup(level_text, zindex=30)
+        self.addGroup(exits, zindex=3)
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.

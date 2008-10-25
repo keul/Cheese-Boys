@@ -1,0 +1,46 @@
+# -*- coding: utf-8 -
+
+import pygame
+from pygame.locals import *
+from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys import cblocals, utils
+
+class LevelExit(GameSprite):
+    """Important sprite that allow change of the level"""
+    
+    def __init__(self, position, dimension, exit_to, start_position, firstNavPoint, *containers):
+        GameSprite.__init__(self, *containers)
+        self.rect = pygame.Rect(position, dimension)
+        self.image = self._loadEmptySprite(dimension, fillWith=(240,240,240))
+        self._focus = False
+        # Exit data
+        self.to_level = exit_to
+        self.start_position = start_position
+        self.firstNavPoint = firstNavPoint
+
+    def update(self, time_passed):
+        """Update methods does:
+        1) Check for mouse hover on the LevelExit area;
+        if this is true, the sprite alpha value is changed and the area became a little visibile
+        2) Check for hero movement on the exit. If this is true then raise the LEVEL_CHANGE_EVENT event
+        """
+        GameSprite.update(self, time_passed)
+        if cblocals.global_controlsEnabled:
+            # Mouse curson
+            if self.physical_rect.collidepoint(pygame.mouse.get_pos()):
+                if not self._focus:
+                    self.image.set_alpha(50)
+                    utils.changeMouseCursor(cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE)
+                    utils.drawCursor(cblocals.screen, pygame.mouse.get_pos())
+                    self._focus = True
+            else:
+                if self._focus:
+                    self.image.set_alpha(0)
+                    if cblocals.global_mouseCursorType==cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE:
+                        utils.changeMouseCursor(None)
+                    self._focus = False
+
+            # Change level
+            if self.to_level and self.physical_rect.colliderect(self.currentLevel.hero.physical_rect):
+                event = pygame.event.Event(cblocals.LEVEL_CHANGE_EVENT, {'exit':self, })
+                pygame.event.post(event)

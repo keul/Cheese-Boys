@@ -32,12 +32,15 @@ IMAGES_DIR_PATH = "data/images"
 
 IMAGE_CURSOR_ATTACK_TYPE = "ATTACK"
 IMAGE_CURSOR_ATTACK_IMAGE = "icon_swords.gif"
+IMAGE_CURSOR_CHANGELEVEL_TYPE = "CHANGELEVEL"
+IMAGE_CURSOR_CHANGELEVEL_IMAGE = "poi_arrow_orange.gif"
 
 DEBUG = False
 
 # EVENTS
 ATTACK_OCCURRED_EVENT = USEREVENT +1
 SHOUT_EVENT = USEREVENT +2
+LEVEL_CHANGE_EVENT = USEREVENT +3
 
 
 # TH0
@@ -53,10 +56,12 @@ LEVEL_TEXT_TYPE_NORMAL = 'normal'
 # globals
 default_font = default_font_big = speech_font = leveltext_font = None
 game_speed = 1.
+screen = None
 global_lastMouseLeftClickPosition = ()
 global_lastMouseRightClickPosition = ()
 global_leftButtonIsDown = False
 global_mouseCursor = None
+global_mouseCursorType = None
 global_controlsEnabled = True
 gameLanguage = "en"
 

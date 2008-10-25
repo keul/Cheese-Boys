@@ -190,10 +190,10 @@
 [00:03:31 000]
 	jack.say("I...")
 	jack.say("I'm...")
-	jack.say("... is this? Is this the final level?")
+	jack.say("... is this? Is this the World Cup final?")
 
 [00:03:40 000]
-	roger.say("Final level?")
+	roger.say("World cup?")
 
 [00:03:45 000]
 	jack.say("Isn't this \"Sensible Soccer\" game?")
