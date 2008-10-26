@@ -5,7 +5,7 @@ from cheeseboys.pygame_extensions import GameGroup
 from cheeseboys import character
 from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine
-from cheeseboys.sprites import CodigoroSign, LevelExit
+from cheeseboys.sprites import CodigoroSign, LevelExit, Gate
 
 def load(name, hero):
     level = GameLevel(_(str(name)), (1400, 700))
@@ -19,7 +19,7 @@ def load(name, hero):
     animations = level['animations']
     hero.addToGroups(all, charas, physical)
 
-    boss = character.Character("The Boss", ("enemy2_sword.png","enemy2.png"), (all,charas,enemies,physical), realSize=(18,25), speed=110., weaponInAndOut=True)
+    boss = character.Character("The Boss", ("enemy2_sword.png","enemy2.png"), (all,charas,enemies,physical), realSize=(18,25), speed=140., weaponInAndOut=True)
     boss.setBrain(BaseStateMachine)
     boss.setCombatValues(2, 10)
     boss.hitPoints = boss.hitPointsLeft = 25
@@ -33,6 +33,7 @@ def load(name, hero):
     level.addPhysicalBackground( (300,700), (600, 380) )
     level.addPhysicalBackground( (146,40), (127, 40) )
     level.addPhysicalBackground( (349,40), (114, 40) )
+    level.addPhysicalBackground( (41,38), (83, 39) )
 
     exits1 = LevelExit( (1382,452), (36,410), "The South Bridge", (-200, 100), (100,150), (0, 0), exits)
     level.addSprite(exits1, (1382,452) )
@@ -42,6 +43,9 @@ def load(name, hero):
     level.addSprite(exits3, (618,452) )
     exits4 = LevelExit( (15,200), (30,162), None, None, None, None, exits)
     level.addSprite(exits4, (15,200) )
+
+    gate1 = Gate( (50,200), 162, 1, physical)
+    level.addSprite(gate1)
 
     level.enableRainEffect()
     

@@ -159,6 +159,8 @@ class GameLevel(object):
 
     def addSprite(self, sprite, firstPosition=None):
         """Add a sprite to this level at given position"""
+        if not firstPosition:
+            firstPosition = sprite.position
         sprite.addToGameLevel(self, firstPosition)
     
     def getCloserEnemy(self, character, sight=None):
