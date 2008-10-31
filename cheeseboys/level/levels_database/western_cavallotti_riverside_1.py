@@ -44,8 +44,11 @@ def load(name, hero):
     exits4 = LevelExit( (15,200), (30,162), None, None, None, None, exits)
     level.addSprite(exits4, (15,200) )
 
-    gate1 = Gate( (50,200), 162, 1, physical)
+    gate1 = Gate( (80,200), 162, 1, physical)
     level.addSprite(gate1)
+    gate2 = Gate( (690,452), 74, 1, physical)
+    level.addSprite(gate2)
+    
 
     level.enableRainEffect()
     

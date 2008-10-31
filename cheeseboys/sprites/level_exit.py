@@ -11,7 +11,7 @@ class LevelExit(GameSprite):
     def __init__(self, position, dimension, exit_to, start_position, firstNavPoint, topleft, *containers):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, dimension)
-        self.image = self._loadEmptySprite(dimension, fillWith=(240,240,240))
+        self.image = self._loadEmptySprite(dimension, alpha=0, fillWith=(240,240,240))
         self._focus = False
         # Exit data
         self.to_level = exit_to

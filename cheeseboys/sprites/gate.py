@@ -25,17 +25,27 @@ class Gate(GameSprite):
 
     def _getRect(self, position, length, orientation):
         if orientation==0:
-            rect = pygame.Rect( position, (length, self.width) )
+            rect = pygame.Rect( position, (length, length/2) )
         else:
-            rect = pygame.Rect( position, (self.width, length) )
+            rect = pygame.Rect( position, (length/2, length) )
         return rect
 
+    @property
+    def collide_rect(self):
+        """Collision rect of the gate; is where the gate is draw"""
+        rect = self.rect
+        if self.orientation:
+            cr_rect = pygame.Rect( rect.topleft, (self.width,self.length) )
+        else:
+            cr_rect = pygame.Rect( rect.topleft, (self.length,self.width) )        
+        return cr_rect
+
     def _getImage(self):
-        srf = self._loadEmptySprite(self.rect.size, alpha=255)
+        srf = self._loadEmptySprite(self.rect.size, colorKey=(0,0,0) )
         if self.orientation:
             rect = pygame.Rect( (0,0), (self.width,self.length) )
         else:
-            rect = pygame.Rect( (0,0), (self.length,self.width) )
+            rect = pygame.Rect( (0,0), (self.length,self.width) ) 
         pygame.draw.rect(srf, (100,255,100), rect, 0)
         return srf
 

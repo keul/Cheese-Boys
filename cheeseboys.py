@@ -8,6 +8,7 @@ import gettext
 print "Checking dependencies..."
 try:
     import pygame
+    print "Pygame library found."
 except ImportError:
     print ("Pygame module isn't present!\n"
            "This is the main game module! You must download it from\n"
