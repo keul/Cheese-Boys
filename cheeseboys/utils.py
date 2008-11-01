@@ -104,6 +104,9 @@ def changeMouseCursor(type):
     elif type==cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE:
         cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_CHANGELEVEL_IMAGE)
         cblocals.global_mouseCursorType = type
+    elif type==cblocals.IMAGE_CURSOR_OPENDOOR_TYPE:
+        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_OPENDOOR_IMAGE)
+        cblocals.global_mouseCursorType = type
     elif not type:
         cblocals.global_mouseCursor = cblocals.global_mouseCursorType = None
     else:

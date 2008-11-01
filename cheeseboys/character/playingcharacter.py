@@ -17,6 +17,7 @@ class PlayingCharacter(Character):
         self._trackedEnemy = None
         self.attackDamage = "1d6+2"
         self.hitPoints = self.hitPointsLeft = 30
+        self.rest_time_needed = .25
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

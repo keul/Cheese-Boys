@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -
 
-import logging
-
 import pygame
 from pygame.locals import *
 
@@ -22,7 +20,7 @@ class Character(GameSprite):
     _imageDirectory = "charas"
     
     def __init__(self, name, img, containers,
-                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=100,):
+                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
         
         GameSprite.__init__(self, *containers)
         self._x = self._y = 0
@@ -43,6 +41,8 @@ class Character(GameSprite):
         self._isMoving = False
         self.maxSpeed = self.speed = speed
         self.sightRange = sightRange
+        self.rest_time_needed = .3
+        
         self.side = 'Cheese Boys'
         self._enemyTarget = None
         

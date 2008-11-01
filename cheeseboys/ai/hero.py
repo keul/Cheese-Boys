@@ -82,11 +82,6 @@ class HeroStateAttacking(BaseStateAttacking):
 class HeroStateHit(BaseStateHit):
     """Like BaseStateHit, but after the hit animation control return to last state"""
 
-    def __init__(self, character):
-        BaseStateHit.__init__(self, character)
-        self.rest_time = .3
-
-
 class HeroStateMachine(StateMachine):
     """State machine for the hero.
     The state machine is used rarely... you are controlling the game!

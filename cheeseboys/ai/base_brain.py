@@ -141,7 +141,7 @@ class BaseStateHit(State):
         self.distance_to_move = None
         self.old_state_name = None
         # stun after the blow
-        self.rest_time = .3
+        self.rest_time = character.rest_time_needed
         self.collected_rest_time = 0
 
     def do_actions(self, time_passed):

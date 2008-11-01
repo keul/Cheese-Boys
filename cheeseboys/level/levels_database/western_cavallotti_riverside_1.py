@@ -35,6 +35,8 @@ def load(name, hero):
     level.addPhysicalBackground( (349,40), (114, 40) )
     level.addPhysicalBackground( (41,38), (83, 39) )
 
+    level.addAnimations(((695,536),(863,622),(993,530),(1262,507),), 'water-wave')
+
     exits1 = LevelExit( (1382,452), (36,410), "The South Bridge", (-200, 100), (100,150), (0, 0), exits)
     level.addSprite(exits1, (1382,452) )
     exits2 = LevelExit( (249,28), (84,30), None, None, None, None, exits)

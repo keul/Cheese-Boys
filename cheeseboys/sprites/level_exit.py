@@ -46,3 +46,8 @@ class LevelExit(GameSprite):
                         self.currentLevel.timeIn > 5.:
                 event = pygame.event.Event(cblocals.LEVEL_CHANGE_EVENT, {'exit':self, })
                 pygame.event.post(event)
+    
+    def getTip(self):
+        """Tip of a level exit give info on where they lead"""
+        rendered = cblocals.default_font.render(self.to_level, True, (0, 0, 0))
+        return rendered

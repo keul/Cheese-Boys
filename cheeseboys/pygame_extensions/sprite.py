@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -
 
+import logging
+
 import pygame
 from pygame.locals import *
-from cheeseboys import utils
+from cheeseboys import cblocals, utils
 
 class GameSprite(pygame.sprite.Sprite):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
@@ -78,7 +80,7 @@ class GameSprite(pygame.sprite.Sprite):
     def getTip(self):
         """Print a tip text near the character.
         Override this for subclass if you want this"""
-        return ""
+        return None
 
     def addToGameLevel(self, level, firstPosition):
         """Add this sprite to a level.
@@ -92,8 +94,8 @@ class GameSprite(pygame.sprite.Sprite):
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.
         Params x and y are used to adjust the collire_rect before detection.
-        BBB: move this logic in the Level?
-        BBB: use of the zindex info?
+        If a collision occurs, a SPRITE_COLLISION_EVENT is raised.
+        BBB: use of the zindex info here can be useful?
         """
         x, y = utils.normalizeXY(x, y)
         
@@ -101,9 +103,13 @@ class GameSprite(pygame.sprite.Sprite):
         collide_rect.move_ip(x,y)
         collideGroups = (self.currentLevel['physical'],)
         for group in collideGroups:
-            rects = [x.collide_rect for x in group.sprites() if x is not self]
-            for rect in rects:
-                if collide_rect.colliderect(rect):
+            for sprite in group.sprites():
+                if sprite is self:
+                    continue
+                sprite_rect = sprite.collide_rect
+                if collide_rect.colliderect(sprite_rect):
+                    event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': sprite})
+                    pygame.event.post(event)
                     return True
         return False
 
@@ -121,7 +127,7 @@ class GameSprite(pygame.sprite.Sprite):
         This must be equals to image's character total area.
         You probably wanna (must) overwrite this in all subclass!
         """
-        return self.rect
+        return self.collide_rect
 
     def move(self, x, y):
         """Move the sprite, relative to current point"""
@@ -149,3 +155,18 @@ class GameSprite(pygame.sprite.Sprite):
         for g in groups:
             g.add(self)
 
+    def triggetCollision(self, source):
+        """This method can be overrided in subclasses. Is called every time a sprite
+        collide with this sprite.
+        Source is the sprite that collide. Base implementation does nothing at all.
+        """
+        pass
+
+    @classmethod
+    def manageCollisions(cls, source, to):
+        """Class method for handling collision by sprites.
+        If the source "sprite" collide with the "to" sprite, the triggetCollision method is called
+        onto the "to" sprite.
+        """
+        to.triggetCollision(source)
+        logging.debug("%s sprite collided with %s" % (source, to))

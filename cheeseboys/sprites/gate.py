@@ -19,9 +19,11 @@ class Gate(GameSprite):
         self.width = int(length/20)
         self.orientation = orientation
         self.rect = self._getRect(position, length, orientation)
+        self._collide_rect = None
         self.position = position
         self.image = self._getImage()
         self.isOpen = False
+        self._focus = False
 
     def _getRect(self, position, length, orientation):
         if orientation==0:
@@ -37,8 +39,18 @@ class Gate(GameSprite):
         if self.orientation:
             cr_rect = pygame.Rect( rect.topleft, (self.width,self.length) )
         else:
-            cr_rect = pygame.Rect( rect.topleft, (self.length,self.width) )        
+            cr_rect = pygame.Rect( rect.topleft, (self.length,self.width) )
         return cr_rect
+
+    @property
+    def physical_rect(self):
+        """The same as the collide rect"""
+        rect = self.collide_rect
+        if self.orientation:
+            ph_rect = pygame.Rect( rect.topleft, (self.width*3,self.length) )
+        else:
+            ph_rect = pygame.Rect( rect.topleft, (self.length,self.width*3) )
+        return ph_rect
 
     def _getImage(self):
         srf = self._loadEmptySprite(self.rect.size, colorKey=(0,0,0) )
@@ -52,3 +64,26 @@ class Gate(GameSprite):
     def update(self, time_passed):
         """TODO: open/close animation will be handled here"""
         GameSprite.update(self, time_passed)
+        if cblocals.global_controlsEnabled:
+            # Mouse curson
+            if self.physical_rect.collidepoint(pygame.mouse.get_pos()):
+                if not self._focus:
+                    self.image.set_alpha(200)
+                    utils.changeMouseCursor(cblocals.IMAGE_CURSOR_OPENDOOR_TYPE)
+                    utils.drawCursor(cblocals.screen, pygame.mouse.get_pos())
+                    self._focus = True
+            else:
+                if self._focus:
+                    self.image.set_alpha(255)
+                    if cblocals.global_mouseCursorType==cblocals.IMAGE_CURSOR_OPENDOOR_TYPE:
+                        utils.changeMouseCursor(None)
+                    self._focus = False
+
+    def triggetCollision(self, source):
+        """Override of the GameSprite.triggetCollision method.
+        Do something only if the source is the hero!
+        Open the gate, or say something if the hero can't
+        """
+        hero = self.currentLevel.hero
+        if source is hero:
+            hero.say("It wont open!", silenceFirst=True)

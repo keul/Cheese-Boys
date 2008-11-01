@@ -63,6 +63,7 @@ class GameLevel(object):
         speech = GameGroup("speech", drawable=True, updatable=True)
         level_text = GameGroup("level_text")
         exits = GameGroup("exits", drawable=True, updatable=True)
+        tippable = GameGroup("tippable")                        # Tips are handled in a special way
         self.addGroup(all)
         self.addGroup(dead, zindex=5)
         self.addGroup(physical, zindex=10)
@@ -73,6 +74,7 @@ class GameLevel(object):
         self.addGroup(speech, zindex=15)
         self.addGroup(level_text, zindex=30)
         self.addGroup(exits, zindex=3)
+        self.addGroup(tippable)
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
@@ -162,6 +164,9 @@ class GameLevel(object):
         if not firstPosition:
             firstPosition = sprite.position
         sprite.addToGameLevel(self, firstPosition)
+        # I memoize here sprites that use tips
+        if sprite.getTip() is not None:
+            self['tippable'].add(sprite)
     
     def getCloserEnemy(self, character, sight=None):
         """Return an enemy in the character sight"""

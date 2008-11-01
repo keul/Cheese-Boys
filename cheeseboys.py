@@ -29,6 +29,7 @@ print "All required libraries are present."
 from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
+from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.level import loadLevelByName
 from cheeseboys.ai.hero import HeroStateMachine
 
@@ -59,6 +60,7 @@ def main():
     charas = level['charas']
     enemies = level['enemies']
     physical = level['physical']
+    tippable = level['tippable']
     while True:
         # ******* EVENTS LOOP BEGIN *******
         for event in pygame.event.get():
@@ -109,6 +111,10 @@ def main():
                                                               event.text,
                                                               event.position))
 
+            # Sprite collision event
+            if event.type==cblocals.SPRITE_COLLISION_EVENT:
+                GameSprite.manageCollisions(event.source, event.to)
+
             # Change current level
             if event.type==cblocals.LEVEL_CHANGE_EVENT:
                 exit = event.exit
@@ -121,6 +127,7 @@ def main():
                 charas = level['charas']
                 enemies = level['enemies']
                 physical = level['physical']
+                tippable = level['tippable']
                 break
 
         # ******* EVENTS LOOP END *******
@@ -171,7 +178,8 @@ def main():
 
         # textTips
         if cblocals.globals['text_tips']:
-            for displayable in [x for x in charas.sprites() if x.getTip()]:
+            for displayable in [x for x in tippable.sprites() if x.getTip()]:
+                # BBB: I don't want tips outside the screen...
                 screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
 
         # mouse cursor hover an enemy
