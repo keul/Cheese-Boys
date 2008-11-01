@@ -11,7 +11,7 @@ try:
 except ImportError:
     from cheeseboys.vector2 import Vector2
 
-def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False):
+def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False, simpleLoad=False):
     """Load an image from filesystem, from standard directory.
     file_name will the name of the file or a tuple of 2 file name (if weaponInAndOut is used)
     charasFormatImage is used to load not a single image but an array of 12 images in charas format.
@@ -24,6 +24,8 @@ def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=
         path = "%s/%s" % (cblocals.IMAGES_DIR_PATH, file_name)
     else:
         path = "%s/%s/%s" % (cblocals.IMAGES_DIR_PATH, directory, file_name)
+    if simpleLoad:
+        return pygame.image.load(path)
     return pygame.image.load(path).convert_alpha()
 
 def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):

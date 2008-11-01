@@ -151,15 +151,15 @@ class GameLevel(object):
 
     def normalizeRectOnScreen(self, rect):
         """Given a rect, make this rect is always contained in the screen"""
-        levelRect = self.rect
-        if rect.left<levelRect.left:
-            rect.left = levelRect.left
-        if rect.right>levelRect.right:
-            rect.right = levelRect.right
-        if rect.top<levelRect.top:
-            rect.top = levelRect.top
-        if rect.bottom>levelRect.bottom:
-            rect.bottom = levelRect.bottom
+        w,h = cblocals.GAME_SCREEN_SIZE
+        if rect.left<0:
+            rect.left = 0
+        if rect.right>w:
+            rect.right = w
+        if rect.top<0:
+            rect.top = 0
+        if rect.bottom>h:
+            rect.bottom = h
         return rect
 
     def checkPointIsValidOnLevel(self, point, screenCoordinate=False):
@@ -315,13 +315,13 @@ class GameLevel(object):
         return rect.collidepoint(refpoint)
 
     def transformToLevelCoordinate(self, position):
-        """Given a screen position, transform this to level absolute position"""
+        """Given a screen coordinate, transform it to level absolute position"""
         x, y = position
         tx, ty = self.topleft
         return (int(tx+x), int(ty+y))
     
     def transformToScreenCoordinate(self, position):
-        """Given an XY position, transform this to screen position"""
+        """Given an level coordinate, transform it to screen position"""
         x, y = position
         tx, ty = self.topleft
         return (x-tx, y-ty)
@@ -400,22 +400,23 @@ class GameLevel(object):
 
     def displayTip(self, surface, sprite):
         """Display a GameSprite's tip on the surface, and control the tip position"""
-        tiptuple = sprite.getTip()
-        if not tiptuple:
+        tip_structure = sprite.getTip()
+        if not tip_structure:
             return
-        if len(tiptuple)>2:
-            text, color, font = tiptuple
-        else:
-            text, color = tiptuple
-            font = cblocals.default_font
+        text = tip_structure['text']
+        color = tip_structure['color']
+        font = tip_structure.get('font',cblocals.default_font)
+        background = tip_structure.get('background',None)
         fw,fh = font.size(text)
         rect = sprite.physical_rect
         x,y = rect.midtop
         x=x-fw/2
         y=y-fh
-        # Draw only if tip is inside the screen
         font_rect = pygame.Rect( (x,y),(fw,fh) )
-        if self.rect.colliderect(font_rect):
+        # Draw sprites's tip only if sprite is inside the screen
+        if self.rect.colliderect(rect.move(self.topleft)):
             font_rect = self.normalizeRectOnScreen(font_rect)
             tip = font.render(text, True, color)
+            if background:
+                pygame.draw.rect(surface, background, font_rect, 0)
             surface.blit(tip, font_rect.topleft)

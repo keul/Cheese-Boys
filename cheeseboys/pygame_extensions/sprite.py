@@ -11,6 +11,8 @@ class GameSprite(pygame.sprite.Sprite):
     A GameSprite is always used inside a Level object.
     """
     
+    _emptyTipStructure = {'text':"", 'color':(0,0,0)}
+    
     def __init__(self, *containers):
         pygame.sprite.Sprite.__init__(self, *containers)
         self.currentLevel = None
@@ -78,9 +80,11 @@ class GameSprite(pygame.sprite.Sprite):
         return self.currentLevel.transformToScreenCoordinate(self.position_int)
 
     def getTip(self):
-        """Print a tip text near the character. Override this for subclass if you want this feature.
+        """Get a tip to be printed near the character. Override this for subclass if you want this feature.
         You must return something false but not None (the default) if you don't have tip yet but wanna
         that this GameSprite gets subscribed to the tippable group.
+        @return None or {'text':text, 'color':color, 'font':font, 'background':bkcolor}
+        Font and background are optional.
         """
         return None
 

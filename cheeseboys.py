@@ -1,6 +1,7 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import sys, logging, optparse
 import gettext
 
@@ -26,6 +27,7 @@ print "*** Note *** whathever you read above, I'll use local version of gameobje
 print "All required libraries are present."
 # #######
 
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
@@ -36,6 +38,7 @@ from cheeseboys.ai.hero import HeroStateMachine
 def main():
     
     clock = pygame.time.Clock()
+    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
     if cblocals.FULLSCREEN:
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN, 32)
     else:

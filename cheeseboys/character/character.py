@@ -123,7 +123,9 @@ class Character(GameSprite):
 
     def getTip(self):
         """Return tip text, for print it near the character"""
-        tip = (self.name or self.characterType, (255,255,255))
+        tip = self._emptyTipStructure.copy()
+        tip['text']= self.name or self.characterType
+        tip['color']=(255,255,255)
         return tip
 
     def _load_images(self, img, weaponInAndOut):

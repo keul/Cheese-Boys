@@ -49,10 +49,11 @@ class LevelExit(GameSprite):
     
     def getTip(self):
         """Tip of a level exit give info on where it lead but only when mouse hover on it.
-        @return (text, color) or (text, color, font_touse)
         """
         if self._focus:
-            return (self.to_level or "???", (0,0,0))
+            tip = self._emptyTipStructure.copy()
+            tip['text']=self.to_level or "???"
+            tip['background']=(255,255,255)
             return tip
         return ""
 
