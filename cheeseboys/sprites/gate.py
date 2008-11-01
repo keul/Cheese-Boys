@@ -87,3 +87,4 @@ class Gate(GameSprite):
         hero = self.currentLevel.hero
         if source is hero:
             hero.say("It wont open!", silenceFirst=True)
+

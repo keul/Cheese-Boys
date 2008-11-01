@@ -48,6 +48,11 @@ class LevelExit(GameSprite):
                 pygame.event.post(event)
     
     def getTip(self):
-        """Tip of a level exit give info on where they lead"""
-        rendered = cblocals.default_font.render(self.to_level, True, (0, 0, 0))
-        return rendered
+        """Tip of a level exit give info on where it lead but only when mouse hover on it.
+        @return (text, color) or (text, color, font_touse)
+        """
+        if self._focus:
+            return (self.to_level or "???", (0,0,0))
+            return tip
+        return ""
+

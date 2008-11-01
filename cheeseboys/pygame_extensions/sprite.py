@@ -26,8 +26,8 @@ class GameSprite(pygame.sprite.Sprite):
         self.refresh()
 
     def topleft(self, x=0, y=0):
-        """Return top left rect info for this sprite.
-        x and y can be final coordinate modifier.
+        """Return top left rect coordinate for this sprite.
+        x and y can be coordinate modifier the the values returned.
         """
         topleft = self.rect.topleft
         if x or y:
@@ -78,8 +78,10 @@ class GameSprite(pygame.sprite.Sprite):
         return self.currentLevel.transformToScreenCoordinate(self.position_int)
 
     def getTip(self):
-        """Print a tip text near the character.
-        Override this for subclass if you want this"""
+        """Print a tip text near the character. Override this for subclass if you want this feature.
+        You must return something false but not None (the default) if you don't have tip yet but wanna
+        that this GameSprite gets subscribed to the tippable group.
+        """
         return None
 
     def addToGameLevel(self, level, firstPosition):

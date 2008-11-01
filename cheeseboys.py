@@ -179,11 +179,10 @@ def main():
         # textTips
         if cblocals.globals['text_tips']:
             for displayable in [x for x in tippable.sprites() if x.getTip()]:
-                # BBB: I don't want tips outside the screen...
-                screen.blit(displayable.getTip(), displayable.topleft(y=-5) )
+                level.displayTip(screen, displayable)
 
-        # mouse cursor hover an enemy
-        ### BBB: can I check this in the enemy update method?
+        # Mouse cursor hover an enemy
+        # BBB: can I check this in the enemy update method?
         if cblocals.global_controlsEnabled:
             for enemy in enemies.sprites():
                 if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
@@ -202,8 +201,9 @@ def main():
 
         pygame.display.update()
 
+
 def cheeseBoysInit():
-    """Init of this game engine"""
+    """Init of the engine"""
     
     gettext.install('cheeseboys', 'data/i18n', unicode=1)
     

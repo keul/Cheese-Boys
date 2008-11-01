@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
-from cheeseboys.ai import StateMachine, PresentationStateMachine
+from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.attack import Attack
@@ -123,8 +123,8 @@ class Character(GameSprite):
 
     def getTip(self):
         """Return tip text, for print it near the character"""
-        rendered = cblocals.default_font.render(self.name or self.characterType, True, (255, 255, 255))
-        return rendered
+        tip = (self.name or self.characterType, (255,255,255))
+        return tip
 
     def _load_images(self, img, weaponInAndOut):
         """Load images for this charas: 12 or 24 if used weaponInAndOut (so we need extra images without weapon)"""

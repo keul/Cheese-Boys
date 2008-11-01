@@ -99,13 +99,13 @@ def groupSortingByYAxis(sprite1, sprite2):
 def changeMouseCursor(type):
     """Load a mouse cursor of the given type"""
     if type==cblocals.IMAGE_CURSOR_ATTACK_TYPE:
-        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_ATTACK_IMAGE)
+        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_ATTACK_IMAGE, directory="mouse_pointers")
         cblocals.global_mouseCursorType = type
     elif type==cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE:
-        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_CHANGELEVEL_IMAGE)
+        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_CHANGELEVEL_IMAGE, directory="mouse_pointers")
         cblocals.global_mouseCursorType = type
     elif type==cblocals.IMAGE_CURSOR_OPENDOOR_TYPE:
-        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_OPENDOOR_IMAGE)
+        cblocals.global_mouseCursor = load_image(cblocals.IMAGE_CURSOR_OPENDOOR_IMAGE, directory="mouse_pointers")
         cblocals.global_mouseCursorType = type
     elif not type:
         cblocals.global_mouseCursor = cblocals.global_mouseCursorType = None

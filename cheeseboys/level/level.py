@@ -89,6 +89,25 @@ class GameLevel(object):
                     return sprite
         raise KeyError("Not found group or sprite named '%s'" % key)
 
+    def _setTopLeft(self, topleft):
+        self._topleft = self._normalizeDrawPart(topleft)
+    topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
+    
+    @property
+    def midbottom(self):
+        """Midbottom of the screen on the level"""
+        return self.rect.midbottom
+
+    @property
+    def rect(self):
+        """A pygame.Rect from the level topleft, with the screen size"""
+        return pygame.Rect(self.topleft, cblocals.GAME_SCREEN_SIZE)
+
+    @property
+    def center(self):
+        """The point at the center of the drawn level part"""
+        return self.rect.center
+
     def addGroup(self, group, zindex=10):
         """Add a new group the this level.
         All group are added to a default zindex info of 10.
@@ -101,17 +120,6 @@ class GameLevel(object):
         if group.drawable:
             self._groups_todraw.append( (zindex,group) )
             self._groups_todraw.sort(lambda x,y: x[0]-y[0])     
-
-    def _setTopLeft(self, topleft):
-        self._topleft = self._normalizeDrawPart(topleft)
-    topleft = property(lambda self: self._topleft, _setTopLeft, doc="""The topleft drawing point inside the level background image""")
-    
-    @property
-    def midbottom(self):
-        """Midbottom of the screen"""
-        x,y = self.topleft
-        w,h = cblocals.GAME_SCREEN_SIZE
-        return (x+w/2, y+h-1)
     
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
@@ -141,6 +149,19 @@ class GameLevel(object):
         elif y>self.levelSize[1]-1: y=self.levelSize[1]-1 
         return x,y
 
+    def normalizeRectOnScreen(self, rect):
+        """Given a rect, make this rect is always contained in the screen"""
+        levelRect = self.rect
+        if rect.left<levelRect.left:
+            rect.left = levelRect.left
+        if rect.right>levelRect.right:
+            rect.right = levelRect.right
+        if rect.top<levelRect.top:
+            rect.top = levelRect.top
+        if rect.bottom>levelRect.bottom:
+            rect.bottom = levelRect.bottom
+        return rect
+
     def checkPointIsValidOnLevel(self, point, screenCoordinate=False):
         """Check if a coordinate is valid in current level.
         If screenCoordinate is True, then x,y will be normalized to level coord before use
@@ -164,20 +185,18 @@ class GameLevel(object):
         if not firstPosition:
             firstPosition = sprite.position
         sprite.addToGameLevel(self, firstPosition)
-        # I memoize here sprites that use tips
+        # I memoize here sprites that use tips; tip can be evaluated False but not None
         if sprite.getTip() is not None:
             self['tippable'].add(sprite)
     
     def getCloserEnemy(self, character, sight=None):
-        """Return an enemy in the character sight"""
+        """Return an enemy in the character sight, or enter a sight range instead"""
         if not sight:
             sight = character.sightRange
-        
         group = self['charas']
         enemies = []
         for charas in group.sprites():
             if character.side!=charas.side and character.distanceFrom(charas)<=sight:
-                #distances.append(character.v-charas.v)
                 enemies.append(charas)
         if enemies:
             return cbrandom.choice(enemies)
@@ -247,13 +266,6 @@ class GameLevel(object):
         sprite.rect = newRect
         self["dead"].add(sprite)
         sprite.addToGameLevel(self, corpse.position)
-
-    @property
-    def center(self):
-        """The point at the center of the drawn level part"""
-        topleft = self._topleft
-        size = cblocals.GAME_SCREEN_SIZE
-        return (topleft[0]+size[0]/2, topleft[1]+size[1]/2)
 
     def normalizeDrawPositionBasedOn(self, reference, time_passed):
         """Slowly move drawn portion of the total level, for centering it on the given reference object.
@@ -384,3 +396,26 @@ class GameLevel(object):
 
     def levelText(self, text):
         self._useLevelText(text)
+    # ***
+
+    def displayTip(self, surface, sprite):
+        """Display a GameSprite's tip on the surface, and control the tip position"""
+        tiptuple = sprite.getTip()
+        if not tiptuple:
+            return
+        if len(tiptuple)>2:
+            text, color, font = tiptuple
+        else:
+            text, color = tiptuple
+            font = cblocals.default_font
+        fw,fh = font.size(text)
+        rect = sprite.physical_rect
+        x,y = rect.midtop
+        x=x-fw/2
+        y=y-fh
+        # Draw only if tip is inside the screen
+        font_rect = pygame.Rect( (x,y),(fw,fh) )
+        if self.rect.colliderect(font_rect):
+            font_rect = self.normalizeRectOnScreen(font_rect)
+            tip = font.render(text, True, color)
+            surface.blit(tip, font_rect.topleft)

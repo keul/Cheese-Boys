@@ -27,6 +27,10 @@ A (un)complete list of changes in every release.
  * Added a second enemy image set. Special thanks to "The Mage" from charasproject.net.
  
  * BUG - fixed the "infinite hitten" behaviour.
+ 
+ * Added gates which close paths.
+
+ * Sprite text tips enanched.
 
 === 0.0.6 ===
 
