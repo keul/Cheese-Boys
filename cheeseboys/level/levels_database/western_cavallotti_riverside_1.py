@@ -22,7 +22,9 @@ def load(name, hero):
     boss = character.Character("The Boss", ("enemy2_sword.png","enemy2.png"), (all,charas,enemies,physical), realSize=(18,25), speed=140., weaponInAndOut=True)
     boss.setBrain(BaseStateMachine)
     boss.setCombatValues(2, 10)
+    boss.attackDamage = "1d8"
     boss.hitPoints = boss.hitPointsLeft = 25
+    boss.rest_time_needed = .25
 
     level.addSprite(hero, hero.position)
     level.addSprite(boss, (740, 320))
@@ -50,6 +52,8 @@ def load(name, hero):
     level.addSprite(gate1)
     gate2 = Gate( (690,452), 74, 1, physical)
     level.addSprite(gate2)
+    gate3 = Gate( (251,75), 84, 0, physical)
+    level.addSprite(gate3)
     
 
     level.enableRainEffect()

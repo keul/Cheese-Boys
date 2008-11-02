@@ -56,7 +56,11 @@ def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
     return imgArray
 
 def normalizeXY(x, y):
-    """Given x and y as rect offset, they will be normalized as at minumum of 1 pixel"""
+    """Given x and y as an offset, they will be normalized at minumum of 1 pixel"""
+#    if -0.001<x<0.001:
+#        x=0
+#    if -0.001<y<0.001:
+#        y=0
     if x!=0 and abs(x)<1:
         if x>0: x=1
         elif x<0: x=-1
@@ -66,7 +70,7 @@ def normalizeXY(x, y):
     return x,y
 
 def getRandomImageFacingUp(images):
-    """Given an image dictionary (commonly the character.images strucutre data) return a random image.
+    """Given an image dictionary (commonly the character.images structure data) return a random image.
     This image will be rotated randomly 90 degree left or right.
     This is used to draw dead charas.
     """

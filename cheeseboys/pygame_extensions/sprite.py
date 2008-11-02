@@ -5,6 +5,7 @@ import logging
 import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, utils
+from cheeseboys.utils import Vector2
 
 class GameSprite(pygame.sprite.Sprite):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
@@ -59,6 +60,7 @@ class GameSprite(pygame.sprite.Sprite):
         """Same as position but in integer format"""
         x,y = self.position
         return (int(x), int(y))
+
     @property
     def v(self):
         """Return position as Vector2 object"""
@@ -104,20 +106,78 @@ class GameSprite(pygame.sprite.Sprite):
         BBB: use of the zindex info here can be useful?
         """
         x, y = utils.normalizeXY(x, y)
-        
-        collide_rect = self.collide_rect
-        collide_rect.move_ip(x,y)
+        collide_rect = self.collide_rect.move(x,y)
         collideGroups = (self.currentLevel['physical'],)
         for group in collideGroups:
             for sprite in group.sprites():
                 if sprite is self:
                     continue
-                sprite_rect = sprite.collide_rect
-                if collide_rect.colliderect(sprite_rect):
+                if collide_rect.colliderect(sprite.collide_rect):
                     event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': sprite})
                     pygame.event.post(event)
                     return True
         return False
+
+    def getBestCoordinateToAvoidCollision(self, x, y):
+        """This is a method similar to GameSprite.checkCollision.
+        If a collision is found for this sprite at (x,y) position, then other modified coordinates like
+        (x,0) or (0,y) are tested.
+        Again, if a collision occurs, a SPRITE_COLLISION_EVENT is raised.
+        @return A new free (x,y) tuple, or an empty one if no good free point is found.
+        """
+        x, y = utils.normalizeXY(x, y)
+        collide_rect = self.collide_rect
+        collide_coords = [(x,y), (x,0), (0,y)]
+        collide_coords_registry = [True, True, True]
+        collide_sprites = [None, None, None]
+        collideGroups = (self.currentLevel['physical'],)
+        for group in collideGroups:
+            for sprite in group.sprites():
+                if sprite is self:
+                    continue
+                cnt = 0
+                for collide_coord in collide_coords:
+                    rect = collide_rect.move(*collide_coord)
+                    if collide_rect.colliderect(sprite.collide_rect):
+                        # Mark coord as a bad ones
+                        collide_sprites[cnt] = sprite
+                        collide_coords_registry[cnt]=False
+                    cnt+=1
+        # Now I need to find the best one
+        if self is self.currentLevel.hero:
+            print collide_coords_registry
+        return self._choseBestOffset(collide_coords, collide_coords_registry, collide_sprites)
+
+    def _choseBestOffset(self, collide_coords, collide_coords_registry, collide_sprites):
+        """@return a tuple with be best coord I can choose. See GameSprite.getBestCoordinateToAvoidCollision"""
+        if collide_coords_registry[0]:
+            return collide_coords[0]
+        if not collide_coords_registry[0] and not collide_coords_registry[1] and not collide_coords_registry[2]:
+            # All coords are bad; a collision occurs
+            event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': collide_sprites[0]})
+            pygame.event.post(event)
+            return ()
+        if collide_coords_registry[1] and collide_coords_registry[2]:
+            # I must chose point nearer to the target
+            navPoint = self.navPoint
+            base_position = self.position
+            x,y = base_position
+            x+= collide_coords[1][0]
+            y+= collide_coords[1][1]
+            magnitude1 = Vector2.from_points((x,y),navPoint.as_tuple()).get_magnitude()
+            x,y = base_position
+            x+= collide_coords[2][0]
+            y+= collide_coords[2][1]
+            magnitude2 = Vector2.from_points((x,y),navPoint.as_tuple()).get_magnitude()
+            if magnitude1<=magnitude2:
+                return collide_coords_registry[1]
+            else:
+                return collide_coords_registry[2]
+        # At his line only one coord can be valid
+        if collide_coords_registry[1]:
+            return collide_coords[1]
+        else:
+            return collide_coords[2]
 
     @property
     def collide_rect(self):
@@ -134,6 +194,10 @@ class GameSprite(pygame.sprite.Sprite):
         You probably wanna (must) overwrite this in all subclass!
         """
         return self.collide_rect
+
+    def distanceFrom(self, sprite):
+        """Return the distance between this sprite and another one"""
+        return Vector2.from_points(self.position,sprite.position).get_magnitude()
 
     def move(self, x, y):
         """Move the sprite, relative to current point"""
@@ -161,7 +225,7 @@ class GameSprite(pygame.sprite.Sprite):
         for g in groups:
             g.add(self)
 
-    def triggetCollision(self, source):
+    def triggerCollision(self, source):
         """This method can be overrided in subclasses. Is called every time a sprite
         collide with this sprite.
         Source is the sprite that collide. Base implementation does nothing at all.
@@ -171,8 +235,8 @@ class GameSprite(pygame.sprite.Sprite):
     @classmethod
     def manageCollisions(cls, source, to):
         """Class method for handling collision by sprites.
-        If the source "sprite" collide with the "to" sprite, the triggetCollision method is called
+        If the source "sprite" collide with the "to" sprite, the triggerCollision method is called
         onto the "to" sprite.
         """
-        to.triggetCollision(source)
+        to.triggerCollision(source)
         logging.debug("%s sprite collided with %s" % (source, to))

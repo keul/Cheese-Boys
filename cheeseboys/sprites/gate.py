@@ -36,28 +36,28 @@ class Gate(GameSprite):
     def collide_rect(self):
         """Collision rect of the gate; is where the gate is draw"""
         rect = self.rect
-        if self.orientation:
-            cr_rect = pygame.Rect( rect.topleft, (self.width,self.length) )
-        else:
+        if self.orientation==0:
             cr_rect = pygame.Rect( rect.topleft, (self.length,self.width) )
+        else:
+            cr_rect = pygame.Rect( rect.topleft, (self.width,self.length) )
         return cr_rect
 
     @property
     def physical_rect(self):
-        """The same as the collide rect"""
+        """More thick than collide_rect because contains the open gate area"""
         rect = self.collide_rect
-        if self.orientation:
-            ph_rect = pygame.Rect( rect.topleft, (self.width*3,self.length) )
-        else:
+        if self.orientation==0:
             ph_rect = pygame.Rect( rect.topleft, (self.length,self.width*3) )
+        else:
+            ph_rect = pygame.Rect( rect.topleft, (self.width*3,self.length) )
         return ph_rect
 
     def _getImage(self):
         srf = self._loadEmptySprite(self.rect.size, colorKey=(0,0,0) )
-        if self.orientation:
-            rect = pygame.Rect( (0,0), (self.width,self.length) )
-        else:
+        if self.orientation==0:
             rect = pygame.Rect( (0,0), (self.length,self.width) ) 
+        else:
+            rect = pygame.Rect( (0,0), (self.width,self.length) )
         pygame.draw.rect(srf, (100,255,100), rect, 0)
         return srf
 
@@ -79,8 +79,8 @@ class Gate(GameSprite):
                         utils.changeMouseCursor(None)
                     self._focus = False
 
-    def triggetCollision(self, source):
-        """Override of the GameSprite.triggetCollision method.
+    def triggerCollision(self, source):
+        """Override of the GameSprite.triggerCollision method.
         Do something only if the source is the hero!
         Open the gate, or say something if the hero can't
         """
