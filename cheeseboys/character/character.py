@@ -193,13 +193,11 @@ class Character(GameSprite):
         self.addDistanceWalked(distance)
         x = movement.get_x()
         y = movement.get_y()
-        if self is self.currentLevel.hero:
-            print "old %s" % str((x,y))        
-        new_coord = self.getBestCoordinateToAvoidCollision(x,y)
-        if self is self.currentLevel.hero:
-            print "new %s" % str(new_coord)
-        if new_coord:
-            self.move(*new_coord)
+#        new_coord = self.getBestCoordinateToAvoidCollision(x,y)
+#        if new_coord:
+#            self.move(*new_coord)
+        if not self.checkCollision(x, y):
+            self.move(x, y)
             if self.isNearTo(self.navPoint.as_tuple()):
                 self.navPoint = None
                 self.moving(False)

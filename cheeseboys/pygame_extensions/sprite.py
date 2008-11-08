@@ -120,7 +120,7 @@ class GameSprite(pygame.sprite.Sprite):
 
     def getBestCoordinateToAvoidCollision(self, x, y):
         """This is a method similar to GameSprite.checkCollision.
-        If a collision is found for this sprite at (x,y) position, then other modified coordinates like
+        If a collision is found for this sprite at (x,y) offset from this position, then other modified coordinates like
         (x,0) or (0,y) are tested.
         Again, if a collision occurs, a SPRITE_COLLISION_EVENT is raised.
         @return A new free (x,y) tuple, or an empty one if no good free point is found.
@@ -141,11 +141,9 @@ class GameSprite(pygame.sprite.Sprite):
                     if collide_rect.colliderect(sprite.collide_rect):
                         # Mark coord as a bad ones
                         collide_sprites[cnt] = sprite
-                        collide_coords_registry[cnt]=False
+                        collide_coords_registry[cnt] = False
                     cnt+=1
         # Now I need to find the best one
-        if self is self.currentLevel.hero:
-            print collide_coords_registry
         return self._choseBestOffset(collide_coords, collide_coords_registry, collide_sprites)
 
     def _choseBestOffset(self, collide_coords, collide_coords_registry, collide_sprites):
@@ -170,9 +168,9 @@ class GameSprite(pygame.sprite.Sprite):
             y+= collide_coords[2][1]
             magnitude2 = Vector2.from_points((x,y),navPoint.as_tuple()).get_magnitude()
             if magnitude1<=magnitude2:
-                return collide_coords_registry[1]
+                return collide_coords[1]
             else:
-                return collide_coords_registry[2]
+                return collide_coords[2]
         # At his line only one coord can be valid
         if collide_coords_registry[1]:
             return collide_coords[1]
