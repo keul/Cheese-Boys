@@ -1,0 +1,37 @@
+# version: 1.0.0
+
+# Intro for displaying the presence of The Boss when the hero enter the Western Cavallotti Riverside.
+
+[00:00:00 000]
+	hero.navPoint = None
+	boss = level['The Boss']
+	enemy = level['Phil']
+	gate = level['Exit']
+	gate.open()
+	level.screenReferenceSprite = gate
+
+[00:00:05 000]
+	gate.close()
+
+[00:00:07 000]
+	level.screenReferenceSprite = boss
+
+[00:00:12 000]
+	boss.say("He's... him")
+
+[00:00:14 000]
+	boss.shout("Attack!!!")
+
+[00:00:15 000]
+    enemy.real_brain.setState("exploring")
+	enemy.navPoint = hero.position
+    enemy.brain_enabled=True
+    enemy.speed = enemy.maxSpeed
+
+[00:00:15 400]
+    boss.real_brain.setState("exploring")
+	boss.navPoint = hero.position
+    boss.brain_enabled=True
+    boss.speed = boss.maxSpeed
+
+    

@@ -133,6 +133,13 @@ def main():
                 tippable = level['tippable']
                 break
 
+            # Trigger fired
+            if event.type==cblocals.TRIGGER_FIRED_EVENT:
+                trigger = event.trigger
+                sprite_trigging = event.sprite
+                trigger.getResult()
+            
+
         # ******* EVENTS LOOP END *******
 
 
@@ -153,6 +160,7 @@ def main():
                 for command in commands:
                     exec command
             elif commands is None:
+                logging.info("Presentation: presentation is ended")
                 level.presentation = None
 
         level.update(time_passed)        

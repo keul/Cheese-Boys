@@ -31,6 +31,8 @@ A (un)complete list of changes in every release.
  * Added gates which close paths.
 
  * Sprite text tips enanched.
+ 
+ * Added the trigger module.
 
 === 0.0.6 ===
 

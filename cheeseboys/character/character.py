@@ -157,7 +157,14 @@ class Character(GameSprite):
         if self.currentLevel.presentation is not None:
             return self._presentationBrain
         return self._brain
-     
+
+    @property    
+    def real_brain(self):
+        """The brain of the character. Do not use this property but always the Character.brain.
+        Use this only if you need to refer to the character's real brain when a presentation is running
+        """
+        return self._brain
+
     def update(self, time_passed):
         """Update method of pygame Sprite class.
         A non playing character check his own AI here.
@@ -478,7 +485,11 @@ class Character(GameSprite):
     def setBrain(self, smBrain):
         """Set a AI StateMachine istance"""
         self._brain = smBrain(self)
-    
+
+    def _set_braine_enabled(self, value):
+        self._brain.enabled = value
+    brain_enabled = property(lambda self: self._brain.enabled, _set_braine_enabled, doc="""The current character's brain status""")
+  
     @property
     def active_state(self):
         """Get the current brain active state"""

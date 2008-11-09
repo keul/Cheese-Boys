@@ -63,6 +63,7 @@ class GameLevel(object):
         speech = GameGroup("speech", drawable=True, updatable=True)
         level_text = GameGroup("level_text")
         exits = GameGroup("exits", drawable=True, updatable=True)
+        triggers = GameGroup("triggers", drawable=True, updatable=True)
         tippable = GameGroup("tippable")                        # Tips are handled in a special way
         self.addGroup(all)
         self.addGroup(dead, zindex=5)
@@ -74,6 +75,7 @@ class GameLevel(object):
         self.addGroup(speech, zindex=15)
         self.addGroup(level_text, zindex=30)
         self.addGroup(exits, zindex=3)
+        self.addGroup(triggers, zindex=4)
         self.addGroup(tippable)
 
     def __getitem__(self, key):
@@ -369,13 +371,13 @@ class GameLevel(object):
         if self._rain:
             self._rain.draw(surface)
 
-    def enablePresentation(self, presentation):
+    def enablePresentation(self, presentation, presentation_dir="data/presentations"):
         """Load a presentation using its name and return a Presentation object.
         Also store current level presentation
         """
         if not presentation.endswith(".cbp"):
             presentation+=".cbp"
-        pp = Presentation(self, presentation)
+        pp = Presentation(self, presentation, presentation_dir=presentation_dir)
         self.presentation = pp
         pp.enablePresentationMode()
         return pp

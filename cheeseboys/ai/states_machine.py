@@ -12,6 +12,7 @@ class StateMachine(object):
     """
     
     def __init__(self, states=None):
+        self.enabled = True
         self.states = {}
         if not states:
             self.active_state = None
@@ -28,7 +29,7 @@ class StateMachine(object):
         """Self explanatory.
         Run AI logic of the state machine.
         Do nothing if the state machine has not active state."""
-        if self.active_state is None:
+        if self.active_state is None or not self.enabled:
             return
         
         self.active_state.do_actions(time_passed)        
