@@ -2,7 +2,7 @@
 
 import logging
 from presentation_parser import PresentationParser
-from cheeseboys import cblocals
+from cheeseboys import cblocals, utils
 
 class Presentation(object):
     """Presentation object is a container for special automatic operations performing
@@ -35,6 +35,7 @@ class Presentation(object):
         cblocals.global_controlsEnabled = False
         cblocals.globals['text_tips'] = False
         cblocals.globals['points'] = False
+        utils.changeMouseCursor(None)
     
     def disablePresentationMode(self):
         """Enable all keys and buttons that user can press. Commonly called at the end of the presentation so the player can

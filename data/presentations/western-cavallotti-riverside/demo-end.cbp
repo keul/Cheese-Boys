@@ -8,9 +8,9 @@
 [00:00:07 000]
 	level.levelText({'text':'And now?', 'color': (150,255,150)})
 	level.levelText("")
-	level.levelText("What other dangers are waiting in the dark corders of Codigoro?")
+	level.levelText("What other dangers are waiting in the dark streets of Codigoro?")
 	level.levelText("Will be Chees Boys and their minions defeated and the World freed from their tiranny?")
-	level.levelText("Will you ever turn back to your beloved Veneto?")
+	level.levelText("Will you ever return back to your beloved Veneto?")
 	level.levelText("")
 	level.levelText("Not now for sure! But stay tuned for new releases of")
 	level.levelText({'text':'Cheeseboys', 'color': (150,255,150)})

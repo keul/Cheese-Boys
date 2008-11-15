@@ -31,6 +31,7 @@ class LevelText(GameSprite):
         self.rect = self._getRect()
         if text:
             self.addText(text)
+        self.colophon = False
     
     def _getRect(self):
         x,y = self.level.topleft
@@ -55,6 +56,10 @@ class LevelText(GameSprite):
         for text, position, color in self._generatePage():
             text_to_display = cblocals.leveltext_font.render(_(text.decode('utf-8')), True, color)
             srf.blit(text_to_display, position)
+        
+        if self.colophon:
+            bx,by = self.rect.bottomright
+            srf.blit(utils.load_image('keul-software.png'), (bx-85,by-20) )
         
         self._image = srf
         return srf

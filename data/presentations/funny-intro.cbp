@@ -9,8 +9,7 @@
 	john = level['John']
 	jack = level['Jack']
 	roger = level['Roger']
-	#hero.position = (400,1700)
-	hero.position = (100,100)
+	hero.position = (400,1700)
 	max.x = 400
 	max.y = 1600
 	john.x = 300
@@ -21,13 +20,14 @@
 	roger.y = 600
 
 [00:00:00 001]
-	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (150,255,150)})
+	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (150,255,150)}, colophon_flag=True)
 	level.levelTextIntro("When: In the year of the Cheese Boys 12")
 	level.levelTextIntro("Where: The South Bridge, Codigoro")
 	level.levelTextIntro("...know all over the Earth to be the Cheese Boys main domain, where the Cheese Wars begin and spread through the planet...")
 	level.levelTextIntro("")
 	level.levelTextIntro({'text':'...BY THE WAY...', 'color': (150,255,150)})
-	level.levelTextIntro("This is only a test presentation... I don't think this will be there in the final game!")
+	level.levelTextIntro("This is only a demo presentation to show you all what Cheese Boys can be.")
+	level.levelTextIntro("I don't think this will be there in the final game!")
 
 [00:00:03 000]
 	level.screenReferenceSprite = max
@@ -266,7 +266,7 @@
 
 [00:05:45 000]
 	roger.say("Yes... we are doomed, but if all brothers here will sacrifice as he's going to do...")
-	roger.say("Veneto and his people will loose the war")
+	roger.say("Veneto and its people will loose the war")
 
 [00:06:00 000]
 	jack.say("... yes...")

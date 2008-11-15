@@ -59,7 +59,7 @@ def load(name, hero):
 
     gate1 = Gate( (80,200), 162, 1, physical)
     gate1.name = "Exit"
-    gate1.open_condition = boss.isAlive
+    gate1.open_condition = (boss, 'isAlive')
     gate1.open_condition_reverse_flag = True
     level.addSprite(gate1)
     gate2 = Gate( (690,452), 74, 1, physical)

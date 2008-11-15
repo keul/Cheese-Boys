@@ -14,9 +14,12 @@ class Gate(GameSprite):
         """Init the gate. Just give the length on the gate and the orientation.
         0 for horizontal, 1 for vertical.
         
-        To open the gate set the open_condition attribute.
-        The open_condition must be evaluated to True, or must be a callable that return True.
+        To open the gate set the open_condition tuple attribute. The tuple contains an object (commonly a GameSprite)
+        and an attribute name, that need to be tested on this object.
+        The open_condition attribute must be evaluated to True, or must be a callable that return True.
         In any one of this case, the gate will open on collision with the hero.
+        
+        You can also use the open_condition_reverse_flag to negate the condition needed to open the gate (not True but False).
         """
         GameSprite.__init__(self, *containers)
         self.length = self.total_length = length
@@ -27,7 +30,7 @@ class Gate(GameSprite):
         self.opened = False
         self.isOpen = False
         self._focus = False
-        self.open_condition = None
+        self.open_condition = ()
         # Negate condition for opening
         self.open_condition_reverse_flag = False
 
@@ -107,14 +110,18 @@ class Gate(GameSprite):
         Open the gate, or say something if the hero can't
         """
         hero = self.currentLevel.hero
-        open_condition = self.open_condition
+        try:
+            oc_obj, oc_attr = self.open_condition
+            open_condition = oc_obj.__getattribute__(oc_attr)
+        except ValueError:
+            open_condition = None
+
         open_condition_reverse_flag = self.open_condition_reverse_flag
         if source is hero and not self.opened:
             cond = True
             if open_condition_reverse_flag:
                 cond=False
             if open_condition is not None:
-                # TODO: fix this!
                 if (type(open_condition)==bool and open_condition==cond) or \
                             (type(open_condition)!=bool and open_condition()==cond):
                     self.open()

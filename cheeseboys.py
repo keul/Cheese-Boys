@@ -45,7 +45,7 @@ def main():
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
     cblocals.screen = screen
 
-    hero = character.PlayingCharacter("Luca", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
+    hero = character.PlayingCharacter("The Hero", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
     hero.setCombatValues(2, 13)
 

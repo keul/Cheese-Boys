@@ -238,3 +238,4 @@ class GameSprite(pygame.sprite.Sprite):
         """
         to.triggerCollision(source)
         logging.debug("%s sprite collided with %s" % (source, to))
+

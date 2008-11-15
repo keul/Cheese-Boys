@@ -383,7 +383,7 @@ class GameLevel(object):
         return pp
 
     
-    # Level text methods
+    # ******* Level text methods *******
     def _useLevelText(self, text, type=cblocals.LEVEL_TEXT_TYPE_NORMAL):
         level_text = self.level_text
         if not level_text:
@@ -393,12 +393,14 @@ class GameLevel(object):
         else:
             level_text.addText(text)
 
-    def levelTextIntro(self, text):
+    def levelTextIntro(self, text, colophon_flag=False):
         self._useLevelText(text, type=cblocals.LEVEL_TEXT_TYPE_BLACKSCREEN)
+        if colophon_flag:
+            self.level_text.colophon = True
 
     def levelText(self, text):
         self._useLevelText(text)
-    # ***
+    # ******* /Level text methods *******
 
     def displayTip(self, surface, sprite):
         """Display a GameSprite's tip on the surface, and control the tip position"""
