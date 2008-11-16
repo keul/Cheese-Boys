@@ -58,7 +58,8 @@ def main():
     console_area.set_alpha(255)
     console_area.fill( (20,20,20) )
     console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )
-    console_area.blit(cblocals.default_font_big.render("console/command area", True, (255, 255, 255)), (2,30) )
+    console_area.blit(cblocals.default_font_big.render("console/command", True, (255, 255, 255)), (2,20) )
+    console_area.blit(cblocals.default_font_big.render("area", True, (255, 255, 255)), (2,40) )
     
     charas = level['charas']
     enemies = level['enemies']
@@ -250,10 +251,10 @@ def cheeseBoysInit():
     if options.fullscreen:
         cblocals.FULLSCREEN = True
 
-    cblocals.default_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
-    cblocals.default_font_big = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 20)
-    cblocals.speech_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 18)
-    cblocals.leveltext_font = pygame.font.SysFont("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 30)
+    cblocals.default_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 12)
+    cblocals.default_font_big = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
+    cblocals.speech_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
+    cblocals.leveltext_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 24)
 
 def tests():
     import unittest
