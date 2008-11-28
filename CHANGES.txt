@@ -2,6 +2,10 @@
 
 A (un)complete list of changes in every release.
 
+=== 0.1.1 ===
+
+ * Added the PySetup script for simplify the py2exe releases (thanks to PyMike from pygame community).
+
 === 0.1.0 ===
 
  * Added the rain and wind effects.
