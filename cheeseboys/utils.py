@@ -4,12 +4,7 @@ import pygame
 import cblocals
 from cheeseboys.cbrandom import cbrandom
 
-# I import Vector2 this way because I wanna that user install the original Will's library.
-# If not present, I use a local copy included with Cheese Boys.
-try:
-    from gameobjects.vector2BROKEN import Vector2
-except ImportError:
-    from cheeseboys.vector2 import Vector2
+from cheeseboys.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False, simpleLoad=False):
     """Load an image from filesystem, from standard directory.

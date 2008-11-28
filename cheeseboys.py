@@ -15,15 +15,7 @@ except ImportError:
            "This is the main game module! You must download it from\n"
            "http://pygame.org/download.shtml")
     sys.exit(1)
-try:
-    from gameobjects.vector2 import Vector2
-    print "Found gameobjects library in the system. I'll use it."
-except ImportError:
-    print ("Vector2 class of gameobjects not found.\n"
-           "I'll use a local version of the library.\n"
-           "Please consider to download Will McGugan's original code from:\n"
-           "http://code.google.com/p/gameobjects/")
-print "*** Note *** whathever you read above, I'll use local version of gameobjects library, due to a library bug."
+
 print "All required libraries are present."
 # #######
 
