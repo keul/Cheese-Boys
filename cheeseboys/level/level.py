@@ -285,14 +285,14 @@ class GameLevel(object):
         # More near to screen border, faster will be the screen centering procedure
         speed = self._centeringSpeed
         magnitude = heading.get_magnitude()
-        if magnitude<150:
+        if magnitude<120:
             pass
-        elif magnitude<200:
+        elif magnitude<150:
             speed = speed*3
-        elif magnitude<250:
-            speed = speed*4
+        elif magnitude<200:
+            speed = speed*5
         elif magnitude>=250:
-            speed = speed*5                        
+            speed = speed*6                        
         
         heading.normalize()
         distance = time_passed * speed

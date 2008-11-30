@@ -27,15 +27,19 @@ from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.level import loadLevelByName
 from cheeseboys.ai.hero import HeroStateMachine
 
-def main():
-    
-    clock = pygame.time.Clock()
-    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
+def handleFullScreen():
     if cblocals.FULLSCREEN:
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN, 32)
     else:
         screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
     cblocals.screen = screen
+    return screen
+
+def main():
+    
+    clock = pygame.time.Clock()
+    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
+    screen = handleFullScreen()
 
     hero = character.PlayingCharacter("The Hero", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -65,7 +69,11 @@ def main():
             
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
-                
+
+                if pressed_keys[K_F1]:
+                    cblocals.FULLSCREEN = not cblocals.FULLSCREEN
+                    screen = handleFullScreen()
+
                 if pressed_keys[K_ESCAPE]:
                     if level.presentation is not None:
                         # BBB: this is a bad and broken way to do this

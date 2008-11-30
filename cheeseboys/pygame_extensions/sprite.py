@@ -68,9 +68,13 @@ class GameSprite(pygame.sprite.Sprite):
         return Vector2(x, y)
 
     def isNearTo(self, point):
-        """Check if the sprite collision rect (the basement) is near to a point."""
+        """Check if the sprite collision rect (the basement) is near to a point.
+        """
+        # BBB: I'm using a majored version of the collide rect to fix a problem with a charas-bouncing-effect on movement... :-|
         x, y = self.currentLevel.transformToScreenCoordinate(point)
-        return self.collide_rect.collidepoint(x, y-3)
+        collide_rect = self.collide_rect
+        collide_rect.height+=3
+        return collide_rect.collidepoint(x, y)
 
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""

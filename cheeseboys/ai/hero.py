@@ -47,7 +47,7 @@ class HeroStateHunting(BaseStateHunting):
 
 
 class HeroStateAttacking(BaseStateAttacking):
-    """Different from base class is only needed for different check_conditions.
+    """Different from base class because the player must be able to regain control of the hero.
     """
 
     def do_actions(self, time_passed):
@@ -69,8 +69,8 @@ class HeroStateAttacking(BaseStateAttacking):
         if character.isAttacking():
             return None
 
+        print character.navPoint
         if enemy and not enemy.isAlive:
-            character.navPoint = None
             return "controlled"
 
         if character.distanceFrom(enemy)>character.attackRange:

@@ -190,12 +190,19 @@ class Character(GameSprite):
                 destination = Vector2(destination)
             self.navPoint = destination
         self.heading = Vector2.from_points(self.position, destination)
+        magnitude = self.heading.get_magnitude()
         self.heading.normalize()
-        direction = self._generateDirectionFromHeading(self.heading)
-        self._checkDirectionChange(direction)
 
         self.moving(True)
         distance = time_passed * self.speed
+        # I don't wanna move over the destination!
+        if distance>magnitude:
+            distance = magnitude
+        else:
+            # I don't check for a new direction if I'm only fixing the last sted distance
+            direction = self._generateDirectionFromHeading(self.heading)
+            self._checkDirectionChange(direction)
+
         movement = self.heading * distance
         self.addDistanceWalked(distance)
         x = movement.get_x()

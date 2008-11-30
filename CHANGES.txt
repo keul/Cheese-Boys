@@ -4,7 +4,11 @@ A (un)complete list of changes in every release.
 
 === 0.1.1 ===
 
- * Added the PySetup script for simplify the py2exe releases (thanks to PyMike from pygame community).
+ * Added the PySetup script for simplify the py2exe releases (thanks to PyMike from pygame community to release this).
+ 
+ * BUG - fixed the long-life bug "character-bouncing-position" after killing an enemy.
+ 
+ * Pressing F1 now switch from window/fullscreen mode.
 
 === 0.1.0 ===
 
