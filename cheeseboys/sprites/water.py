@@ -11,9 +11,9 @@ class WaterWave(GameSprite):
     This will draw a wave effects.
     """
     
-    def __init__(self, position, dimension, *containers):
+    def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
+        self.rect = pygame.Rect(position, size)
         self._image = None
         self._wave_phase = cbrandom.choice([0,1,2,3])
         self._timeCollected = self._nextRandomWaveTime()

@@ -78,7 +78,7 @@ class SpeechCloud(GameSprite):
         return newtextlines[-MAX_TEXTLINES:]
 
     def _getRect(self):
-        """Return the right rect dimension for current text to show"""
+        """Return the right rect size for current text to show"""
         speech_font = cblocals.speech_font
         speech_font_h = speech_font.get_height()
         textlines = self._generateTextLines(self.text)

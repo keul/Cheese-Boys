@@ -8,8 +8,8 @@ class PresentationTrigger(Trigger):
     """A trigger that run a presentation on the current level.
     """
     
-    def __init__(self, position, dimension, fireOnCollistionWith=(), *containers):
-        Trigger.__init__(self, position, dimension, fireOnCollistionWith, *containers)
+    def __init__(self, position, size, fireOnCollistionWith=(), *containers):
+        Trigger.__init__(self, position, size, fireOnCollistionWith, *containers)
         self._presentation_to_run = None
         self._presentation_dir = None
 

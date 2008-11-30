@@ -10,6 +10,8 @@ A (un)complete list of changes in every release.
  
  * Pressing F1 now switch from window/fullscreen mode.
 
+ * REFACTORING, TODO - replaced the term "dimension" with "size".
+
 === 0.1.0 ===
 
  * Added the rain and wind effects.

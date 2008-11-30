@@ -20,11 +20,11 @@ class Character(GameSprite):
     _imageDirectory = "charas"
     
     def __init__(self, name, img, containers,
-                 realSize=cblocals.TILE_IMAGE_DIMENSION, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
+                 realSize=cblocals.TILE_IMAGE_SIZE, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
         
         GameSprite.__init__(self, *containers)
         self._x = self._y = 0
-        self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_DIMENSION) )
+        self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_SIZE) )
 
         self.name = name
         self.characterType = "Guy"
@@ -66,7 +66,7 @@ class Character(GameSprite):
         # From where a succesfull attack is coming
         self.damageHeading = None
         
-        self.dimension = realSize
+        self.size = realSize
         self._heatRectData = (5, 5, 10,15)
 
         self.hitPoints = self.hitPointsLeft = 20
@@ -259,9 +259,9 @@ class Character(GameSprite):
         This must be equals to image's character total area.
         """
         rect = self.rect
-        diffW = rect.w-self.dimension[0]
-        diffH = rect.h-self.dimension[1]
-        return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.dimension )
+        diffW = rect.w-self.size[0]
+        diffH = rect.h-self.size[1]
+        return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.size )
 
     @property
     def heat_rect(self):

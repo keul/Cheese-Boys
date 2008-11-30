@@ -9,9 +9,9 @@ from cheeseboys.cbrandom import cbrandom
 class CodigoroSign(GameSprite):
     """Static town sign"""
     
-    def __init__(self, position, dimension, *containers):
+    def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
+        self.rect = pygame.Rect(position, size)
         self.image = utils.load_image("codigoro-sign.png", "miscellaneous")
 
     @property

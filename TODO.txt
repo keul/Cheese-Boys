@@ -15,8 +15,6 @@ Entries I will fix/implement someday.
  * Stealth mode.
  
  * Shout can warn near enemies.
-
- * REFACTORING - replace the term "dimension" with "size".
  
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
    things like ranged weapon and other sprites.

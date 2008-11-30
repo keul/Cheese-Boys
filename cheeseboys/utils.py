@@ -32,7 +32,7 @@ def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):
         # Transform image always in a tuple, so I will act in the same way even if dont' using weaponInAndOut
         file_name = (file_name,)
 
-    imgXSize, imgYSize = cblocals.TILE_IMAGE_DIMENSION
+    imgXSize, imgYSize = cblocals.TILE_IMAGE_SIZE
     imgArray = []
 
     for fname in file_name:
@@ -77,7 +77,7 @@ def getRandomImageFacingUp(images):
 
 def checkPointIsInsideRectType(point, rect):
     """Given a point and a rect, check if the point is inside this rect.
-    Rect can be a pair of tuple (position, dimension) or a real pygame.Rect instance.
+    Rect can be a pair of tuple (position, size) or a real pygame.Rect instance.
     """
     if type(rect)==tuple or type(rect)==list:
         rect = pygame.Rect( rect[0], rect[1] )
@@ -122,7 +122,7 @@ def drawCursor(screen, (x, y) ):
 
 def loadAnimationByName(name, position, *containers):
     """Try to load an animation sprite know to the application.
-    This method know how big is the animation dimension.
+    This method know how big is the animation size.
     """
     if name=='water-wave':
         from cheeseboys.sprites import WaterWave

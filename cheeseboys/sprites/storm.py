@@ -15,9 +15,9 @@ class Thunders(GameSprite):
     A demi-transparent surface that hide the screen content, and flash
     """
     
-    def __init__(self, position, dimension, *containers):
+    def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
+        self.rect = pygame.Rect(position, size)
         self.x, self.y = position
         self.rect.midbottom = position
         self._image = None
@@ -62,10 +62,10 @@ class Lighting(GameSprite):
     """Animation for a lighting that strike the ground
     """
     
-    def __init__(self, position, dimension, *containers):
+    def __init__(self, position, size, *containers):
         """The position used is the lighting strike point of the ground (midbottom)"""
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
+        self.rect = pygame.Rect(position, size)
         self.x, self.y = position
         self.rect.midbottom = position
         self._image = None

@@ -8,10 +8,10 @@ from cheeseboys import cblocals, utils
 class LevelExit(GameSprite):
     """Important sprite that allow change of the level"""
     
-    def __init__(self, position, dimension, exit_to, start_position, firstNavPoint, topleft, *containers):
+    def __init__(self, position, size, exit_to, start_position, firstNavPoint, topleft, *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
-        self.image = self._loadEmptySprite(dimension, alpha=0, fillWith=(240,240,240))
+        self.rect = pygame.Rect(position, size)
+        self.image = self._loadEmptySprite(size, alpha=0, fillWith=(240,240,240))
         self._focus = False
         # Exit data
         self.to_level = exit_to

@@ -84,7 +84,7 @@ class LevelText(GameSprite):
         [ (line_text, position, color), (...) ]
         The returned object can be looped for write the text on the screen;
         too long lines are automatically splitted in more line to fit
-        LevelText dimension area.
+        LevelText size area.
         """
         outPage = []
         line_maxlength = self.rect.w - BORDER_PADDING_H*2

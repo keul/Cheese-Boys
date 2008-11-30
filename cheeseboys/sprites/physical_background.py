@@ -9,13 +9,13 @@ class PhysicalBackground(GameSprite):
     placed where the background draw something physical (a pit, a wall, ...).
     
     Physical background sprites holds a fake image property, that is a transparent pygame Sprite of the given
-    dimension.
+    size.
     """
     
-    def __init__(self, position, dimension, *containers):
+    def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
-        srf = self._loadEmptySprite(dimension, alpha=0)
+        self.rect = pygame.Rect(position, size)
+        srf = self._loadEmptySprite(size, alpha=0)
         if cblocals.DEBUG:
             srf.set_alpha(150)
         self.image = srf

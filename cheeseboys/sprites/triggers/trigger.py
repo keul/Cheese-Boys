@@ -20,11 +20,11 @@ class Trigger(GameSprite):
     itself, by using the Trigger.getResult method (implemented in subclasses).
     """
     
-    def __init__(self, position, dimension, fireOnCollistionWith=(), *containers):
+    def __init__(self, position, size, fireOnCollistionWith=(), *containers):
         GameSprite.__init__(self, *containers)
-        self.rect = pygame.Rect(position, dimension)
+        self.rect = pygame.Rect(position, size)
         self.position = position
-        srf = self._loadEmptySprite(dimension, alpha=0)
+        srf = self._loadEmptySprite(size, alpha=0)
         if cblocals.DEBUG:
             srf.set_alpha(100)
             srf.fill( (255,255,255) )

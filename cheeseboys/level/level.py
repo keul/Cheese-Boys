@@ -23,7 +23,7 @@ class GameLevel(object):
     """
     
     def __init__(self, name, size, background=""):
-        """Init a level object with a name and a dimension.
+        """Init a level object with a name and a size.
         If a background file name is given, this image is loaded as background.
         If you don't give a background then the level name (converted in a lowecase, less separated png file name)
         is used instead.
@@ -126,7 +126,7 @@ class GameLevel(object):
     def generateRandomPoint(self, fromPoint=(), maxdistance=0):
         """Generate a random point on the level.
         You can use this giving a distance and a start point to get a random point near that position.
-        Normally the point is taken at random on level dimension.
+        Normally the point is taken at random on level size.
         """
         if fromPoint and maxdistance:
             offset_x = cbrandom.randint(-maxdistance,maxdistance)
@@ -301,19 +301,19 @@ class GameLevel(object):
         y = movement.get_y()
         self.topleft = (self.topleft[0]+x,self.topleft[1]+y)
 
-    def _getScreenCenter(self, centerDimension=(200,200)):
+    def _getScreenCenter(self, centerSize=(200,200)):
         """Return the screen center rect as ( (x,y), (w,h) )
-        w and h are taken by the optional centerDimension param.
+        w and h are taken by the optional centerSize param.
         """
         cx, cy = self.center
-        return (cx-centerDimension[0]/2,cy-centerDimension[1]/2), centerDimension
+        return (cx-centerSize[0]/2,cy-centerSize[1]/2), centerSize
 
-    def isPointAtScreenCenter(self, refpoint, centerDimension=(200,200)):
-        """This method return true if a given point is inside a rect of given dimension.
+    def isPointAtScreenCenter(self, refpoint, centerSize=(200,200)):
+        """This method return true if a given point is inside a rect of given size.
         The rect is placed at the screen center
         """
         cx, cy = self.center
-        rect = pygame.Rect( self._getScreenCenter(centerDimension) )
+        rect = pygame.Rect( self._getScreenCenter(centerSize) )
         return rect.collidepoint(refpoint)
 
     def transformToLevelCoordinate(self, position):
@@ -328,12 +328,12 @@ class GameLevel(object):
         tx, ty = self.topleft
         return (x-tx, y-ty)
 
-    def addPhysicalBackground(self, position, dimension, groups=['physical']):
+    def addPhysicalBackground(self, position, size, groups=['physical']):
         """Add a PhysicalBackground instance to the current level.
         Use groups param to add the sprite to some groups stored in the level also.
         See PhysicalBackground for more info.
         """
-        pb = PhysicalBackground( position, dimension )
+        pb = PhysicalBackground( position, size )
         for group_name in groups:
             group = self[group_name]
             group.add(pb)
