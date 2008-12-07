@@ -22,6 +22,8 @@ print "All required libraries are present."
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
 
+import ezmenu
+
 from cheeseboys import cblocals, utils, character
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.level import loadLevelByName
@@ -35,11 +37,10 @@ def handleFullScreen():
     cblocals.screen = screen
     return screen
 
-def main():
+def game():
     
     clock = pygame.time.Clock()
-    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
-    screen = handleFullScreen()
+    screen = cblocals.screen
 
     hero = character.PlayingCharacter("The Hero", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
@@ -216,7 +217,9 @@ def main():
 
 def cheeseBoysInit():
     """Init of the engine"""
-    
+    pygame.init()
+    screen = handleFullScreen()
+    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
     gettext.install('cheeseboys', 'data/i18n', unicode=1)
     
     LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
@@ -256,15 +259,38 @@ def cheeseBoysInit():
     cblocals.speech_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
     cblocals.leveltext_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 24)
 
+
 def tests():
     import unittest
     from cheeseboys import tests as cbtests
     unittest.TextTestRunner(verbosity=2).run(cbtests.test_presentation.alltests)
 
 
+def menu():
+    """Main menu"""
+    # Init game menu
+    menu = ezmenu.EzMenu(
+        [_(u"Start Game"), game],
+        [_(u"Check for new version"), utils.update_version],
+        [_(u"Quit Game"), lambda: sys.exit(0)])
+    menu.set_font(cblocals.default_font_big)
+    
+    screen = cblocals.screen
+    while True:
+        events = pygame.event.get()
+        menu.update(events)
+
+        for e in events:
+            if e.type == pygame.QUIT:
+                sys.exit(0)
+
+        screen.fill((0, 0, 255))
+        menu.draw(screen)
+        pygame.display.flip()
+
+
 if __name__ == "__main__":
-    pygame.init()
     cheeseBoysInit()
-    main()
+    menu()
     
     

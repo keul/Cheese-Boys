@@ -1,0 +1,13 @@
+== Cheese Boys - CREDITS ==
+
+=== Will McGugan ===
+Thanks for his superlative book "Beginning Game Development With Python and Pygame".
+Thanks for the AI examples inside his book.
+
+=== Pymike (Pygame community) ===
+Thanks for his tutorial.
+Thanks for many funny games developed with simple codes.
+Thanks for the PySetup script that simplify the py2exe procedure.
+
+=== The Mage (Charasproject.net community) ===
+Thanks for his original Glenn image, and for create a new one for Cheese Boys.

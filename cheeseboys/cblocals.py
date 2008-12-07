@@ -55,6 +55,8 @@ TH0_HIT_CRITICAL = "critical hit"
 LEVEL_TEXT_TYPE_BLACKSCREEN = 'blackscreen'
 LEVEL_TEXT_TYPE_NORMAL = 'normal'
 
+URL_CHEESEBOYS_LAST_VERSION = "http://keul.it/develop/python/cheeseboys/version.xml"
+
 # globals
 default_font = default_font_big = speech_font = leveltext_font = None
 game_speed = 1.
@@ -66,6 +68,9 @@ global_mouseCursor = None
 global_mouseCursorType = None
 global_controlsEnabled = True
 gameLanguage = "en"
+
+# Menu
+game_menu = None
 
 globals = {'text_tips': True,
            'points': True,

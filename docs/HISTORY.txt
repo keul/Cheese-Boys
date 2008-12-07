@@ -11,6 +11,10 @@ A (un)complete list of changes in every release.
  * Pressing F1 now switch from window/fullscreen mode.
 
  * REFACTORING, TODO - replaced the term "dimension" with "size".
+ 
+ * Added main menu with use of ezmenu (thanks to Pymike for releasing that).
+ 
+ * Added the "chek for update" feature.
 
 === 0.1.0 ===
 

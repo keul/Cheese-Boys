@@ -140,7 +140,7 @@ def loadAnimationByName(name, position, *containers):
     else:
         raise ValueError("Value %s is not a know animation." % name)
 
-
+# ******* TEXT UTILS *******
 def _generateTextLengthException(text_too_long, max_length):
     return ValueError('Text "%s" is really too long for me to fit a max length of %s!' % (text_too_long, max_length))
 
@@ -169,3 +169,18 @@ def normalizeTextLength(text_too_long, font, max_length):
         return [txt1, txt2]
     else:
         return [txt1] + normalizeTextLength(txt2, font, max_length)
+# **************
+
+def update_version():
+    """Check for a new version of the game"""
+    import socket
+    import urllib
+    import xml.dom.minidom
+    socket.setdefaulttimeout(10) # connection timeout
+    stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
+    dom = xml.dom.minidom.parse(stream)
+    stream.close()
+    root = dom.getElementsByTagName('cheeseboys-version')[0]
+    date = root.getElementsByTagName('date')[0].firstChild.nodeValue
+    print date
+
