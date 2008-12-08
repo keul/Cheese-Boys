@@ -258,6 +258,7 @@ def cheeseBoysInit():
     cblocals.default_font_big = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.speech_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
     cblocals.leveltext_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 24)
+    cblocals.main_title_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.MAIN_TITLE_FONT), 72)
 
 
 def tests():
@@ -268,14 +269,23 @@ def tests():
 
 def menu():
     """Main menu"""
+    pygame.display.set_caption("Cheese Boys (alpha release) %s" % cblocals.__version__)
     # Init game menu
+    screen = cblocals.screen
     menu = ezmenu.EzMenu(
         [_(u"Start Game"), game],
-        [_(u"Check for new version"), utils.update_version],
-        [_(u"Quit Game"), lambda: sys.exit(0)])
-    menu.set_font(cblocals.default_font_big)
+        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,200),(400,400) ) )],
+        [_(u"Quit"), lambda: sys.exit(0)])
+    menu.set_font(cblocals.leveltext_font)    
+    image = utils.load_image('cheese-boys-logo.png')
     
-    screen = cblocals.screen
+    menu.center_at(600, 300)
+    menu.set_normal_color( (255,255,255) )
+    to_display = u'Cheese Boys'
+    to_display_size = cblocals.main_title_font.size(to_display)
+    title_text = cblocals.main_title_font.render(to_display, True, (252,252,112))
+    text_start_pos_x, text_start_pos_y = (cblocals.SCREEN_SIZE[0]/2-to_display_size[0]/2, 100)
+
     while True:
         events = pygame.event.get()
         menu.update(events)
@@ -284,7 +294,9 @@ def menu():
             if e.type == pygame.QUIT:
                 sys.exit(0)
 
-        screen.fill((0, 0, 255))
+        screen.fill((0, 0, 0))
+        screen.blit(image, (text_start_pos_x-20-image.get_width(),text_start_pos_y) )
+        screen.blit(title_text, (text_start_pos_x,text_start_pos_y) )
         menu.draw(screen)
         pygame.display.flip()
 

@@ -24,7 +24,7 @@ Entries I will fix/implement someday.
 === Wishlist entries ===
 
 Issues or enhancement I'd like to do someday.
-Those aren't a needed changes.
+Those aren't needed changes.
 
   * Add a path finder alghoritm for character movements (at least for NPC).
 

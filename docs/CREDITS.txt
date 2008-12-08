@@ -3,6 +3,7 @@
 === Will McGugan ===
 Thanks for his superlative book "Beginning Game Development With Python and Pygame".
 Thanks for the AI examples inside his book.
+Thanks for his Vector2 classes, that is the core of Cheese Boys sprite engine.
 
 === Pymike (Pygame community) ===
 Thanks for his tutorial.

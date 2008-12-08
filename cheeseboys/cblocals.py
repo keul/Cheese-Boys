@@ -26,8 +26,10 @@ HIT_MOVEMENT_SPEED = 500
 
 DEFAULT_FONT = "Vera.ttf"
 DEFAULT_LEVELTEXT_FONT = "Vera.ttf"
-
+MAIN_TITLE_FONT = "Achafexp.ttf"
 FONTS_DIR_PATH = "data/font"
+
+
 IMAGES_DIR_PATH = "data/images"
 
 IMAGE_CURSOR_ATTACK_TYPE = "ATTACK"
@@ -58,7 +60,7 @@ LEVEL_TEXT_TYPE_NORMAL = 'normal'
 URL_CHEESEBOYS_LAST_VERSION = "http://keul.it/develop/python/cheeseboys/version.xml"
 
 # globals
-default_font = default_font_big = speech_font = leveltext_font = None
+default_font = default_font_big = speech_font = leveltext_font = main_title_font = None
 game_speed = 1.
 screen = None
 global_lastMouseLeftClickPosition = ()

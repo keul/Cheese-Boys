@@ -171,16 +171,27 @@ def normalizeTextLength(text_too_long, font, max_length):
         return [txt1] + normalizeTextLength(txt2, font, max_length)
 # **************
 
-def update_version():
-    """Check for a new version of the game"""
+def update_version(surface, rect):
+    """Check for a new version of the game.
+    Write output data on given surface and only inside the rect area.
+    """
     import socket
     import urllib
     import xml.dom.minidom
     socket.setdefaulttimeout(10) # connection timeout
-    stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
-    dom = xml.dom.minidom.parse(stream)
-    stream.close()
-    root = dom.getElementsByTagName('cheeseboys-version')[0]
-    date = root.getElementsByTagName('date')[0].firstChild.nodeValue
-    print date
+    try:
+        stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
+        dom = xml.dom.minidom.parse(stream)
+        stream.close()
+        root = dom.getElementsByTagName('cheeseboys-version')[0]
+        date = root.getElementsByTagName('date')[0].firstChild.nodeValue
+        version = root.getElementsByTagName('version')[0].firstChild.nodeValue
+        version_type = root.getElementsByTagName('version')[0].attributes['type'].value
+        changes = root.getElementsByTagName('changes')[0].firstChild.nodeValue.strip()
+        print date
+        print version
+        print version_type
+        print changes
+    except Exception, inst:
+        print inst
 

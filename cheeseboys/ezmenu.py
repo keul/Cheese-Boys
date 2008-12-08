@@ -56,9 +56,9 @@ class EzMenu:
                 if e.key == pygame.K_RETURN:
                     self.options[self.option][1]()
         if self.option > len(self.options)-1:
-            self.option = 0
-        if self.option < 0:
             self.option = len(self.options)-1
+        elif self.option < 0:
+            self.option = 0
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""
