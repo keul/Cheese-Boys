@@ -22,7 +22,7 @@ print "All required libraries are present."
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
 
-import ezmenu
+from cheeseboys import ezmenu
 
 from cheeseboys import cblocals, utils, character
 from cheeseboys.pygame_extensions import GameSprite
@@ -216,12 +216,7 @@ def game():
 
 
 def cheeseBoysInit():
-    """Init of the engine"""
-    pygame.init()
-    screen = handleFullScreen()
-    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
-    gettext.install('cheeseboys', 'data/i18n', unicode=1)
-    
+    """Init of the engine"""    
     LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
@@ -253,6 +248,12 @@ def cheeseBoysInit():
 
     if options.fullscreen:
         cblocals.FULLSCREEN = True
+
+    # init of some pygame graphics stuff
+    pygame.init()
+    screen = handleFullScreen()
+    pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
+    gettext.install('cheeseboys', 'data/i18n', unicode=1)
 
     cblocals.default_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 12)
     cblocals.default_font_big = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
