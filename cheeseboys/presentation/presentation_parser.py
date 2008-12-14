@@ -15,10 +15,11 @@ r"""
 (
        \[\d\d:\d\d:\d\d[ ]\d\d\d\]
      |
-       \[\d\d:\d\d:\d\d[ ]\d\d\d[ ]-[ ]\d\d:\d\d:\d\d[ ]\d\d\d\]
+       \[\+\d\d:\d\d:\d\d[ ]\d\d\d]
    )
-   [ \t]*?(\#.*?)??[\n]                                                                   # comment after the timespamp line
-(([ \t]*?.*?[\n])+?)$
+   [ \t]*?(\#.*?)??\n                                                                   # comment after the timespamp line
+(([ \t]*?.*?\n)+?)
+[ \t]*?$                                                                           #    final whitespaces
 """
 re_dataBlock = re.compile(DATA_BLOCK_REGEXP, re.MULTILINE|re.VERBOSE)
 
