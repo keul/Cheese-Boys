@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -
 
 import re
+from utils import *
 
 FIRST_LINE_REGEXP = r"""^#(\s)*version:(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 VERSION_NUMBERS = r"""^(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 re_versionLineCheck = re.compile(FIRST_LINE_REGEXP)
 re_versionLine = re.compile(FIRST_LINE_REGEXP)
 
-TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$"""
+TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\+\d\d:\d\d:\d\d \d\d\d])(\s)*(#.*)?$"""
 re_timeStampCheck = re.compile(TIMESPAMP_LINE_REGEXP)
 
 DATA_BLOCK_REGEXP = \
@@ -18,24 +19,13 @@ r"""
        \[\+\d\d:\d\d:\d\d[ ]\d\d\d]
    )
    [ \t]*?(\#.*?)??\n                                                                   # comment after the timespamp line
-(([ \t]*?.*?\n)+?)
-[ \t]*?$                                                                           #    final whitespaces
+(([ \t]*?.*?(\n|$))+?)
+[ \t]*?(\n|$)                                                                           #    final whitespaces
 """
-re_dataBlock = re.compile(DATA_BLOCK_REGEXP, re.MULTILINE|re.VERBOSE)
+re_dataBlock = re.compile(DATA_BLOCK_REGEXP, re.VERBOSE)
 
-TIMESTAMPS_DATA_REGEXP = r"""^\[(\d\d:\d\d:\d\d \d\d\d)\]|\[(\d\d:\d\d:\d\d \d\d\d - \d\d:\d\d:\d\d \d\d\d)\]"""
+TIMESTAMPS_DATA_REGEXP = r"""^\[(\+?\d\d:\d\d:\d\d \d\d\d)\]"""
 re_timestampsData = re.compile(TIMESTAMPS_DATA_REGEXP)
-
-def timestamp_sort(x, y):
-    """Service method for sort by timestamp a list"""
-    t1 = x['timestamp_start']
-    t2 = y['timestamp_start']
-    if t1<t2:
-        return -1
-    elif t1==t2:
-        return 0
-    else:
-        return 1
 
 class PresentationParser(object):
     """A parser for cheeseboys presentation (.cbp) files"""
@@ -83,14 +73,33 @@ class PresentationParser(object):
         self.data['version'] = (int(all_groups[2]),int(all_groups[3]),int(all_groups[4]))
         return self.data['version']
 
+    def _replaceRelativeTimeStamps(self, all_data):
+        """Looking all timestamps, if a relative ones if found, it is replaced with
+        the absolute value calculated on the last absolute timestamps found.
+        
+        Be aware that this method can be called before the sort of the data structure.
+        """
+        collected_time = 0
+        for fdata in all_data:
+            timestamp = self._getTimeStamp(fdata[0])
+            if timestamp.startswith("+"):
+                # relative
+                value = timestamp[1:]  # skip the '+' char
+                collected_time += timestampStringToValue(value)
+                ts, dummy1, dummy2, dummy3, dummy4, dummy5 = fdata
+                ts = "[%s]" % timestampValueToString(collected_time + timestampStringToValue(value))
+                fdata = (ts, dummy1, dummy2, dummy3, dummy4, dummy5)
+            else:
+                collected_time = timestampStringToValue(timestamp)
+
     def _loadData(self):
         """Load data from the text file to a navigable structure.
         
         data = { 'version': (x,y,z), 'operations': operations_arr }
-        operations_arr = [ { 'timestamp_start': timestamp, 'timestamp_end': timestamp, 'commands' : commands_arr }, ... ]
+        operations_arr = [ { 'timestamp': timestamp, 'commands' : commands_arr }, ... ]
         commands_arr = [command, ...]
         
-        operations_arr list is sorted by timestamp_start info
+        operations_arr list is sorted by timestamp info
         """
         if self.data:
             return self.data
@@ -99,23 +108,20 @@ class PresentationParser(object):
         all_data = re_dataBlock.findall(self._text)
         for fdata in all_data:
             localData = {}
-            timestamps1, timestamps2 = self._getTimeStampsStartEnd(fdata[0])
-            localData['timestamp_start'] = timestamps1
-            if timestamps2:
-                localData['timestamp_end'] = timestamps2
+            timestamp = self._getTimeStamp(fdata[0])
+            localData['timestamp'] = timestamp
             localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
             operations.append(localData)
+        # replace relative timestamps with absolute ones
+        self._replaceRelativeTimeStamps(all_data)
         # sort of the list, in case that the file isn't sorted itself
         operations.sort(timestamp_sort)
         self.data['operations'] = operations
 
-    def _getTimeStampsStartEnd(self, data):
-        """Given a timestamps string return (timestamp1, timestamp2) or (timestamp1, None) tuples"""
+    def _getTimeStamp(self, data):
+        """Given a timestamp string return the timestamp value"""
         all_data = re_timestampsData.findall(data)
-        for gps in all_data:
-            if not gps[1]:
-                return gps[0], None
-            return tuple(gps[1].split(" - "))
+        return all_data[0]
 
     def _getParamsFromStr(self, paramStr):
         """Given a string with parameter semicolon-separated, return an array of params

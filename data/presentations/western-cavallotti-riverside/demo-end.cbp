@@ -1,4 +1,4 @@
-# version: 1.0.0
+# version: 2.0.0
 
 # End of the funny demo
 
@@ -9,11 +9,11 @@
 	level.levelText({'text':'And now?', 'color': (150,255,150)})
 	level.levelText("")
 	level.levelText("What other dangers are waiting in the dark streets of Codigoro?")
-	level.levelText("Will be Chees Boys and their minions defeated and the World freed from their tiranny?")
+	level.levelText("Will be Cheese Boys and their minions defeated and the World freed from their tiranny?")
 	level.levelText("Will you ever return back to your beloved Veneto?")
 	level.levelText("")
 	level.levelText("Not now for sure! But stay tuned for new releases of")
-	level.levelText({'text':'Cheeseboys', 'color': (150,255,150)})
+	level.levelText({'text':'Cheese Boys', 'color': (150,255,150)})
 
 [00:00:07 100]
 	print "Game Over"

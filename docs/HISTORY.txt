@@ -7,14 +7,23 @@ A (un)complete list of changes in every release.
  * Added the PySetup script for simplify the py2exe releases (thanks to PyMike from pygame community to release this).
  
  * BUG - fixed the long-life bug "character-bouncing-position" after killing an enemy.
+   This also fix a bug that breaks presentations with a cblocals.game_speed too high.
  
  * Pressing F1 now switch from window/fullscreen mode.
 
  * REFACTORING, TODO - replaced the term "dimension" with "size".
  
- * Added main menu with use of ezmenu (thanks to Pymike for releasing that).
+ * Added main menu with use of ezmenu (thanks to PyMike for releasing that).
  
- * Added the "chek for update" feature.
+ * Added the "check for update" feature. UNFINISHED
+ 
+ * REFACTORING - renamed the _loadEmptySprite GameSprite's method to generateEmptySprite.
+
+ * (!!!) Simplified the .cbp format, allowing relative time. UNFINISHED
+
+ * (!!!) Migration for pygame 1.8. No real feature migration, but fixed the LevelExit transparency know problem.
+
+ * TODO - Whitespaces in .cbp files are handled in a smarter way.
 
 === 0.1.0 ===
 

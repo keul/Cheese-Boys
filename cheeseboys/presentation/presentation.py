@@ -45,29 +45,6 @@ class Presentation(object):
         cblocals.globals['text_tips'] = True
         cblocals.globals['points'] = True
         cblocals.game_speed = 1.
-
-    @classmethod
-    def timestampValueToString(cls, value):
-        """Given a millisecond amount, format it in a timestamp format"""
-        hh = mm = ss = ml = ""
-        mmInHour = 1000*60*60
-        mmInMinute = 1000*60
-        hh = "%02d" % (value / mmInHour)
-        value = value % mmInHour
-        mm = "%02d" % (value / mmInMinute)
-        value = value % mmInMinute
-        ss = "%02d" % (value / 1000)
-        ml = "%03d" % (value % 1000)
-        return "%s:%s:%s %s" % (hh, mm, ss, ml)
-
-    @classmethod
-    def timestampStringToValue(cls, timestamp):
-        """Given a timestamp, return the relative millisecond amount"""
-        hh = int(timestamp[:2])
-        mm = int(timestamp[3:5])
-        ss = int(timestamp[6:8])
-        ml = int(timestamp[9:12])
-        return ml + ss*1000 + mm*1000*60 + hh*1000*60*60
     
     def update(self, time_passed):
         """Update presentation run timer, and run commands if needed"""

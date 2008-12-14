@@ -15,7 +15,14 @@ except ImportError:
            "This is the main game module! You must download it from\n"
            "http://pygame.org/download.shtml")
     sys.exit(1)
-
+# Check for pygame 1.8
+print "Checking for pygame version..."
+from pygame import version
+if version.vernum[0]<2 and version.vernum[1]<8:
+    print ("WARNING: your pygame version is %s\n"
+           "Cheese Boys rely on pygame 1.8.1, or a better version.\n")  % version.ver
+else:
+    print "Found pygame %s. OK..." % version.ver 
 print "All required libraries are present."
 # #######
 

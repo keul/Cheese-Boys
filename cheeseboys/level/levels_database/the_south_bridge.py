@@ -31,8 +31,10 @@ def load(name, hero):
     enemy4.setBrain(BaseStateMachine)
     enemy4.setCombatValues(0, 5)
 
-    exits1 = LevelExit( (18,208), (36,170), "Western Cavallotti Riverside 1", (1500, 310), (1200,290), (1500, 310), exits)
-    level.addSprite(exits1, (18,208) )
+    exit1 = LevelExit( (18,208), (36,170), "Western Cavallotti Riverside 1", (1500, 310), (1200,290), (1500, 310), exits)
+    level.addSprite(exit1, (18,208) )
+    exit2 = LevelExit( (20,1499), (40,155) , None, None, None, None, exits)
+    level.addSprite(exit2, (20,1499) )
 
     level.addSprite(hero, (350, 1450))
     level.addSprite(enemy1, (418, 1242))

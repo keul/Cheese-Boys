@@ -39,7 +39,7 @@ class Gate(GameSprite):
         self.image = self._getImage()
 
     def _getImage(self):
-        srf = self._loadEmptySprite(self.rect.size, colorKey=(0,0,0) )
+        srf = self.generateEmptySprite(self.rect.size, colorKey=(0,0,0) )
         if self.orientation==0:
             rect = pygame.Rect( (0,0), (self.length,self.width) ) 
         else:
@@ -91,7 +91,7 @@ class Gate(GameSprite):
         GameSprite.update(self, time_passed)
         if cblocals.global_controlsEnabled:
             # Mouse curson
-            if self.physical_rect.collidepoint(pygame.mouse.get_pos()):
+            if self.collide_rect.collidepoint(pygame.mouse.get_pos()):
                 if not self._focus:
                     self.image.set_alpha(200)
                     utils.changeMouseCursor(cblocals.IMAGE_CURSOR_OPENDOOR_TYPE)

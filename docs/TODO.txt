@@ -18,8 +18,6 @@ Entries I will fix/implement someday.
  
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
    things like ranged weapon and other sprites.
-   
- * Handle in a better way the .cbp file whitespaces.
 
 === Wishlist entries ===
 

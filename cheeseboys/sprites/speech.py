@@ -105,7 +105,7 @@ class SpeechCloud(GameSprite):
         self.rect = self._getRect()
         speech_font = cblocals.speech_font
         speech_font_h = speech_font.get_height()
-        srf = self._loadEmptySprite(self.rect.size, alpha=200, fillWith=self.bkcolor)
+        srf = self.generateEmptySprite(self.rect.size, alpha=200, fillWith=self.bkcolor)
         ptop = BORDER_PADDING
         for text_line in self._generateTextLines(self.text):
             srf.blit(speech_font.render(text_line, True, self.textcolor), (BORDER_PADDING, ptop) )

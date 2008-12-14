@@ -24,7 +24,7 @@ class Trigger(GameSprite):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, size)
         self.position = position
-        srf = self._loadEmptySprite(size, alpha=0)
+        srf = self.generateEmptySprite(size, alpha=0)
         if cblocals.DEBUG:
             srf.set_alpha(100)
             srf.fill( (255,255,255) )

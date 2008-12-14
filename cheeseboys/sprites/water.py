@@ -42,7 +42,7 @@ class WaterWave(GameSprite):
             self._wave_phase = 3            
             return self._image
         if wave_phase==3:
-            self._image = self._loadEmptySprite(self.rect.size, alpha=0)
+            self._image = self.generateEmptySprite(self.rect.size, alpha=0)
             self._wave_phase = 0
             return self._image
 

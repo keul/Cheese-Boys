@@ -15,7 +15,7 @@ class PhysicalBackground(GameSprite):
     def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, size)
-        srf = self._loadEmptySprite(size, alpha=0)
+        srf = self.generateEmptySprite(size, alpha=0)
         if cblocals.DEBUG:
             srf.set_alpha(150)
         self.image = srf

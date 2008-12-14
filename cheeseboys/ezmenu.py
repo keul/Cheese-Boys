@@ -53,7 +53,7 @@ class EzMenu:
                     self.option += 1
                 if e.key == pygame.K_UP:
                     self.option -= 1
-                if e.key == pygame.K_RETURN:
+                if e.key == pygame.K_RETURN or e.key == pygame.K_SPACE:
                     self.options[self.option][1]()
         if self.option > len(self.options)-1:
             self.option = len(self.options)-1

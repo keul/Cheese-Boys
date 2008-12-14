@@ -47,11 +47,11 @@ class LevelText(GameSprite):
             # memoized image
             return self._image
         if self._type == LEVEL_TEXT_TYPE_BLACKSCREEN:
-            srf = self._loadEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0))
+            srf = self.generateEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0))
         else:
             w,h = self.rect.size
             self.rect.move_ip(0,-V_DIFF)
-            srf = self._loadEmptySprite( (w, h), alpha=220, fillWith=(0,0,0))
+            srf = self.generateEmptySprite( (w, h), alpha=220, fillWith=(0,0,0))
         
         for text, position, color in self._generatePage():
             text_to_display = cblocals.leveltext_font.render(_(text.decode('utf-8')), True, color)

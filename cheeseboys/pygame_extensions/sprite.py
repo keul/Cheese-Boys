@@ -209,11 +209,11 @@ class GameSprite(pygame.sprite.Sprite):
         self.refresh()
 
     @classmethod
-    def _loadEmptySprite(self, size, alpha=None, fillWith=None, colorKey=None):
-        """Return Surface. Default setting is for blanck and not filled ones.
+    def generateEmptySprite(cls, size, alpha=None, fillWith=None, colorKey=None):
+        """Return Surface. Default setting is for blank and not filled ones.
         You can enter alpha value, fill color and colorkey color for per-pixel-alpha.
         """
-        surface = pygame.Surface(size, flags=SRCALPHA, depth=32)
+        surface = pygame.Surface(size, depth=32)
         if fillWith:
             surface.fill(fillWith)
         if alpha is not None:

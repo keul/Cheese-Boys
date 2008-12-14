@@ -33,13 +33,13 @@ class Thunders(GameSprite):
             return self._image
         phase = self._phase
         if phase==1:
-            self._image = GameSprite._loadEmptySprite(self.rect.size, alpha=245, fillWith=(255,255,255))
+            self._image = GameSprite.generateEmptySprite(self.rect.size, alpha=245, fillWith=(255,255,255))
             return self._image
         if phase==2:
-            self._image = GameSprite._loadEmptySprite(self.rect.size, alpha=245, fillWith=(0,0,0))
+            self._image = GameSprite.generateEmptySprite(self.rect.size, alpha=245, fillWith=(0,0,0))
             return self._image
         if phase==3:
-            self._image = GameSprite._loadEmptySprite(self.rect.size, alpha=245, fillWith=(255,255,255))
+            self._image = GameSprite.generateEmptySprite(self.rect.size, alpha=245, fillWith=(255,255,255))
             return self._image
 
     def update(self, time_passed):
