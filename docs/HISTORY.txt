@@ -19,11 +19,13 @@ A (un)complete list of changes in every release.
  
  * REFACTORING - renamed the _loadEmptySprite GameSprite's method to generateEmptySprite.
 
- * (!!!) Simplified the .cbp format, allowing relative time. UNFINISHED
+ * (!!!) Enhanced the .cbp format, allowing relative time (.cbp version 2.0.0).
+   Also rewrited the funny intro to use this new feature (and have better timing). UNFINISHED
 
- * (!!!) Migration for pygame 1.8. No real feature migration, but fixed the LevelExit transparency know problem.
+ * (!!!) Migration to pygame 1.8.
+   No real feature migration, but fixed the LevelExit transparency know problem.
 
- * TODO - Whitespaces in .cbp files are handled in a smarter way.
+ * TODO - Whitespaces in .cbp files are handled in a smarter way (better regexp for .cbp file format).
 
 === 0.1.0 ===
 

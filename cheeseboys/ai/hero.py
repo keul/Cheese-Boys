@@ -69,7 +69,6 @@ class HeroStateAttacking(BaseStateAttacking):
         if character.isAttacking():
             return None
 
-        print character.navPoint
         if enemy and not enemy.isAlive:
             return "controlled"
 

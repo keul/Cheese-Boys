@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -
 
 import re
-from utils import *
+from cheeseboys.presentation.utils import timestamp_sort, timestampValueToString, timestampStringToValue
 
 FIRST_LINE_REGEXP = r"""^#(\s)*version:(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 VERSION_NUMBERS = r"""^(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
@@ -73,22 +73,22 @@ class PresentationParser(object):
         self.data['version'] = (int(all_groups[2]),int(all_groups[3]),int(all_groups[4]))
         return self.data['version']
 
-    def _replaceRelativeTimeStamps(self, all_data):
+    def _replaceRelativeTimeStamps(self, operations):
         """Looking all timestamps, if a relative ones if found, it is replaced with
         the absolute value calculated on the last absolute timestamps found.
         
-        Be aware that this method can be called before the sort of the data structure.
+        Be aware that this method must be called before the sort of the data structure,
+        or all [+xxx...] timestamps will be putted at the end.
         """
         collected_time = 0
-        for fdata in all_data:
-            timestamp = self._getTimeStamp(fdata[0])
+        for op in operations:
+            timestamp = op['timestamp']
             if timestamp.startswith("+"):
                 # relative
                 value = timestamp[1:]  # skip the '+' char
                 collected_time += timestampStringToValue(value)
-                ts, dummy1, dummy2, dummy3, dummy4, dummy5 = fdata
                 ts = "[%s]" % timestampValueToString(collected_time + timestampStringToValue(value))
-                fdata = (ts, dummy1, dummy2, dummy3, dummy4, dummy5)
+                op['timestamp'] = ts
             else:
                 collected_time = timestampStringToValue(timestamp)
 
@@ -113,7 +113,7 @@ class PresentationParser(object):
             localData['commands'] = self._getCommands(self._prepareDataBlock(fdata[2]))
             operations.append(localData)
         # replace relative timestamps with absolute ones
-        self._replaceRelativeTimeStamps(all_data)
+        self._replaceRelativeTimeStamps(operations)
         # sort of the list, in case that the file isn't sorted itself
         operations.sort(timestamp_sort)
         self.data['operations'] = operations
@@ -143,7 +143,7 @@ class PresentationParser(object):
         Just return strings!
         """
         # The idea WAS to obtain a new language for the presentation format, but this was very
-        # difficult... ok not impossible, but I've not much time for cheeseboys so I need to
+        # difficult... ok not impossible, but I've not much time for cheese boys so I need to
         # stay simple!
         #BBB: security issue here!
         return data

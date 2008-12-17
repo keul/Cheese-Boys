@@ -21,7 +21,7 @@ FAKE_CBP_FILE = \
 [+00:00:02 000]
         fakeMethod((1,4,5), 56, "strmns")
     level.normalizeDrawPositionBasedOn: (100,700)
-    ddd"""
+    dummy = 'abc'"""
 
 class TestPresentationParser(CheeseBoysTestCase):
     """Test the use of a PresentationParser"""
@@ -55,7 +55,7 @@ class TestPresentationParser(CheeseBoysTestCase):
         """Test the loading of a complete commands datablock"""
         self.pparser._loadData()
         self.assertEquals(self.pparser.data['operations'][1]['commands'][2],
-                          'level.normalizeDrawPositionBasedOn: (100,700)')
+                          "dummy = 'abc'")
 
 
 

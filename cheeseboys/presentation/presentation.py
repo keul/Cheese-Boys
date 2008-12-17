@@ -2,6 +2,7 @@
 
 import logging
 from presentation_parser import PresentationParser
+from cheeseboys.presentation.utils import timestampStringToValue
 from cheeseboys import cblocals, utils
 
 class Presentation(object):
@@ -55,7 +56,7 @@ class Presentation(object):
             # Presentation is finished
             self.disablePresentationMode()
             return None
-        next_op_timestamp_value = self.timestampStringToValue(next_ops['timestamp_start'])
+        next_op_timestamp_value = timestampStringToValue(next_ops['timestamp'])
         if self._time_collected*1000.>=next_op_timestamp_value:
             # I'm late, I must run next operations!
             toExecList = []
