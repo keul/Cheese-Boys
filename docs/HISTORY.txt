@@ -13,7 +13,8 @@ A (un)complete list of changes in every release.
 
  * REFACTORING, TODO - replaced the term "dimension" with "size".
  
- * Added main menu with use of ezmenu (thanks to PyMike for releasing that).
+ * Added main menu with use of EzMenu (thanks to PyMike for releasing that).
+   In facts, I released my own version (KezMenu) but the major part of the work is still Mike's ideas!
  
  * Added the "check for update" feature. UNFINISHED
  

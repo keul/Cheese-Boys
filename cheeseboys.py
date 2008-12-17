@@ -29,7 +29,7 @@ print "All required libraries are present."
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
 
-from cheeseboys import ezmenu
+import kezmenu
 
 from cheeseboys import cblocals, utils, character
 from cheeseboys.pygame_extensions import GameSprite
@@ -280,7 +280,7 @@ def menu():
     pygame.display.set_caption("Cheese Boys (alpha release) %s" % cblocals.__version__)
     # Init game menu
     screen = cblocals.screen
-    menu = ezmenu.EzMenu(
+    menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
         [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,200),(400,400) ) )],
         [_(u"Quit"), lambda: sys.exit(0)])

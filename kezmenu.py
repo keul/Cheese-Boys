@@ -1,15 +1,17 @@
 #! /usr/bin/env python
 
-############################################################
-#EzMeNu - A simple module to quickly make menus with PyGame#
-############################################################
-#Licensed under the GNU Lesser General Public License      #
-#Created by PyMike <pymike93@gmail.com>                    #
-############################################################
+# KezMenu - By Luca Fabbri
+# This code is released under GPL license
+# ---------------------------------------------------------------
+# This work is based on the original ezmenu script, released from
+# PyMike, from the Pygame community
+# See http://www.pygame.org/project/855/
+# ---------------------------------------------------------------
 
 import pygame
 
-class EzMenu:
+class KezMenu(object):
+    """A simple but complete class to handle menu using pygame"""
 
     def __init__(self, *options):
         """Initialise the EzMenu! options should be a sequence of lists in the
@@ -21,9 +23,10 @@ class EzMenu:
         self.font = pygame.font.Font(None, 32)
         self.option = 0
         self.width = 1
-        self.color = [0, 0, 0]
-        self.hcolor = [255, 0, 0]
+        self.color = (0, 0, 0)
+        self.hcolor = (255, 0, 0)
         self.height = len(self.options)*self.font.get_height()
+        self.mouse_focus = False
         for o in self.options:
             text = o[0]
             ren = self.font.render(text, 1, (0, 0, 0))
@@ -55,10 +58,33 @@ class EzMenu:
                     self.option -= 1
                 if e.key == pygame.K_RETURN or e.key == pygame.K_SPACE:
                     self.options[self.option][1]()
+            # Mouse controls
+            elif e.type == pygame.MOUSEBUTTONDOWN:
+                lb, cb, rb = pygame.mouse.get_pressed()
+                if lb and self.mouse_focus:
+                    self.options[self.option][1]()
+                
         if self.option > len(self.options)-1:
             self.option = len(self.options)-1
         elif self.option < 0:
             self.option = 0
+        # Check for mouse position
+        self._checkMousePositionForFocus()
+
+    def _checkMousePositionForFocus(self):
+        """Check the mouse position to know if move focus on a option"""
+        i = 0
+        for o in self.options:
+            text = o[0]
+            w,h = self.font.size(text)
+            rect = pygame.Rect( (self.x, self.y + i*h), (w,h) )
+            if rect.collidepoint(pygame.mouse.get_pos()):
+                self.option = i
+                self.mouse_focus = True
+                break           
+            i+=1
+        else:
+            self.mouse_focus = False
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""
