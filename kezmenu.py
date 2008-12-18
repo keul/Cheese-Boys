@@ -1,14 +1,17 @@
-#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # KezMenu - By Luca Fabbri
 # This code is released under GPL license
 # ---------------------------------------------------------------
-# This work is based on the original ezmenu script, released from
+# This work is based on the original EzMenu script, released from
 # PyMike, from the Pygame community
 # See http://www.pygame.org/project/855/
 # ---------------------------------------------------------------
 
 import pygame
+
+__author__ = "Keul - lucafbb AT gmail.com"
+__version__ = "0.2.0"
 
 class KezMenu(object):
     """A simple but complete class to handle menu using pygame"""

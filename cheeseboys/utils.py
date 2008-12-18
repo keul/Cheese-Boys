@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -
 
 import pygame
-import cblocals
+import ktextsurfacewriter
+from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
 from cheeseboys.vector2 import Vector2
@@ -83,18 +84,6 @@ def checkPointIsInsideRectType(point, rect):
         rect = pygame.Rect( rect[0], rect[1] )
     # Here rect is a pygame.Rect
     return rect.collidepoint(point)
-
-def groupSortingByYAxis(sprite1, sprite2):
-    """This function is made to be used by the sort procedure of the GameGroup.sprites().
-    Order 2 sprites by their Y position (using the GameSprite.collide_rect.centery)
-    """
-    y1 = sprite1.collide_rect.centery
-    y2 = sprite2.collide_rect.centery
-    if y1>y2:
-        return 1
-    elif y1==y2:
-        return 0
-    return -1
 
 # ******* CURSOR *******
 def changeMouseCursor(type):
@@ -178,6 +167,7 @@ def update_version(surface, rect):
     import socket
     import urllib
     import xml.dom.minidom
+    timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(10) # connection timeout
     try:
         stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
@@ -188,10 +178,20 @@ def update_version(surface, rect):
         version = root.getElementsByTagName('version')[0].firstChild.nodeValue
         version_type = root.getElementsByTagName('version')[0].attributes['type'].value
         changes = root.getElementsByTagName('changes')[0].firstChild.nodeValue.strip()
-        print date
-        print version
-        print version_type
-        print changes
-    except Exception, inst:
-        print inst
+        
+        ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect)
+        ktswriter.text = "\n".join([date, version, version_type, changes])
+        still_inside = True
+        while still_inside:
+            for e in pygame.event.get():
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_RETURN or e.key == pygame.K_SPACE:
+                        still_inside = False
+            ktswriter.draw(surface)
+            pygame.display.flip()
+    
+#    except Exception, inst:
+#        print inst
+    finally:
+        socket.setdefaulttimeout(timeout) # restore base timeout
 

@@ -5,6 +5,18 @@ from pygame import sprite
 
 from cheeseboys import utils
 
+def groupSortingByYAxis(sprite1, sprite2):
+    """This function is made to be used by the sort procedure of the GameGroup.sprites().
+    Order 2 sprites by their Y position (using the GameSprite.collide_rect.centery)
+    """
+    y1 = sprite1.collide_rect.centery
+    y2 = sprite2.collide_rect.centery
+    if y1>y2:
+        return 1
+    elif y1==y2:
+        return 0
+    return -1
+
 class GameGroup(sprite.Group):
     """Game specific version of PyGame Group class, adding some functionality needed by this game.
     """
@@ -23,9 +35,9 @@ class GameGroup(sprite.Group):
         a sprite is "far" from the screen base.
         """
         sprites = sprite.Group.sprites(self)
-        sprites.sort(utils.groupSortingByYAxis)
+        sprites.sort(groupSortingByYAxis)
         return sprites
-   
+
     @property
     def updatable(self):
         """Updatable groups stored in GameLevel object will be updated calling the update method"""
@@ -69,7 +81,7 @@ class GameGroup(sprite.Group):
             pygame.draw.rect(surface, color, sprite.rect, width)
     
     def drawPhysicalRect(self, surface, color=(200,200,200), width=1):
-        """Draw a rect on the screen that repr real physucal rect attribute of the sprite, for all Sprite in this group"""
+        """Draw a rect on the screen that repr real physical rect attribute of the sprite, for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.physical_rect, width)
 
