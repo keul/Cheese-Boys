@@ -174,8 +174,8 @@ def update_version(surface, rect):
     timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(10) # connection timeout
     ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect, color=(100,255,255,0), justify_chars=3)
+    ktswriter.text = CHECK_NEW_VERSION_TEXT
     try:
-        ktswriter.text = CHECK_NEW_VERSION_TEXT
         ktswriter.draw(surface)
         pygame.display.flip()
         stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
@@ -194,17 +194,16 @@ def update_version(surface, rect):
                                         "\nPress any key to continue"])
         else:
             ktswriter.text = CHECK_NEW_VERSION_TEXT + "\n\nYour Cheese Boys version is up to date."
-        still_inside = True
-        while still_inside:
-            for e in pygame.event.get():
-                if e.type == pygame.KEYDOWN:
-                    still_inside = False
-            ktswriter.draw(surface)
-            pygame.display.flip()
-
-    
-#    except Exception, inst:
-#        print inst
+    except Exception, inst:
+        print inst
+        ktswriter.text = CHECK_NEW_VERSION_TEXT + "\n\nAn error has been raised checking the new version. Please check you Internet connection."
     finally:
         socket.setdefaulttimeout(timeout) # restore base timeout
+    still_inside = True
+    while still_inside:
+        for e in pygame.event.get():
+            if e.type == pygame.KEYDOWN:
+                still_inside = False
+        ktswriter.draw(surface)
+        pygame.display.flip()
 
