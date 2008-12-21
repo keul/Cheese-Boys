@@ -282,7 +282,7 @@ def menu():
     screen = cblocals.screen
     menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
-        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,200),(300,300) ) )],
+        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,300),(350,300) ) )],
         [_(u"Quit"), lambda: sys.exit(0)])
     menu.set_font(cblocals.leveltext_font)    
     image = utils.load_image('cheese-boys-logo.png')

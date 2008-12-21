@@ -16,7 +16,9 @@ A (un)complete list of changes in every release.
  * Added main menu with use of EzMenu (thanks to PyMike for releasing that).
    In facts, I released my own version (KezMenu) but the major part of the work is still Mike's ideas!
  
- * Added the "check for update" feature. UNFINISHED
+ * Added the "check for update" feature.
+ 
+ * Added the new indipendent module ktextsurfacewriter, to generally display a text over a PyGame surface.
  
  * REFACTORING - renamed the _loadEmptySprite GameSprite's method to generateEmptySprite.
 

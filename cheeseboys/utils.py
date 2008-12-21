@@ -160,6 +160,10 @@ def normalizeTextLength(text_too_long, font, max_length):
         return [txt1] + normalizeTextLength(txt2, font, max_length)
 # **************
 
+CHECK_NEW_VERSION_TEXT = ("Checking for a new version.\n"
+                          "Connecting to %s\n"
+                          "Please, wait..." % cblocals.URL_CHEESEBOYS_LAST_VERSION)
+
 def update_version(surface, rect):
     """Check for a new version of the game.
     Write output data on given surface and only inside the rect area.
@@ -169,7 +173,11 @@ def update_version(surface, rect):
     import xml.dom.minidom
     timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(10) # connection timeout
+    ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect, color=(100,255,255,0), justify_chars=3)
     try:
+        ktswriter.text = CHECK_NEW_VERSION_TEXT
+        ktswriter.draw(surface)
+        pygame.display.flip()
         stream = urllib.urlopen(cblocals.URL_CHEESEBOYS_LAST_VERSION)
         dom = xml.dom.minidom.parse(stream)
         stream.close()
@@ -178,17 +186,22 @@ def update_version(surface, rect):
         version = root.getElementsByTagName('version')[0].firstChild.nodeValue
         version_type = root.getElementsByTagName('version')[0].attributes['type'].value
         changes = root.getElementsByTagName('changes')[0].firstChild.nodeValue.strip()
-        
-        ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect)
-        ktswriter.text = "\n".join([date, version, version_type, changes])
+        if version!=cblocals.__version__:            
+            ktswriter.text = "\n".join(["A new Cheese Boys version is available: %s." % version,
+                                        "This is %s version." % version_type,
+                                        "Release date: %s\n" % date,
+                                        changes,
+                                        "\nPress any key to continue"])
+        else:
+            ktswriter.text = CHECK_NEW_VERSION_TEXT + "\n\nYour Cheese Boys version is up to date."
         still_inside = True
         while still_inside:
             for e in pygame.event.get():
                 if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_RETURN or e.key == pygame.K_SPACE:
-                        still_inside = False
+                    still_inside = False
             ktswriter.draw(surface)
             pygame.display.flip()
+
     
 #    except Exception, inst:
 #        print inst
