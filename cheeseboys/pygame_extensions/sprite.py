@@ -251,3 +251,4 @@ class GameSprite(pygame.sprite.Sprite):
         if x<0 or y<0 or x>x or y>h:
             return True
         return False
+

@@ -69,6 +69,7 @@ def game():
     enemies = level['enemies']
     physical = level['physical']
     tippable = level['tippable']
+    speech = level['speech']
     while True:
         # ******* EVENTS LOOP BEGIN *******
         for event in pygame.event.get():
@@ -89,7 +90,7 @@ def game():
                         level.presentation = None
                         cblocals.game_speed = 1.
                     else:
-                        sys.exit()
+                        game_over()
 
             if cblocals.global_controlsEnabled:
                 # No mouse control during presentations
@@ -218,8 +219,13 @@ def game():
         if cblocals.global_mouseCursorType:
             utils.drawCursor(screen, pygame.mouse.get_pos())
 
+        # darkness
         if cblocals.SHADOW:
             level.blitShadow(screen, hero)
+
+        # speechs
+        speech.draw(screen)
+
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
 
         pygame.display.update()
@@ -228,12 +234,14 @@ def game():
 def cheeseBoysInit():
     """Init of the engine"""    
     LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
+    DARKNESS_CHOICES = ('on', 'off')
     p = optparse.OptionParser( )
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
     p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
-    p.add_option('--fullscreen', '-f', action='store_true', help='load the game in fullscreen mode') 
+    p.add_option('--fullscreen', '-f', action='store_true', help='load the game in fullscreen mode')
+    p.add_option('--darkness', '-k', default="on", action="store", choices=DARKNESS_CHOICES, help='use on or off values. Act on darkness effect. This can be slow a little the game engine on slower systems')
 
     options, arguments = p.parse_args()
     
@@ -258,6 +266,11 @@ def cheeseBoysInit():
 
     if options.fullscreen:
         cblocals.FULLSCREEN = True
+
+    if options.darkness=='on':
+        cblocals.SHADOW = True
+    elif options.darkness=='off':
+        cblocals.SHADOW = False
 
     # init of some pygame graphics stuff
     pygame.init()
@@ -294,7 +307,7 @@ def menu():
     menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
         [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,300),(350,300) ) )],
-        [_(u"Quit"), lambda: sys.exit(0)])
+        [_(u"Quit"), game_over])
     menu.set_font(cblocals.leveltext_font)    
     image = utils.load_image('cheese-boys-logo.png')
     
@@ -311,7 +324,7 @@ def menu():
 
         for e in events:
             if e.type == pygame.QUIT:
-                sys.exit(0)
+                game_over()
 
         screen.fill((0, 0, 0))
         screen.blit(image, (text_start_pos_x-20-image.get_width(),text_start_pos_y) )
@@ -319,6 +332,11 @@ def menu():
         menu.draw(screen)
         pygame.display.flip()
 
+def game_over():
+    """end python, but pygame first"""
+    pygame.quit()
+    print _("Game Over")
+    sys.exit(0)
 
 if __name__ == "__main__":
     cheeseBoysInit()

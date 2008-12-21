@@ -61,7 +61,7 @@ class GameLevel(object):
         enemies = GameGroup("enemies")
         animations = GameGroup("animations", drawable=True, updatable=True)
         top_animations = GameGroup("top_animations", drawable=True, updatable=True)
-        speech = GameGroup("speech", drawable=True, updatable=True)
+        speech = GameGroup("speech", updatable=True)            # speechs are handled in a special way
         level_text = GameGroup("level_text")
         exits = GameGroup("exits", drawable=True, updatable=True)
         triggers = GameGroup("triggers", drawable=True, updatable=True)
@@ -73,7 +73,7 @@ class GameLevel(object):
         self.addGroup(enemies)
         self.addGroup(animations, zindex=3)
         self.addGroup(top_animations, zindex=20)
-        self.addGroup(speech, zindex=15)
+        self.addGroup(speech)
         self.addGroup(level_text, zindex=30)
         self.addGroup(exits, zindex=3)
         self.addGroup(triggers, zindex=4)
@@ -403,9 +403,9 @@ class GameLevel(object):
         self._useLevelText(text)
     # ******* /Level text methods *******
 
-    def displayTip(self, surface, sprite):
+    def displayTip(self, surface, tip_sprite):
         """Display a GameSprite's tip on the surface, and control the tip position"""
-        tip_structure = sprite.getTip()
+        tip_structure = tip_sprite.getTip()
         if not tip_structure:
             return
         text = tip_structure['text']
@@ -413,7 +413,7 @@ class GameLevel(object):
         font = tip_structure.get('font',cblocals.default_font)
         background = tip_structure.get('background',None)
         fw,fh = font.size(text)
-        rect = sprite.physical_rect
+        rect = tip_sprite.physical_rect
         x,y = rect.midtop
         x=x-fw/2
         y=y-fh

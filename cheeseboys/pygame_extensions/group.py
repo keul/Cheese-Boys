@@ -67,8 +67,6 @@ class GameGroup(sprite.RenderUpdates):
         return collisionList
 
 
-
-
     # ******* DEBUG HELPER METHODS *******
     def drawCollideRect(self, surface, color=(0,255,255), width=1):
         """Draw a rect on the screen that repr collide area for all Sprite in this group"""

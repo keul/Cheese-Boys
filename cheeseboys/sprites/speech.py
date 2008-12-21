@@ -36,11 +36,11 @@ class SpeechCloud(GameSprite):
         self.rect = self._getRect()
         level['speech'].add(self)
         self._last_charX = self._last_charY = character.position_int
-        self.addToGameLevel(level, firstPosition=self.rect.topleft)
+        self.addToGameLevel(level, firstPosition=level.transformToLevelCoordinate(self.rect.midbottom))
 
     def _setText(self, text):
         """Setter of the text property.
-        Text is always appended to text already existings.
+        Text is always appended to text already existing.
         """
         self._image = None # break memoization
         if self._text:
@@ -91,7 +91,7 @@ class SpeechCloud(GameSprite):
         if rect.topleft[0]<0: rect.left = 0
         elif rect.topright[0]>cblocals.GAME_SCREEN_SIZE[0]: rect.right = cblocals.GAME_SCREEN_SIZE[0]
         if rect.topleft[1]<0: rect.top = 0
-        elif rect.bottomleft[1]>cblocals.GAME_SCREEN_SIZE[1]: rect.bottom = cblocals.GAME_SCREEN_SIZE[1]        
+        elif rect.bottomleft[1]>cblocals.GAME_SCREEN_SIZE[1]: rect.bottom = cblocals.GAME_SCREEN_SIZE[1]
         return rect
 
     @property
@@ -99,6 +99,7 @@ class SpeechCloud(GameSprite):
         """The image of this sprite is a pygame.Surface.
         Its a demi-transparent box with text inside that follow the character.
         """
+        # BBB: memoization is disabled
         if False and self._image:
             # memoize it
             return self._image
@@ -118,6 +119,7 @@ class SpeechCloud(GameSprite):
         The text remains visible some times, based on text length.
         """
         GameSprite.update(self, time_passed)
+        self.position = self.currentLevel.transformToLevelCoordinate(self.rect.midbottom)
         self._time_left-= time_passed
         if self._time_left<=0:
             self.endSpeech()

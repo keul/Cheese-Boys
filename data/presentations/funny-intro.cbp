@@ -3,7 +3,7 @@
 # This intro is still a test
 
 [00:00:00 000]
-	cblocals.game_speed = 20.
+	#cblocals.game_speed = 20.
 	level.topleft = (100,500)									# position the scene in a place
 	max = level['Max']
 	john = level['John']
@@ -170,7 +170,6 @@
 	jack.say("What idea?!")
 
 [00:03:13 000]
-	cblocals.game_speed = 1.
 	roger.say("Say bad thing about our programmer...")
 
 [00:03:17 000]

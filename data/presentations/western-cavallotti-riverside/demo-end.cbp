@@ -16,6 +16,5 @@
 	level.levelText({'text':'Cheese Boys', 'color': (150,255,150)})
 
 [00:00:07 100]
-	print "Game Over"
-	sys.exit(0)
+	game_over()
 

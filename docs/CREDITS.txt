@@ -5,7 +5,7 @@ Thanks for his superlative book "Beginning Game Development With Python and Pyga
 Thanks for the AI examples inside his book.
 Thanks for his Vector2 classes, that is the core of Cheese Boys sprite engine.
 
-=== Pymike (Pygame community) ===
+=== PyMike (Pygame community) ===
 Thanks for his tutorial.
 Thanks for many funny games developed with simple codes.
 Thanks for the PySetup script that simplify the py2exe procedure.
