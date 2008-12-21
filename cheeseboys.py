@@ -160,6 +160,7 @@ def game():
         # Level text overlay
         if level.update_text(time_passed):
             level.draw(screen)
+            pygame.display.update(pygame.Rect( (0,0), cblocals.GAME_SCREEN_SIZE ))
             continue
         
         # Presentation
@@ -217,6 +218,8 @@ def game():
         if cblocals.global_mouseCursorType:
             utils.drawCursor(screen, pygame.mouse.get_pos())
 
+        if cblocals.SHADOW:
+            level.blitShadow(screen, hero)
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
 
         pygame.display.update()
@@ -261,6 +264,14 @@ def cheeseBoysInit():
     screen = handleFullScreen()
     pygame.display.set_icon(utils.load_image("cheese_icon.gif",simpleLoad=True))
     gettext.install('cheeseboys', 'data/i18n', unicode=1)
+
+    if cblocals.SHADOW:
+        cblocals.shadow_image = utils.load_image("lightray_1.png", "shadows", simpleLoad=True)
+        cblocals.shadow_image.set_alpha(0, RLEACCEL)
+        cblocals.total_shadow_image_09 = utils.load_image("total_dark_09.png", "shadows", simpleLoad=True)
+        cblocals.total_shadow_image_09.set_alpha(0, RLEACCEL)
+        cblocals.total_shadow_image_05 = utils.load_image("total_dark_05.png", "shadows", simpleLoad=True)
+        cblocals.total_shadow_image_05.set_alpha(0, RLEACCEL)
 
     cblocals.default_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 12)
     cblocals.default_font_big = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)

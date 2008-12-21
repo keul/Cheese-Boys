@@ -207,3 +207,4 @@ def update_version(surface, rect):
         ktswriter.draw(surface)
         pygame.display.flip()
 
+

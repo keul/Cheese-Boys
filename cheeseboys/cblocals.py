@@ -78,4 +78,9 @@ globals = {'text_tips': True,
            'points': True,
            }
 
+shadow_image = None
+total_shadow_image_09 = total_shadow_image_05 = None
+SHADOW_IMG_SIZE = (1500, 1500)
+SHADOW = True
+
 DEBUG = False

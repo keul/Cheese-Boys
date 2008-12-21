@@ -3,7 +3,7 @@
 # This intro is still a test
 
 [00:00:00 000]
-	#cblocals.game_speed = 20.
+	cblocals.game_speed = 20.
 	level.topleft = (100,500)									# position the scene in a place
 	max = level['Max']
 	john = level['John']
@@ -170,6 +170,7 @@
 	jack.say("What idea?!")
 
 [00:03:13 000]
+	cblocals.game_speed = 1.
 	roger.say("Say bad thing about our programmer...")
 
 [00:03:17 000]
@@ -177,11 +178,15 @@
 
 [00:03:21 000]
 	jack.shutup()
+	level.shadow = False
 	jack.hitPointsLeft = int(jack.hitPointsLeft*.3)
 	level.addAnimation( level.midbottom, "thunders" )
 	level.addAnimation( jack.position, "lighting", groups=['top_animations',] )
 	level.addAnimation( jack.position, "dark-largestain" )
 	john.faceTo(cblocals.DIRECTION_E)
+
+[00:03:22 000]
+	level.shadow = True
 
 [00:03:27 000]
 	roger.say("...are you...")

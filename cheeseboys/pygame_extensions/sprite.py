@@ -243,3 +243,11 @@ class GameSprite(pygame.sprite.Sprite):
         to.triggerCollision(source)
         logging.debug("%s sprite collided with %s" % (source, to))
 
+    @property
+    def outOfScreen(self):
+        """True if the sprite is out of the screen coordinates"""
+        x,y = self.currentLevel.transformToScreenCoordinate(self.position)
+        w,h = cblocals.GAME_SCREEN_SIZE
+        if x<0 or y<0 or x>x or y>h:
+            return True
+        return False

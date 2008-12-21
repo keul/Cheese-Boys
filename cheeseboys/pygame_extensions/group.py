@@ -17,7 +17,7 @@ def groupSortingByYAxis(sprite1, sprite2):
         return 0
     return -1
 
-class GameGroup(sprite.Group):
+class GameGroup(sprite.RenderUpdates):
     """Game specific version of PyGame Group class, adding some functionality needed by this game.
     """
     

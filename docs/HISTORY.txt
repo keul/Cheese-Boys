@@ -30,6 +30,8 @@ A (un)complete list of changes in every release.
 
  * TODO - Whitespaces in .cbp files are handled in a smarter way (better regexp for .cbp file format).
 
+ * (!!!) Added the darkness and lightrange effects.
+
 === 0.1.0 ===
 
  * Added the rain and wind effects.

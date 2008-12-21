@@ -47,6 +47,7 @@ class GameLevel(object):
         self.screenReferenceSprite = None
         self.hero = None
         self.timeIn = 0.
+        self.shadow = True
         
         # The presentation object running
         self.presentation = None
@@ -424,3 +425,19 @@ class GameLevel(object):
             if background:
                 pygame.draw.rect(surface, background, font_rect, 0)
             surface.blit(tip, font_rect.topleft)
+
+
+    def blitShadow(self, surface, refSprite):
+        """Blit game general shadow.
+        If the shadow has a light area, its based on a reference sprite.
+        Do nothing if GameLevel.shadow is False"""
+        if self.shadow:
+            if not self.presentation:
+                if not refSprite.outOfScreen:
+                    spriteposx, spriteposy = self.transformToScreenCoordinate(refSprite.position)
+                    imgsizew,imgsizeh = cblocals.SHADOW_IMG_SIZE
+                    surface.blit(cblocals.shadow_image, (spriteposx-imgsizew/2, spriteposy-imgsizeh/2))
+                else:
+                    surface.blit(cblocals.total_shadow_image_09, (0,0) )
+            else:
+                surface.blit(cblocals.total_shadow_image_05, (0,0) )
