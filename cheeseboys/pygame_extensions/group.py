@@ -95,4 +95,5 @@ class GameGroup(sprite.RenderUpdates):
                 pos = sprite.currentLevel.transformToScreenCoordinate(sprite.navPoint.as_tuple())
                 pos = (int(pos[0]), int(pos[1]))
                 pygame.draw.circle(surface, color, pos, radius, 0)
-    # *******    
+    # *******
+

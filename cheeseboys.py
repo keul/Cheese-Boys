@@ -79,16 +79,21 @@ def game():
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
 
+                if level.presentation is not None:
+                    if pressed_keys[K_RIGHT]:
+                        cblocals.game_speed = cblocals.game_speed*2
+                        logging.info("Game speed changed to %s" % cblocals.game_speed)
+                    elif pressed_keys[K_LEFT] and cblocals.game_speed>1.:
+                        cblocals.game_speed = cblocals.game_speed/2
+                        logging.info("Game speed changed to %s" % cblocals.game_speed)
+
                 if pressed_keys[K_F1]:
                     cblocals.FULLSCREEN = not cblocals.FULLSCREEN
                     screen = handleFullScreen()
 
                 if pressed_keys[K_ESCAPE]:
                     if level.presentation is not None:
-                        # BBB: this is a bad and broken way to do this
-                        level.presentation.disablePresentationMode()
-                        level.presentation = None
-                        cblocals.game_speed = 1.
+                        cblocals.game_speed = 128.
                     else:
                         game_over()
 
@@ -165,7 +170,7 @@ def game():
             continue
         
         # Presentation
-        if level.presentation:
+        if level.presentation is not None:
             commands = level.presentation.update(time_passed)
             if commands:
                 for command in commands:

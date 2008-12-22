@@ -19,7 +19,7 @@ class SpeechCloud(GameSprite):
     Is rendered on the screen as a box containing text speech.
     """
     
-    def __init__(self, character, bkcolor=(255,255,255), textcolor=(0,0,0)):
+    def __init__(self, character, bkcolor=(255,255,255,0), textcolor=(0,0,0,0)):
         GameSprite.__init__(self)
         self._character = character
         self.bkcolor = bkcolor

@@ -18,6 +18,7 @@ class PlayingCharacter(Character):
         self.attackDamage = "1d6+2"
         self.hitPoints = self.hitPointsLeft = 30
         self.rest_time_needed = .25
+        self._speech.textcolor = (0,0,150,0)
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

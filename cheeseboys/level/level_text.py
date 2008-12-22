@@ -14,7 +14,7 @@ BORDER_PADDING_H = 40
 BORDER_PADDING_V = 20
 LINE_HEIGHT_ADD = 8
 
-COLOR_DEFAULT = (255, 255, 255)
+COLOR_DEFAULT = (255, 255, 255, 0)
 
 class LevelText(GameSprite):
     """Sprite that displaying a big popup window that contains text.

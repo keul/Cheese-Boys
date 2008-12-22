@@ -20,7 +20,8 @@ class Character(GameSprite):
     _imageDirectory = "charas"
     
     def __init__(self, name, img, containers,
-                 realSize=cblocals.TILE_IMAGE_SIZE, speed=150., attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
+                 realSize=cblocals.TILE_IMAGE_SIZE, speed=150.,
+                 attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
         
         GameSprite.__init__(self, *containers)
         self._x = self._y = 0

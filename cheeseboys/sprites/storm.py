@@ -33,6 +33,7 @@ class Thunders(GameSprite):
             return self._image
         phase = self._phase
         if phase==1:
+            self.currentLevel.shadow = False
             self._image = GameSprite.generateEmptySprite(self.rect.size, alpha=245, fillWith=(255,255,255))
             return self._image
         if phase==2:
@@ -54,6 +55,7 @@ class Thunders(GameSprite):
             self._phase+=1
             self._image = None
             if self._phase==4:
+                self.currentLevel.shadow = True
                 self.kill()
 
 
