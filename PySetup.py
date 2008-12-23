@@ -18,7 +18,7 @@ script = "cheeseboys.py"  # Starting .py or .pyw script
 dest_file = "cheeseboys"   # Final name of .exe file
 dest_folder = "bin" # Final folder for the files
 icon_file = "data/images/cheese_icon.ico"  # Icon file. Leave blank for the pygame icon.
-extra_data = ["data","CHANGES.txt","TODO.txt"]        # Extra data to copy in the final folder
+extra_data = ["data","docs"]        # Extra data to copy in the final folder
 extra_modules = []      # Extra modules to be included in the .exe (leave blank if no extra modules)
 dll_excludes = []       # excluded dlls ["w9xpopen.exe", "msvcr71.dll"]
 
@@ -28,8 +28,9 @@ license = "GPL"
 author = "Keul"
 author_email = "lucafbb@gmail.com"
 company = "Keul Software"
-version = "0.1.0"
+version = "0.1.1"
 keywords = ['arcade', '2d', 'rpg', 'adventure', 'roleplaying', 'engine', 'humor', 'keul', ]
+description = u"A humor arcade and roleplaying game played in a future, post-apocalypse world"
 
 ##################################################################
 ### Below if you edit variables, you could mess up the program ###
@@ -71,22 +72,10 @@ def installfile(name):
 class Target:
     def __init__(self, **kw):
         self.__dict__.update(kw)
-        self.name = name
-        self.keywords = keywords
-        self.author_email = author_email
-        self.version = version
-        self.company_name = company
-        self.author = author
-        self.license = license
-        self.name = dest_file
         self.icon_file = icon_file
 
 # Set some more variables for the exe
 target = Target(
-    name = name,
-    author_email = author_email,
-    license = license,
-    keywords = keywords,
     script = script,
     icon_resources = [(1, icon_file)],
     dest_base = dest_file,
@@ -103,6 +92,14 @@ setup(
                           "dist_dir": dest_folder}},
     zipfile = None,
     windows = [target],
+    name = name,
+    description = description,
+    keywords = keywords,
+    author = author,
+    author_email = author_email,
+    version = version,
+    company_name = company,
+    license = license,
     )
 
 

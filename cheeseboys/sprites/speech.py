@@ -118,8 +118,8 @@ class SpeechCloud(GameSprite):
         """The update must do 2 task: follow the character and disappear after a while.
         The text remains visible some times, based on text length.
         """
+        self.position = self.toLevelCoordinate()
         GameSprite.update(self, time_passed)
-        self.position = self.currentLevel.transformToLevelCoordinate(self.rect.midbottom)
         self._time_left-= time_passed
         if self._time_left<=0:
             self.endSpeech()

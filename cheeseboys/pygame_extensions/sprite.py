@@ -82,8 +82,12 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.midbottom = (x, y)
 
     def toScreenCoordinate(self):
-        """Return X,Y tuple information converting it back to screen position"""
+        """Return (x,y) tuple information relative to the screen position"""
         return self.currentLevel.transformToScreenCoordinate(self.position_int)
+
+    def toLevelCoordinate(self):
+        """Return (x,y) tuple information in the absolute level coordinate, taken from the sprite rect"""
+        return self.currentLevel.transformToLevelCoordinate(self.rect.midbottom)
 
     def getTip(self):
         """Get a tip to be printed near the character. Override this for subclass if you want this feature.

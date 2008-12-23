@@ -3,7 +3,7 @@
 # This intro is still a test
 
 [00:00:00 000]
-	cblocals.game_speed = 32.
+	#cblocals.game_speed = 32.
 	level.topleft = (100,500)									# position the scene in a place
 	max = level['Max']
 	john = level['John']
@@ -373,8 +373,6 @@
 	max.kill()
 
 [+00:00:05 000]
-	cblocals.game_speed = 1.
-	hero.position = (100,50)
 	hero.say("Let's do it")
 
 [+00:00:03 000]

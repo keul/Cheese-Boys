@@ -24,13 +24,13 @@ Entries I will fix/implement someday.
  
  * Add sprites that are not only drawn on the ground but are not physical (like dead corpse, or grass...).
  
- * Handle in a non buggy way the ESC when on a presentation.
- 
  * A "Game Over" nice display.
  
- * Speech sprites must not be shadowed, also only shout must be seen outside the screen area.
+ * Only shout must be seen outside the screen area.
  
  * REFACTORING - All the draw parts (tips, speech, rain, shadows, ...) must the ordered in the main GameLevel.draw method.
+
+ * BUG - exit a level during speech in progresso make the character to be unable to speak in the newx level...
 
 === Wishlist entries ===
 

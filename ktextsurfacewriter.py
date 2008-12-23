@@ -13,7 +13,7 @@ class KTextSurfaceWriter(object):
     def __init__(self, rect, font=None, color=(0,0,255,0), fillcolor=(0,0,0,0), justify_chars=0):
         self.rect = rect
         if not font:
-            self.font = pygame.font.Font(None, 18)
+            self.font = pygame.font.Font(None, 16)
         else:
             self.font = font
         self.fillcolor = fillcolor

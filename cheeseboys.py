@@ -79,6 +79,9 @@ def game():
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
 
+                if not level.presentation and pressed_keys[K_0]:
+                    hero.shout("Hey!")
+
                 if level.presentation is not None:
                     if pressed_keys[K_RIGHT]:
                         cblocals.game_speed = cblocals.game_speed*2
@@ -99,6 +102,7 @@ def game():
 
             if cblocals.global_controlsEnabled:
                 # No mouse control during presentations
+                
                 if event.type==MOUSEBUTTONDOWN or cblocals.global_leftButtonIsDown:
                     mouse_pos = pygame.mouse.get_pos()
                     if utils.checkPointIsInsideRectType(mouse_pos, ( (0,0),cblocals.GAME_SCREEN_SIZE ) ):
@@ -146,6 +150,7 @@ def game():
                 enemies = level['enemies']
                 physical = level['physical']
                 tippable = level['tippable']
+                speech = level['speech']
                 break
 
             # Trigger fired
@@ -329,7 +334,7 @@ def menu():
     screen = cblocals.screen
     menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
-        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,300),(350,300) ) )],
+        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,230),(350,300) ) )],
         [_(u"Quit"), game_over])
     menu.set_font(cblocals.leveltext_font)    
     image = utils.load_image('cheese-boys-logo.png')
