@@ -206,5 +206,3 @@ def update_version(surface, rect):
                 still_inside = False
         ktswriter.draw(surface)
         pygame.display.flip()
-
-

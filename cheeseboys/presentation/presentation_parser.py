@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -
 
+import os
+import os.path
 import re
 from cheeseboys.presentation.utils import timestamp_sort, timestampValueToString, timestampStringToValue
 
@@ -7,6 +9,9 @@ FIRST_LINE_REGEXP = r"""^#(\s)*version:(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 VERSION_NUMBERS = r"""^(\s)*(\d)+\.(\d)+\.(\d)+(\s)*$"""
 re_versionLineCheck = re.compile(FIRST_LINE_REGEXP)
 re_versionLine = re.compile(FIRST_LINE_REGEXP)
+
+TIMESPAMP_LINE_ABSOLUTE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\])(\s)*(#.*)?$"""
+re_timeStampAbsoluteCheck = re.compile(TIMESPAMP_LINE_ABSOLUTE_REGEXP)
 
 TIMESPAMP_LINE_REGEXP = r"""^(\s)*(\[\d\d:\d\d:\d\d \d\d\d\]|\[\+\d\d:\d\d:\d\d \d\d\d])(\s)*(#.*)?$"""
 re_timeStampCheck = re.compile(TIMESPAMP_LINE_REGEXP)
@@ -33,15 +38,15 @@ class PresentationParser(object):
     def __init__(self, presentation_file, presentation_dir="data/presentations"):
         self.presentation_file = presentation_file
         self.presentation_dir = presentation_dir
-        self._f = self._text = None
+        self._f = self.text = None
         self.data = {}
 
     def load(self):
         """Open presentation file so we are ready for read.
         """
-        self._f = open(self.presentation_dir+"/"+self.presentation_file)
-        self._text = self._f.read()
-        self._lines = self._text.split("\n")
+        self._f = open(os.path.join(self.presentation_dir, self.presentation_file))
+        self.text = self._f.read()
+        self._lines = self.text.split("\n")
         self._f.close()
         self._loadData()
     
@@ -50,7 +55,8 @@ class PresentationParser(object):
         return [x.strip() for x in data.split("\n") if x.strip()]
     
     def checkSyntax(self):
-        """Parse file format and return nothing if is valid, error messages otherwise"""
+        """Parse file format and return nothing if is valid, error message otherwise"""
+        # BBB: very incomplete
         lnumber = 0
         errs = []
         checks = {'first': True}
@@ -87,7 +93,7 @@ class PresentationParser(object):
                 # relative
                 value = timestamp[1:]  # skip the '+' char
                 collected_time += timestampStringToValue(value)
-                ts = "[%s]" % timestampValueToString(collected_time + timestampStringToValue(value))
+                ts = timestampValueToString(collected_time)
                 op['timestamp'] = ts
             else:
                 collected_time = timestampStringToValue(timestamp)
@@ -105,7 +111,7 @@ class PresentationParser(object):
             return self.data
         self.checkSyntax() 
         operations = []
-        all_data = re_dataBlock.findall(self._text)
+        all_data = re_dataBlock.findall(self.text)
         for fdata in all_data:
             localData = {}
             timestamp = self._getTimeStamp(fdata[0])
@@ -147,6 +153,62 @@ class PresentationParser(object):
         # stay simple!
         #BBB: security issue here!
         return data
+
+    @classmethod
+    def replaceCbpFileAbsoluteTimestamps(cls, filename, first_timestamp=None, outFile=None):
+        """
+        Given a cbp valid file, replace all absolute timestamps with a relative ones,
+        putting results in a new file.
+        
+        @filename: absolute or relative path to the .cbp file to use.
+        @first_timestamp: if used, start to replace only after found this absolute timestamp (that is keeped).
+        @outFile: where save the modified cbp file. If omitted a file named "newXXXX" will be created in the working directory.
+        """
+        try:
+            pp = PresentationParser(filename, presentation_dir='')
+            pp.load()
+        except IOError:
+            # try adding the current cwd
+            pp = PresentationParser(os.path.join(os.getcwd(),filename), presentation_dir='')
+            pp.load()
+        
+        if not outFile:
+            newFname = "new-" + os.path.basename(filename)
+            outFile = os.path.join(os.getcwd(),newFname)
+        
+        out = ""
+        cnt = 0
+        timevalue = None
+        for line in pp.text.split("\n"):
+            cnt+=1
+            if not first_timestamp and re_timeStampAbsoluteCheck.match(line) and timevalue is not None:
+                old_ts = re_timeStampAbsoluteCheck.findall(line)[0][1][1:13]
+                old_ts_value = timestampStringToValue(old_ts)
+                new_timevalue = old_ts_value-timevalue
+                new_ts = "+"+timestampValueToString(new_timevalue)
+                timevalue+= new_timevalue
+                print "replacing at line %s: timestamp %s with %s" % (cnt, old_ts, new_ts)
+                out+=line.replace(old_ts, new_ts)
+            else:
+                out+=line
+            if (timevalue is None and re_timeStampAbsoluteCheck.match(line)) or \
+               (first_timestamp and re_timeStampAbsoluteCheck.match(line)):
+                # This is executed only once, or until found first_timestamp
+                old_ts = re_timeStampAbsoluteCheck.findall(line)[0][1][1:13]
+                print "keeping absolute timestamp at line %s: %s" % (cnt, old_ts)
+                timevalue = timestampStringToValue(old_ts)
+                if old_ts==first_timestamp:
+                    # stop from entering there
+                    first_timestamp = None
+            out+="\n"
+
+        fh = open(outFile, 'w')
+        fh.write(out)
+        fh.close()
+        
+        print "\nDone"
+
+
 
 
 class CBPParsingException(Exception):

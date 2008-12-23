@@ -240,13 +240,18 @@ def cheeseBoysInit():
     """Init of the engine"""    
     LOGLEVEL_CHOICES = ('ERROR','WARN','INFO', 'DEBUG')
     DARKNESS_CHOICES = ('on', 'off')
-    p = optparse.OptionParser( )
+    usage = "usage: %prog [options] [arg]"
+    p = optparse.OptionParser(usage=usage, description="Run the Cheese Boys game engine, or execute some other usefull utility instead if you give some of the options below.")
     p.add_option('--version', '-v', action='store_true', help='print software version then exit')
     p.add_option('--debug', '-d', action="store_true", help="Enable game debug mode (for develop and test purpose)")
-    p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES))
+    p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES), metavar="VERBOSITY")
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
     p.add_option('--fullscreen', '-f', action='store_true', help='load the game in fullscreen mode')
-    p.add_option('--darkness', '-k', default="on", action="store", choices=DARKNESS_CHOICES, help='use on or off values. Act on darkness effect. This can be slow a little the game engine on slower systems')
+    p.add_option('--darkness', '-k', default="on", action="store", choices=DARKNESS_CHOICES, help='valid values are on (default) or off. Act on darkness effect. This can slow down the game engine on less powerfull systems')
+    p.add_option("--parse", "-p" , action='store_true', help=("parse a data file for dinamically change the content. See also -cbp options"
+                                                              "You can also use the --timestamp option to begin begin operation only after found a specific timestamp"))
+    p.add_option("--cbp", "-c" , dest="cbp_filename", help="Must be used in combination of -p option. Parse a .cbp file to change absolute timestamps with dinamical ones. ", metavar="FILE")
+    p.add_option("--timestamp", dest="timestamp", help="Use this for other options that can require timestamp values", metavar="TIMESTAMP")
 
     options, arguments = p.parse_args()
     
@@ -263,7 +268,8 @@ def cheeseBoysInit():
     elif options.logverbosity=="DEBUG":
         logging.getLogger().setLevel(logging.DEBUG)
     else:
-        print "%s is an invalid option for --logverbosity option, use one of %s" % (options.logverbosity, ",".join(LOGLEVEL_CHOICES))  
+        print "error: %s is an invalid option for --logverbosity option, use one of %s" % (options.logverbosity, ",".join(LOGLEVEL_CHOICES))  
+        sys.exit(1)
 
     if options.tests:
         tests()
@@ -276,6 +282,18 @@ def cheeseBoysInit():
         cblocals.SHADOW = True
     elif options.darkness=='off':
         cblocals.SHADOW = False
+
+    if options.parse:
+        if not options.cbp_filename:
+            print "error: The --parse parameter need also the use of --cbp option."
+            sys.exit(1)
+        else:
+            from cheeseboys.presentation.presentation_parser import PresentationParser
+            outFile = None
+            if arguments:
+                outFile = arguments[0]
+            PresentationParser.replaceCbpFileAbsoluteTimestamps(options.cbp_filename, options.timestamp, outFile)
+            sys.exit(0)
 
     # init of some pygame graphics stuff
     pygame.init()

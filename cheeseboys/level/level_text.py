@@ -29,6 +29,7 @@ class LevelText(GameSprite):
         self.level = level
         self._image = None
         self.rect = self._getRect()
+        self.position = self.rect.midbottom
         if text:
             self.addText(text)
         self.colophon = False
@@ -39,7 +40,7 @@ class LevelText(GameSprite):
         if self._type==LEVEL_TEXT_TYPE_BLACKSCREEN:
             return pygame.Rect( (x,y), (sw, sh) )
         else:
-            return pygame.Rect( (x+H_DIFF,y+V_DIFF), (sw-2*H_DIFF, sh-2*V_DIFF) ) 
+            return pygame.Rect( (x+H_DIFF,y+V_DIFF), (sw-2*H_DIFF, sh-2*V_DIFF) )
     
     @property
     def image(self):
@@ -47,11 +48,11 @@ class LevelText(GameSprite):
             # memoized image
             return self._image
         if self._type == LEVEL_TEXT_TYPE_BLACKSCREEN:
-            srf = self.generateEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0))
+            srf = self.generateEmptySprite(self.rect.size, alpha=255 , fillWith=(0,0,0,0))
         else:
             w,h = self.rect.size
-            self.rect.move_ip(0,-V_DIFF)
-            srf = self.generateEmptySprite( (w, h), alpha=220, fillWith=(0,0,0))
+            #self.rect.move_ip(0,-V_DIFF)
+            srf = self.generateEmptySprite( (w, h), alpha=220, fillWith=(0,0,0,0))
         
         for text, position, color in self._generatePage():
             text_to_display = cblocals.leveltext_font.render(_(text.decode('utf-8')), True, color)

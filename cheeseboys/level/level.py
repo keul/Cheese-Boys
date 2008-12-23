@@ -389,7 +389,7 @@ class GameLevel(object):
         level_text = self.level_text
         if not level_text:
             level_text = LevelText(self, text, type)
-            level_text.addToGameLevel(self, self.midbottom)
+            level_text.addToGameLevel(self, level_text.position)
             self.level_text = level_text
         else:
             level_text.addText(text)
