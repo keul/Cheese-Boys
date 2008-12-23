@@ -79,6 +79,7 @@ target = Target(
     script = script,
     icon_resources = [(1, icon_file)],
     dest_base = dest_file,
+    company_name=company,
     extra_modules = extra_modules
     )
 
@@ -98,7 +99,6 @@ setup(
     author = author,
     author_email = author_email,
     version = version,
-    company_name = company,
     license = license,
     )
 

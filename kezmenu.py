@@ -23,13 +23,19 @@ class KezMenu(object):
         self.options = options
         self.x = 0
         self.y = 0
-        self.font = pygame.font.Font(None, 32)
         self.option = 0
         self.width = 1
-        self.color = (0, 0, 0)
-        self.hcolor = (255, 0, 0)
-        self.height = len(self.options)*self.font.get_height()
+        self.color = (0, 0, 0, 0)
+        self.hcolor = (255, 0, 0, 0)
         self.mouse_focus = False
+        try:
+            self.font = pygame.font.Font(None, 32)
+            self.height = len(self.options)*self.font.get_height()
+            self._fixWidth()
+        except:
+            pass
+
+    def _fixWidth(self):
         for o in self.options:
             text = o[0]
             ren = self.font.render(text, 1, (0, 0, 0))
@@ -97,6 +103,8 @@ class KezMenu(object):
     def set_font(self, font):
         """Set the font used for the menu."""
         self.font = font
+        self.height = len(self.options)*self.font.get_height()
+        self._fixWidth()
         
     def set_highlight_color(self, color):
         """Set the highlight color"""

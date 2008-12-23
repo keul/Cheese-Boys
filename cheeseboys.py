@@ -315,6 +315,7 @@ def cheeseBoysInit():
         cblocals.total_shadow_image_05.set_alpha(0, RLEACCEL)
 
     cblocals.default_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 12)
+    cblocals.font_mini = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 10)
     cblocals.default_font_big = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 16)
     cblocals.speech_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 14)
     cblocals.leveltext_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_LEVELTEXT_FONT), 24)
@@ -335,7 +336,8 @@ def menu():
     menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
         [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,230),(350,300) ) )],
-        [_(u"Quit"), game_over])
+        [_(u"Quit"), game_over],
+        )
     menu.set_font(cblocals.leveltext_font)    
     image = utils.load_image('cheese-boys-logo.png')
     

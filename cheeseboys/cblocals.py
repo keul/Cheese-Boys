@@ -60,7 +60,7 @@ LEVEL_TEXT_TYPE_NORMAL = 'normal'
 URL_CHEESEBOYS_LAST_VERSION = "http://keul.it/develop/python/cheeseboys/version.xml"
 
 # globals
-default_font = default_font_big = speech_font = leveltext_font = main_title_font = None
+default_font = default_font_big = speech_font = leveltext_font = main_title_font = font_mini = None
 game_speed = 1.
 screen = None
 global_lastMouseLeftClickPosition = ()

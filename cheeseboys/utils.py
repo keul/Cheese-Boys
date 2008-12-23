@@ -173,7 +173,7 @@ def update_version(surface, rect):
     import xml.dom.minidom
     timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(10) # connection timeout
-    ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect, color=(100,255,255,0), justify_chars=3)
+    ktswriter = ktextsurfacewriter.KTextSurfaceWriter(rect, font=cblocals.font_mini, color=(100,255,255,0), justify_chars=3)
     ktswriter.text = CHECK_NEW_VERSION_TEXT
     try:
         ktswriter.draw(surface)
@@ -187,8 +187,7 @@ def update_version(surface, rect):
         version_type = root.getElementsByTagName('version')[0].attributes['type'].value
         changes = root.getElementsByTagName('changes')[0].firstChild.nodeValue.strip()
         if version!=cblocals.__version__:            
-            ktswriter.text = "\n".join(["A new Cheese Boys version is available: %s." % version,
-                                        "This is %s version." % version_type,
+            ktswriter.text = "\n".join(["A new Cheese Boys version is available: %s (%s)." % (version, version_type),
                                         "Release date: %s\n" % date,
                                         changes,
                                         "\nPress any key to continue"])
