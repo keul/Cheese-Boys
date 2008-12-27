@@ -1,6 +1,24 @@
 == Cheese Boys - HISTORY & CHANGES ==
 
 A (un)complete list of changes in every release.
+You can also find:
+
+ * BUG - A know or new bug now fixed.
+ 
+ * REFACTORING - An issue only related to code, that didn't change anything in gameplay.
+
+ * TODO - this issue was in the TODO.txt file of some older versions, or in a TODO comment inside the code.
+ 
+ * BBB - a comment in the code in older versions.
+ 
+ * (!!!) - a VIF (very important feature)!
+
+=== 0.2.0 ===
+
+ * BBB - Change the handle of the character step time: removed the addDistanceWalked methods (pixel based).
+   Now is used the new _updateStepTime (time based). This fix an ugly effect on very slow characters.
+   
+ * TODO - (!!!) Stealth mode.
 
 === 0.1.1 ===
 

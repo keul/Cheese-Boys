@@ -12,7 +12,7 @@ class BaseStateExploring(State):
 
     def do_actions(self, time_passed):        
         self.character.moveBasedOnNavPoint(time_passed)
-            
+
     def check_conditions(self):
         character = self.character
         enemy = self.character.currentLevel.getCloserEnemy(character, character.sightRange)        
@@ -31,11 +31,12 @@ class BaseStateExploring(State):
         self._chooseRandomDestination()
 
 
-class BaseStateWaiting(State):   
+class BaseStateWaiting(State):
+    """The character is doing nothing"""
 
     def __init__(self, character):
         State.__init__(self, "waiting", character)
-        self.waiting_time = cbrandom.randint(0, 4)
+        self.waiting_time = cbrandom.randint(0, 20)
 
     def do_actions(self, time_passed): 
         self.waiting_time -= time_passed
@@ -54,7 +55,7 @@ class BaseStateWaiting(State):
         return None
 
     def entry_actions(self, old_state_name):
-        self.waiting_time = cbrandom.randint(0, 4)
+        self.waiting_time = cbrandom.randint(0, 20)
 
 
 

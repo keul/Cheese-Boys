@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 from pygame.locals import USEREVENT
 
@@ -21,7 +21,7 @@ FULLSCREEN = False
 
 TILE_IMAGE_SIZE = (24, 32)
 
-MIN_PX_4_IMAGES_CHANGE = 20
+CHARAS_STEP_TIME = .10
 HIT_MOVEMENT_SPEED = 500
 
 DEFAULT_FONT = "Vera.ttf"

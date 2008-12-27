@@ -10,7 +10,7 @@ from cheeseboys.utils import Vector2
 from character import Character
 
 class PlayingCharacter(Character):
-    """Player character class"""
+    """Human player character class"""
 
     def afterInit(self):
         self.side = "Veneto"
@@ -19,6 +19,9 @@ class PlayingCharacter(Character):
         self.hitPoints = self.hitPointsLeft = 30
         self.rest_time_needed = .25
         self._speech.textcolor = (0,0,150,0)
+        # stealth
+        self._stealthLevel = 1
+        self.stealth = False
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -31,6 +34,13 @@ class PlayingCharacter(Character):
         if self._brain.active_state and self._brain.active_state.name!="controlled":
             return Character.update(self, time_passed)
         
+        pressed_keys = pygame.key.get_pressed()
+        # update stealth level
+        if pressed_keys[K_LSHIFT]:
+            self.stealth = True
+        else:
+            self.stealth = False
+        
         # Check for mouse actions setted
         if cblocals.global_lastMouseLeftClickPosition:
             self.setNavPoint(self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition))
@@ -40,7 +50,7 @@ class PlayingCharacter(Character):
             attackHeading.normalize()
             cblocals.global_lastMouseRightClickPosition = ()
             # Right click on a distant enemy will move the hero towards him...
-            if self.seeking and not pygame.key.get_pressed()[K_LCTRL]:
+            if self.seeking and not pressed_keys[K_LCTRL]:
                 # enable the hero brain
                 enemy = self.seeking
                 print "Seeking %s" % enemy.name

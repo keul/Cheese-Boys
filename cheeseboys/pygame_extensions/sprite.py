@@ -217,6 +217,7 @@ class GameSprite(pygame.sprite.Sprite):
         """Return Surface. Default setting is for blank and not filled ones.
         You can enter alpha value, fill color and colorkey color for per-pixel-alpha.
         """
+        # BBB: move this away from here, like in a simple module
         surface = pygame.Surface(size, depth=32)
         if fillWith:
             surface.fill(fillWith)

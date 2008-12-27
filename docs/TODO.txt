@@ -13,8 +13,6 @@ Entries I will fix/implement someday.
   
  * Surnames from Veneto region!
  
- * Stealth mode.
- 
  * Shout can warn near enemies.
  
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
@@ -34,17 +32,19 @@ Entries I will fix/implement someday.
 
 === Wishlist entries ===
 
-Issues or enhancement I'd like to do someday.
+Issues or enhancement I'd like to implement someday.
 Those aren't needed changes.
 
-  * Add a path finder alghoritm for character movements (at least for NPC).
+ * Integration (but optional) with Psyco?
 
-  * Enhance the enemies random movements.
-    Enemies simply must not move to an invalid position.
+ * Add a path finder alghoritm for character movements (at least for NPC).
+
+ * Enhance the enemies random movements.
+   Enemies simply must not move to an invalid position.
     
-  * REFACTORING - Split Character from CombatCharacter?
+ * REFACTORING - Split Character from CombatCharacter?
 
-  * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
+ * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
   
   * What about use of the python PIL library?
   

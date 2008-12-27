@@ -36,6 +36,7 @@ class KTextSurfaceWriter(object):
         
         @return: a list of text lines.
         """
+        # BBB: move this away: no classmethod please
         words = [x for x in text_too_long.split(" ")]
         words_removed = []
         tooLong = True

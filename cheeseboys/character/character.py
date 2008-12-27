@@ -11,8 +11,9 @@ from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.attack import Attack
 from cheeseboys.th0 import TH0
 from cheeseboys.sprites import SpeechCloud
+from stealth import Stealth
 
-class Character(GameSprite):
+class Character(GameSprite, Stealth):
     """Base character class.
     A GameSprite extension with hit points and other properties for combat.
     """
@@ -36,7 +37,7 @@ class Character(GameSprite):
         self._load_images(img, weaponInAndOut)
         self.lastUsedImage = 'head_south_1'
 
-        self._distanceWalked = 0
+        self._stepTime = 0
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = cblocals.DIRECTION_S
         self._isMoving = False
@@ -76,6 +77,10 @@ class Character(GameSprite):
         self._th0 = None
 
         self._speech = SpeechCloud(self)
+        
+        # stealth
+        self._stealthLevel = 0
+        self.stealth = False
 
         self.afterInit()
 
@@ -205,7 +210,7 @@ class Character(GameSprite):
             self._checkDirectionChange(direction)
 
         movement = self.heading * distance
-        self.addDistanceWalked(distance)
+        self._updateStepTime(time_passed)
         x = movement.get_x()
         y = movement.get_y()
 #        new_coord = self.getBestCoordinateToAvoidCollision(x,y)
@@ -243,8 +248,8 @@ class Character(GameSprite):
     def collide_rect(self):
         """See GameSprite.collide_rect.
         for characters, the foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
-        # BBB: some bigger or different images can behave other rect as "foot"?
         """
+        # BBB: some bigger or different images can behave other rect as "foot"?
         rect = self.rect
         ly = rect.bottom
         h = rect.h*0.25
@@ -285,8 +290,8 @@ class Character(GameSprite):
     def image(self):
         """Sprite must have an image property.
         In this way I can control what image return.
-        BBB: I need a way to memoize this!!!!
         """
+        # BBB: I need a way to memoize this!!!!
         if self._attackDirection:
             weaponOut = True
         else:
@@ -302,7 +307,7 @@ class Character(GameSprite):
                 self._mustChangeImage = False
                 image = self._getImageFromDirectionWalked(direction, weaponOut)
                 self.lastUsedImage = image
-            return self.images[self.lastUsedImage]
+            return self._manageImageWithStealth(self.images[self.lastUsedImage])
         else:
             # Stand and wait
             if self._attackDirection:
@@ -313,7 +318,13 @@ class Character(GameSprite):
                 direction = self._lastUsedDirection
             image = self._getImageFromDirectionFaced(direction, weaponOut)
             self.lastUsedImage = image
-            return self.images[image]
+            return self._manageImageWithStealth(self.images[image])
+
+    def _manageImageWithStealth(self, image):
+        """Calculate the alpha value for an image based on the charas stealth level"""
+        alpha = 255*self.stealthIndex
+        image.set_alpha(alpha)
+        return image
 
     def faceTo(self, direction):
         """Change the character direction faced"""
@@ -384,12 +395,11 @@ class Character(GameSprite):
             raise ValueError("Invalid direction %s" % direction) 
         return image
 
-    def addDistanceWalked(self, distance):
-        self._distanceWalked+=distance
-        # Every MIN_PX_4_IMAGES_CHANGEpx change image to simulate footsteps.
-        # BBB: ugly for very slow charas
-        if self._distanceWalked>=cblocals.MIN_PX_4_IMAGES_CHANGE:
-            self._distanceWalked=0
+    def _updateStepTime(self, time_passed):
+        """Update the time passed from the last step ot this character"""
+        self._stepTime+=time_passed
+        if self._stepTime>=cblocals.CHARAS_STEP_TIME:
+            self._stepTime=0
             self._mustChangeImage = True
 
     def _checkDirectionChange(self, direction):
@@ -397,35 +407,6 @@ class Character(GameSprite):
         if direction!=self._lastUsedDirection:
             self._lastUsedDirection = direction
             self._mustChangeImage = True
-
-    def walk(self, distance, direction=None):
-        """Walk the character to a direction
-        BBB: not used anymore; Delete this?
-        """
-        if not direction:
-            direction = self.direction
-        if not self._isMoving:
-            return
-        
-        self.addDistanceWalked(distance)
-        self._checkDirectionChange(direction)
-
-        if direction==cblocals.DIRECTION_E:
-            self.move(distance, 0)
-        elif direction==cblocals.DIRECTION_S:
-            self.move(0, distance)
-        elif direction==cblocals.DIRECTION_W:
-            self.move(-distance,0)
-        elif direction==cblocals.DIRECTION_N:
-            self.move(0, -distance)
-        elif direction==cblocals.DIRECTION_NE:
-            self.move(distance, -distance)
-        elif direction==cblocals.DIRECTION_SE:
-            self.move(distance, distance)
-        elif direction==cblocals.DIRECTION_SW:
-            self.move(-distance, distance)
-        elif direction==cblocals.DIRECTION_NW:
-            self.move(-distance, -distance)
 
     def setAttackState(self, heading):
         """Set the character attack versus an heading direction.

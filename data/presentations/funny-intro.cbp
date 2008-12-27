@@ -366,6 +366,10 @@
 [+00:00:04 000]
 	max.shout("Bye!!!")
 	max.moveBasedOnNavPoint(time_passed, (0, 200), relative=True)
+	# now I move other characters back to level original starting point
+	john.moveBasedOnNavPoint(time_passed, (400, 300))
+	jack.moveBasedOnNavPoint(time_passed, (320, 210))
+	roger.moveBasedOnNavPoint(time_passed, (250, 520))	
 
 [+00:00:05 000]
 	hero.faceTo(cblocals.DIRECTION_N)
