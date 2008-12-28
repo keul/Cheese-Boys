@@ -191,16 +191,19 @@ class GameLevel(object):
         # I memoize here sprites that use tips; tip can be evaluated False but not None
         if sprite.getTip() is not None:
             self['tippable'].add(sprite)
-    
-    def getCloserEnemy(self, character, sight=None):
-        """Return an enemy in the character sight, or enter a sight range instead"""
-        if not sight:
-            sight = character.sightRange
+
+    def getCloserEnemy(self, character):
+        """Return an enemy in the character sight range, or None"""
+        sight = character.sightRange
         group = self['charas']
         enemies = []
         for charas in group.sprites():
             if character.side!=charas.side and character.distanceFrom(charas)<=sight:
-                enemies.append(charas)
+                if charas.stealth:
+                    if character.check_antiStealth(charas):
+                        enemies.append(charas)
+                else:    
+                    enemies.append(charas)
         if enemies:
             return cbrandom.choice(enemies)
         return None

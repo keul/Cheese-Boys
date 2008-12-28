@@ -8,12 +8,13 @@ from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
-from cheeseboys.attack import Attack
 from cheeseboys.th0 import TH0
 from cheeseboys.sprites import SpeechCloud
-from stealth import Stealth
 
-class Character(GameSprite, Stealth):
+from stealth import Stealth
+from warrior import Warrior
+
+class Character(GameSprite, Stealth, Warrior):
     """Base character class.
     A GameSprite extension with hit points and other properties for combat.
     """
@@ -25,6 +26,9 @@ class Character(GameSprite, Stealth):
                  attackTime=0.5, afterAttackRestTime=0.2, weaponInAndOut=False, sightRange=200,):
         
         GameSprite.__init__(self, *containers)
+        Stealth.__init__(self)
+        Warrior.__init__(self, attackTime, afterAttackRestTime)
+        
         self._x = self._y = 0
         self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_SIZE) )
 
@@ -41,7 +45,7 @@ class Character(GameSprite, Stealth):
         self._mustChangeImage = False
         self.direction = self._lastUsedDirection = cblocals.DIRECTION_S
         self._isMoving = False
-        self.maxSpeed = self.speed = speed
+        self.maxSpeed = self._speed = speed
         self.sightRange = sightRange
         self.rest_time_needed = .3
         
@@ -50,20 +54,6 @@ class Character(GameSprite, Stealth):
         
         self._navPoint = None
         self.heading =  None
-
-        # Attack infos
-        self._attackDirection = None
-        self.attackHeading = self.lastAttackHeading = None
-        self._attackRange = 24
-        self._attackEffect = 10
-        self._attack = None
-        self._attackColor = (255, 255, 255, 200)
-        self._attackLineWidth = 2
-        self._attackTimeCollected = self._attackAnimationTimeCollected = 0
-        self._attackTime = attackTime
-        self._afterAttackRestTime = afterAttackRestTime
-        self._attackAnimationTime = attackTime/2
-        self.attackDamage = "1d6"
         
         # From where a succesfull attack is coming
         self.damageHeading = None
@@ -77,10 +67,6 @@ class Character(GameSprite, Stealth):
         self._th0 = None
 
         self._speech = SpeechCloud(self)
-        
-        # stealth
-        self._stealthLevel = 0
-        self.stealth = False
 
         self.afterInit()
 
@@ -91,11 +77,24 @@ class Character(GameSprite, Stealth):
         """
         pass
 
+    def _setSpeed(self, speed):
+        self._speed = speed
+    def _getSpeed(self):
+        speed = self._speed
+        healtFactor = self.healtFactor
+        if self.stealth:
+            speed*=.5
+        if healtFactor<.2:
+            speed*=.6
+        elif healtFactor<.5:
+            speed*=.8
+        return int(speed)
+    speed = property(_getSpeed, _setSpeed, doc="""The character current movement speed""")
+
     def setCombatValues(self, level_bonus, AC):
-        """Common method for set all combat infos of the character, as far as base AC and TH0 infos are readonly"""
+        """Common method for set all combat values of the character, as far as base AC and TH0 infos are readonly"""
         self._th0 = TH0(level_bonus)
         self._baseAC = AC
-
 
     def _setNavPoint(self, value):
         if type(value)==tuple:
@@ -119,6 +118,13 @@ class Character(GameSprite, Stealth):
         elif active_state=="attacking":
             bonus = -2
         return base_ac + bonus
+
+    @property
+    def healtFactor(self):
+        """Service value to get a general healt value for the character.
+        @return: a real value from 0 (dead) to 1 (100% healed)
+        """
+        return self.hitPointsLeft/self.hitPoints
     
     def roll_for_hit(self, target):
         """Common method called to rool a dice and see if a target is hit by the blow"""
@@ -408,56 +414,6 @@ class Character(GameSprite, Stealth):
             self._lastUsedDirection = direction
             self._mustChangeImage = True
 
-    def setAttackState(self, heading):
-        """Set the character attack versus an heading direction.
-        For duration of the attack the character can still moving, but will face the direction attacked.
-        """
-        direction = self._generateDirectionFromHeading(heading)
-        self.attackHeading = self.lastAttackHeading = heading
-        self._attackDirection = direction
-        self._mustChangeImage = True
-
-    def updateAttackState(self, time_passed):
-        """Called to add some time to the attack time.
-        This method control how long the attack is in action.
-        """
-        if self._attackTimeCollected<self._attackTime + self._afterAttackRestTime:
-            self._attackTimeCollected+=time_passed
-        else:
-            self.stopAttack()
-
-    def drawAttack(self, surface, time_passed):
-        """Draw an attack effect on a surface in the attack heading direction.
-        This method do nothing if isAttacking method return False.
-        First this method get a point (call this attackEffectCenterVector) using the heading of the attack
-        far from the character by a value equals to _attackRange/2 property of this character.
-        This attackEffectCenterVector is a point from which we draw an X, thar repr charas attack.
-        """
-        if not self.isAttacking():
-            return
-
-        attackOriginVector = Vector2(self.physical_rect.center)
-        if not self._attack:
-            self._attack = Attack(self, attackOriginVector, self._attackRange, self._attackEffect, self._attackColor, self._attackLineWidth)
-
-        self._attackAnimationTimeCollected+=time_passed
-        if self._attackAnimationTimeCollected<self._attackAnimationTime/2:
-            self._attack.drawPhase1(surface, attackOriginVector)
-        elif self._attackAnimationTimeCollected<self._attackAnimationTime:
-            self._attack.drawPhase2(surface, attackOriginVector)
-        # else pass
-
-    def isAttacking(self):
-        """Test if this charas is making an attack"""
-        if self.attackHeading:
-            return True
-        return False
-
-    def stopAttack(self):
-        """Stop attack immediatly, resetting all attack infos"""
-        self._attackDirection = self.attackHeading = self._attack = None
-        self._attackTimeCollected = self._attackAnimationTimeCollected = 0
-
     def moving(self, new_move_status):
         """Change character movement status"""
         if new_move_status!=self._isMoving:
@@ -489,11 +445,6 @@ class Character(GameSprite, Stealth):
     def _setEnemyTarget(self, enemy):
         self._enemyTarget = enemy
     enemyTarget = property(lambda self: self._enemyTarget, _setEnemyTarget, doc="""The character current enemy target""")
-
-    @property
-    def attackRange(self):
-        """The range of the character's attacks"""
-        return self._attackRange
 
     @property
     def isAlive(self):

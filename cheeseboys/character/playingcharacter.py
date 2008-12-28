@@ -60,7 +60,7 @@ class PlayingCharacter(Character):
             else:
                 self.setAttackState(attackHeading)
 
-        if pygame.key.get_pressed()[K_z]:
+        if pygame.key.get_pressed()[K_z] and not self.stealth:
             self._brain.setState("retreat")
 
         if self.navPoint:

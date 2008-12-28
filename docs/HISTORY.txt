@@ -18,7 +18,9 @@ You can also find:
  * BBB - Change the handle of the character step time: removed the addDistanceWalked methods (pixel based).
    Now is used the new _updateStepTime (time based). This fix an ugly effect on very slow characters.
    
- * TODO - (!!!) Stealth mode.
+ * TODO - (!!!) Stealth mode. UNFINISHED
+ 
+ * Healt level now influence the general character speed. More wound lead to a slower movement.
 
 === 0.1.1 ===
 

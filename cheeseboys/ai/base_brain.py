@@ -15,7 +15,7 @@ class BaseStateExploring(State):
 
     def check_conditions(self):
         character = self.character
-        enemy = self.character.currentLevel.getCloserEnemy(character, character.sightRange)        
+        enemy = self.character.currentLevel.getCloserEnemy(character)
         if enemy is not None:
             character.enemyTarget = enemy
             return "hunting"
@@ -44,7 +44,7 @@ class BaseStateWaiting(State):
     def check_conditions(self):
         character = self.character
         level = character.currentLevel
-        enemy = level.getCloserEnemy(character, character.sightRange)        
+        enemy = level.getCloserEnemy(character)
         if enemy is not None:
             character.enemyTarget = enemy
             return "hunting"
