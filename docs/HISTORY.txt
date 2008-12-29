@@ -20,7 +20,9 @@ You can also find:
    
  * TODO - (!!!) Stealth mode. UNFINISHED
  
- * Healt level now influence the general character speed. More wound lead to a slower movement.
+ * Healt level now influence the general character speed. More wound lead to a slower movement. UNFINISHED
+ 
+ * Added dependency from the KezMenu Python Library, instead of releasing this with the game itself.
 
 === 0.1.1 ===
 

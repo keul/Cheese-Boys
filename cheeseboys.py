@@ -15,6 +15,7 @@ except ImportError:
            "This is the main game module! You must download it from\n"
            "http://pygame.org/download.shtml")
     sys.exit(1)
+
 # Check for pygame 1.8
 print "Checking for pygame version..."
 from pygame import version
@@ -23,13 +24,24 @@ if version.vernum[0]<2 and version.vernum[1]<8:
            "Cheese Boys rely on pygame 1.8.1, or a better version.\n")  % version.ver
 else:
     print "Found pygame %s. OK..." % version.ver 
+
+# Checking for KezMenu
+try:
+    import kezmenu
+    print "KezMenu library found."
+except ImportError:
+    print ("KezMenu module isn't present!\n"
+           "This is used for Cheese Boys's menu interfaces! You must download it from\n"
+           "http://pypi.python.org/pypi/KezMenu/\n"
+           "or simply install it with easy_install typing\n"
+           "  easy_install KezMenu")
+    sys.exit(1)
+
 print "All required libraries are present."
 # #######
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
-
-import kezmenu
 
 from cheeseboys import cblocals, utils, character
 from cheeseboys.pygame_extensions import GameSprite
