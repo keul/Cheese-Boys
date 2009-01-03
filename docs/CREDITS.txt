@@ -1,14 +1,31 @@
-== Cheese Boys - CREDITS ==
+Cheese Boys - CREDITS
+=====================
 
-=== Will McGugan ===
-Thanks for his superlative book "Beginning Game Development With Python and Pygame".
-Thanks for the AI examples inside his book.
-Thanks for his Vector2 classes, that is the core of Cheese Boys sprite engine.
+Will McGugan
+------------
+* Thanks for his superlative book "Beginning Game Development With Python and Pygame".
+* Thanks for the AI examples inside his book.
+* Thanks for his Vector2 classes, that is the core of Cheese Boys sprite engine.
 
-=== PyMike (Pygame community) ===
-Thanks for his tutorial.
-Thanks for many funny games developed with simple codes.
-Thanks for the PySetup script that simplify the py2exe procedure.
+PyMike (Pygame community)
+-------------------------
+* Thanks for a well done tutorial (I don't remember which).
+* Thanks for many funny games developed with simple codes.
+* Thanks for the PySetup script that simplify the py2exe procedure.
+* Thanks for the eZMeNu project, I integrated and enhanced.
 
-=== The Mage (Charasproject.net community) ===
-Thanks for his original Glenn image, and for create a new one for Cheese Boys.
+The Mage (Charasproject.net community)
+--------------------------------------
+* Thanks for his original Glenn image, and for create a new one for Cheese Boys.
+
+Zion
+----
+Even if Zion is NOT a software developer, I think he was exacly this in a proveious life.
+Some of his super ideas:
+
+ * Plan a future split of the engine and the game.
+ * Suggest to use manually drawen image instead of tiles (this after the failure of the Gareth's Quest project).
+ 
+ ...and finally, to be a good friend! :-)
+ 
+ 

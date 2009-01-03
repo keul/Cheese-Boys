@@ -1,4 +1,5 @@
-== Cheese Boys - HISTORY & CHANGES ==
+Cheese Boys - HISTORY & CHANGES
+===============================
 
 A (un)complete list of changes in every release.
 You can also find:
@@ -13,7 +14,8 @@ You can also find:
  
  * (!!!) - a VIF (very important feature)!
 
-=== 0.2.0 ===
+0.2.0
+-----
 
  * BBB - Change the handle of the character step time: removed the addDistanceWalked methods (pixel based).
    Now is used the new _updateStepTime (time based). This fix an ugly effect on very slow characters.
@@ -24,7 +26,10 @@ You can also find:
  
  * Added dependency from the KezMenu Python Library, instead of releasing this with the game itself.
 
-=== 0.1.1 ===
+ * Added dependency from the KTextSurfaceWriter Python Library, instead of releasing this with the game itself.
+
+0.1.1
+-----
 
  * Added the PySetup script for simplify the py2exe releases (thanks to PyMike from pygame community to release this).
  
@@ -54,7 +59,8 @@ You can also find:
 
  * (!!!) Added the darkness and lightrange effects.
 
-=== 0.1.0 ===
+0.1.0
+-----
 
  * Added the rain and wind effects.
  
@@ -86,7 +92,8 @@ You can also find:
  
  * Added the trigger module.
 
-=== 0.0.6 ===
+0.0.6
+-----
 
  * BUG - Click outside the game area must not move the hero.
 

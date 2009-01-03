@@ -86,7 +86,7 @@ def game():
         # ******* EVENTS LOOP BEGIN *******
         for event in pygame.event.get():
             if event.type == QUIT:
-                sys.exit()
+                sys.exit(0)
             
             if event.type==KEYDOWN:
                 pressed_keys = pygame.key.get_pressed()
