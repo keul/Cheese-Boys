@@ -56,6 +56,7 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
+from cheeseboys import th0 as module_th0
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.pygame_extensions.unique import UniqueObjectRegistry
 from cheeseboys.level import loadLevelByName
@@ -147,9 +148,9 @@ def game():
                     hit_list = charas.rectCollisionWithCharacterHeat(event.character, event.attack.rect)
                     for hit in hit_list:
                         attackRes = event.character.roll_for_hit(hit)
-                        if attackRes==cblocals.TH0_HIT or attackRes==cblocals.TH0_HIT_CRITICAL:
+                        if attackRes in module_th0.TH0_ALL_SUCCESSFUL:
                             print "  hit %s" % hit.name
-                            hit.generatePhysicalAttachEffect(attack_origin=event.character, criticity=attackRes)
+                            hit.generatePhysicalAttackEffect(attack_origin=event.character, criticity=attackRes)
                         else:
                             print "  missed %s" % hit.name
 

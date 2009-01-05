@@ -3,21 +3,30 @@
 import logging
 import pygame
 from pygame.locals import *
-from cheeseboys import cblocals
+from cheeseboys import cblocals, cbrandom
 
 class Stealth(object):
     """This class groups all feats of a Character to go in stealth-mode and hide in shadows.
-    This class also contains all method needed to resists to a stealth movement.
+    This class also contains all method needed to resists to a stealth attempt.
     """
     
     def __init__(self):
         """The character stealth overall ability level"""
         self.stealthLevel = 0
-        """The stealth status (if the character is trying to hide himself or not)"""
-        self.stealth = False
+        
+        self._stealth = False
+        self.stealthRestTimeNeeded = 5000
+        self.last_stealth_timing = 0
         # Anti-stealth attributes
         self._stealthEnemies = {}
-    
+
+    def _setStealth(self, value):
+        if value==False:
+            logging.info("%s can't go in stealth mode again for %s millisec" % (self, self.stealthRestTimeNeeded))
+            self.last_stealth_timing = cblocals.game_time
+        self._stealth = value
+    stealth = property(lambda self: self._stealth, _setStealth, doc="""The stealth status (if the character is trying to hide himself or not)""")
+
     @property
     def stealthIndex(self):
         """The overall current stealth index of this character.
@@ -43,7 +52,14 @@ class Stealth(object):
         
         return .5 * level_stealth
 
-    def checkForStealthTiming(self):
+    def canStealthAgain(self):
+        """After an hide in shadow attempt, the character can't hide again for a while.
+        @return: True is the time until hide again (stealthRestTimeNeeded attribute) is passed.
+        """
+        return cblocals.game_time-self.last_stealth_timing>self.stealthRestTimeNeeded
+        
+
+    def getTimingBeforeCheckForStealth(self):
         """This method return the number of millisecond needed from the character to perform a new
         check to find an hidden enemy.
         This value is influenced from the character level of experience (in the major part) but a little
@@ -90,18 +106,42 @@ class Stealth(object):
                 pass
             return True
         
+        # I have already tried a check for the enemy before
         if stealthEnemies.has_key(enemy_uid):
             result = stealthEnemies[enemy_uid]['result']
-            self._updateEnemyStatus(enemy_uid)
+            self._updateEnemyStatus(enemy)
             return result
         
-        return True
+        # I need to check again for the hidden enemy
+        rolled = cbrandom.cbrandom.uniform(0,1)
+        result = rolled<enemy.stealthIndex
+        logging.info("%s try to find %s that have a stealth index of %0.2f: rolled %0.2f (%s)" % (self,
+                                                                                   enemy,
+                                                                                   enemy.stealthIndex,
+                                                                                   rolled,
+                                                                                   result,
+                                                                                   ))
+        stealthEnemies[enemy_uid] = {'result': result, 'timing': cblocals.game_time}
+        return result
 
-    def _updateEnemyStatus(self, enemy_uid):
-        """Given an enemy UID, update his status timing
+    def _updateEnemyStatus(self, enemy):
+        """Given an enemy, update his status timing.
+        This method is crucial for repeat the check for an hidden enemy.
         """
+        enemy_uid = enemy.UID()
         game_time = cblocals.game_time
         stealthEnemies = self._stealthEnemies
         enemy_timing = stealthEnemies[enemy_uid]['timing']
-        if game_time-enemy_timing>enemy.checkForStealthTiming():
+        if game_time-enemy_timing>enemy.getTimingBeforeCheckForStealth():
             del stealthEnemies[enemy_uid]
+
+    def canSeeHiddenCharacter(self, target):
+        """Check this character could see an hidden target
+        @return: True if the target is not in stealth, or however if can see it
+        """
+        target_uid = target.UID()
+        if not target.stealth:
+            return True
+        if self._stealthEnemies.has_key(target_uid):
+            return self._stealthEnemies[target_uid]['result']
+        return True

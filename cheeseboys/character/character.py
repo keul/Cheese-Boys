@@ -9,7 +9,7 @@ from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
 from cheeseboys.pygame_extensions.unique import UniqueObject
-from cheeseboys.th0 import TH0
+from cheeseboys import th0 as module_th0
 from cheeseboys.sprites import SpeechCloud
 
 from stealth import Stealth
@@ -96,7 +96,7 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
 
     def setCombatValues(self, level_bonus, AC):
         """Common method for set all combat values of the character, as far as base AC and TH0 infos are readonly"""
-        self._th0 = TH0(level_bonus)
+        self._th0 = module_th0.TH0(self, level_bonus)
         self._baseAC = AC
 
     def _setNavPoint(self, value):
@@ -132,8 +132,7 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
     def roll_for_hit(self, target):
         """Common method called to rool a dice and see if a target is hit by the blow"""
         th0 = self._th0
-        targetAC = target.AC
-        result = th0.attack(targetAC)
+        result = th0.attack(target)
         return result
 
     def getTip(self):
@@ -483,17 +482,25 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         heading = Vector2.from_points(self.position, position)
         return heading.normalize()
 
-    def generatePhysicalAttachEffect(self, attack_origin, criticity=None):
+    def generatePhysicalAttackEffect(self, attack_origin, criticity=None):
         """Called for animate a character hit by a physical blow.
         Character will innaturally move away in a direction opposite to blow origin.
         """
         damage = cbrandom.throwDices(attack_origin.attackDamage)
         critic = ""
-        if criticity and criticity==cblocals.TH0_HIT_CRITICAL:
+
+        if criticity and criticity==module_th0.TH0_SURPRISE_HIT:
+            critic = "BACKSTAB! "
+            damage*=cbrandom.randint(2,4)
+        elif criticity and criticity==module_th0.TH0_HIT_CRITICAL:
             if cbrandom.randint(1,2)==1:
                 self.shout(_("Ouch!"))
             damage = int(damage * 1.5)
             critic = "CRITICAL! "
+        elif criticity and criticity==module_th0.TH0_HIT_SURPRISE_CRITICAL:
+            damage*=cbrandom.randint(3,6)
+            critic = "DEADLY! "
+
         self.hitPointsLeft-= damage
         print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.hitPointsLeft)
         # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
@@ -546,5 +553,5 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         self._speech.endSpeech()
 
     def __str__(self):
-        return "Character %s <%s>" % (self.name, self.UID())
+        return "%s <%s>" % (self.name, self.UID())
 

@@ -36,9 +36,9 @@ class PlayingCharacter(Character):
         
         pressed_keys = pygame.key.get_pressed()
         # update stealth level
-        if pressed_keys[K_LSHIFT]:
+        if pressed_keys[K_LSHIFT] and self.canStealthAgain() and not self.stealth:
             self.stealth = True
-        else:
+        elif not pressed_keys[K_LSHIFT] and self.stealth:
             self.stealth = False
         
         # Check for mouse actions setted
