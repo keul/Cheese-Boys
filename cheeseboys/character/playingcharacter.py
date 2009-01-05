@@ -14,14 +14,14 @@ class PlayingCharacter(Character):
 
     def afterInit(self):
         self.side = "Veneto"
+        self.experienceLevel = 2
         self._trackedEnemy = None
         self.attackDamage = "1d6+2"
         self.hitPoints = self.hitPointsLeft = 30
         self.rest_time_needed = .25
         self._speech.textcolor = (0,0,150,0)
         # stealth
-        self._stealthLevel = 1
-        self.stealth = False
+        self.stealthLevel = 1
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

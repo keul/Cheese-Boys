@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.utils import Vector2
+from cheeseboys.pygame_extensions.unique import UniqueObject
 
 class GameSprite(pygame.sprite.Sprite):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
@@ -106,6 +107,8 @@ class GameSprite(pygame.sprite.Sprite):
         self.x, self.y = firstPosition
         rectPosition = level.transformToScreenCoordinate(firstPosition)
         self.rect.midbottom = rectPosition
+        if isinstance(self, UniqueObject):
+            cblocals.object_registry.register(self)
 
     def checkCollision(self, x, y):
         """Check collision of this sprite with other.

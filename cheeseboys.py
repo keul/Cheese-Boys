@@ -37,6 +37,18 @@ except ImportError:
            "  easy_install KezMenu")
     sys.exit(1)
 
+# Checking for KezMenu
+try:
+    import ktextsurfacewriter
+    print "KTextSurfaceWriter library found."
+except ImportError:
+    print ("KTextSurfaceWriter module isn't present!\n"
+           "This is required library for Cheese Boys! You must download it from\n"
+           "http://pypi.python.org/pypi/KTextSurfaceWriter/\n"
+           "or simply install it with easy_install typing\n"
+           "  easy_install KTextSurfaceWriter")
+    sys.exit(1)
+
 print "All required libraries are present."
 # #######
 
@@ -45,6 +57,7 @@ from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
 from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.unique import UniqueObjectRegistry
 from cheeseboys.level import loadLevelByName
 from cheeseboys.ai.hero import HeroStateMachine
 
@@ -177,6 +190,7 @@ def game():
 
         if level.presentation is None or not pygame.key.get_pressed()[K_LCTRL]:
             time_passed = clock.tick() / 1000.  * cblocals.game_speed
+            cblocals.game_time = pygame.time.get_ticks()
         else:
             continue
         
@@ -311,6 +325,10 @@ def cheeseBoysInit():
                 outFile = arguments[0]
             PresentationParser.replaceCbpFileAbsoluteTimestamps(options.cbp_filename, options.timestamp, outFile)
             sys.exit(0)
+
+    cblocals.object_registry = UniqueObjectRegistry()
+
+    cblocals.game_time = pygame.time.get_ticks()
 
     # init of some pygame graphics stuff
     pygame.init()

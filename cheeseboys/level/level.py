@@ -53,6 +53,9 @@ class GameLevel(object):
         self.presentation = None
         self.level_text = None
         
+        # This index will act on the ability of characters to hide in shadows in the level
+        self.stealthLevel = 1.
+        
         # Groups!
         all = GameGroup("all")
         dead = GameGroup("dead", drawable=True, updatable=True)

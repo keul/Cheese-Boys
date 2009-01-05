@@ -61,6 +61,7 @@ URL_CHEESEBOYS_LAST_VERSION = "http://keul.it/develop/python/cheeseboys/version.
 
 # globals
 default_font = default_font_big = speech_font = leveltext_font = main_title_font = font_mini = None
+object_registry = None
 game_speed = 1.
 screen = None
 global_lastMouseLeftClickPosition = ()
@@ -70,6 +71,9 @@ global_mouseCursor = None
 global_mouseCursorType = None
 global_controlsEnabled = True
 gameLanguage = "en"
+game_time = 0
+
+GAME_STEALTH = True
 
 # Menu
 game_menu = None

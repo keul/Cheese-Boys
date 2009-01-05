@@ -8,13 +8,14 @@ from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.unique import UniqueObject
 from cheeseboys.th0 import TH0
 from cheeseboys.sprites import SpeechCloud
 
 from stealth import Stealth
 from warrior import Warrior
 
-class Character(GameSprite, Stealth, Warrior):
+class Character(GameSprite, Stealth, Warrior, UniqueObject):
     """Base character class.
     A GameSprite extension with hit points and other properties for combat.
     """
@@ -28,12 +29,14 @@ class Character(GameSprite, Stealth, Warrior):
         GameSprite.__init__(self, *containers)
         Stealth.__init__(self)
         Warrior.__init__(self, attackTime, afterAttackRestTime)
-        
+        UniqueObject.__init__(self)
+
         self._x = self._y = 0
         self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_SIZE) )
 
         self.name = name
         self.characterType = "Guy"
+        self.experienceLevel = 1
         
         self._brain = None
         self._presentationBrain = PresentationStateMachine(self)
@@ -122,9 +125,9 @@ class Character(GameSprite, Stealth, Warrior):
     @property
     def healtFactor(self):
         """Service value to get a general healt value for the character.
-        @return: a real value from 0 (dead) to 1 (100% healed)
+        @return: a real value between 0 (dead) and 1 (100% healed)
         """
-        return self.hitPointsLeft/self.hitPoints
+        return float(self.hitPointsLeft)/float(self.hitPoints)
     
     def roll_for_hit(self, target):
         """Common method called to rool a dice and see if a target is hit by the blow"""
@@ -461,9 +464,13 @@ class Character(GameSprite, Stealth, Warrior):
         return True
     
     def kill(self):
-        """Kill the character, removing it from all groups"""
+        """Kill the character, removing it from all groups and draw a dead corpse.
+        As far as the Character objects are also UniqueObject, we need also to
+        unregister a killed sprite from the object_registry.
+        """
         GameSprite.kill(self)
         self.currentLevel.generateDeadSprite(self)
+        cblocals.object_registry.unregister(self.UID())
 
     def getHeadingTo(self, target):
         """Return the heading to a given object or position.
@@ -539,5 +546,5 @@ class Character(GameSprite, Stealth, Warrior):
         self._speech.endSpeech()
 
     def __str__(self):
-        return "Character %s" % self.name
+        return "Character %s <%s>" % (self.name, self.UID())
 
