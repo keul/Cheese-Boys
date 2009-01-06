@@ -8,12 +8,14 @@ from cheeseboys import cblocals, cbrandom
 class Stealth(object):
     """This class groups all feats of a Character to go in stealth-mode and hide in shadows.
     This class also contains all method needed to resists to a stealth attempt.
+    
+    Often the character that try to hide is called 'rogue'.
+    
     """
     
     def __init__(self):
         """The character stealth overall ability level"""
         self.stealthLevel = 0
-        
         self._stealth = False
         self.stealthRestTimeNeeded = 5000
         self.last_stealth_timing = 0
@@ -83,6 +85,18 @@ class Stealth(object):
 
         return int(base_timing - base_timing * (stealthLevel * .05))
 
+    def getPreySightRangeReductionFactor(self):
+        """This method return a the factor of reduction used for lower the prey sight range.
+        The rogue always reduce the prey sight of a 10%, + 5% for every stealthLevel
+        @return: a real value of 1 (100% of the sight), or lower (0.9 for 90%, ...)
+        """
+        reduction = 1.
+        if self.stealth:
+            reduction-= .1 + (.05*self.stealthLevel)
+        return reduction
+
+    # *** below there are method used for notice hidden enemyes
+
     def check_antiStealth(self, enemy):
         """Perform a check for find an hidden enemy.
         
@@ -91,6 +105,10 @@ class Stealth(object):
         
         The chance of success in the check depends on the enemy stealth level. Lower is the enemy stealthIndex,
         more hard will be the check to see him when hidden.
+        
+        This value is also influenced by the character and enemy direction. If the rogue in moving in the same
+        direction of the character (he is going away, or he is going behind the character), the rogue has
+        some bonus!
         
         @return: True if the attemp to find the enemy had success.
         """
@@ -112,17 +130,35 @@ class Stealth(object):
             self._updateEnemyStatus(enemy)
             return result
         
+        enemyStealthIndex = enemy.stealthIndex
+        
+        # Now I need to modify the enemyStealthIndex based on the characters headings
+        enemyStealthIndex = self.generateStealthIndexHeading(enemyStealthIndex, self, enemy)
+        
         # I need to check again for the hidden enemy
         rolled = cbrandom.cbrandom.uniform(0,1)
-        result = rolled<enemy.stealthIndex
+        result = rolled<enemyStealthIndex
         logging.info("%s try to find %s that have a stealth index of %0.2f: rolled %0.2f (%s)" % (self,
                                                                                    enemy,
-                                                                                   enemy.stealthIndex,
+                                                                                   enemyStealthIndex,
                                                                                    rolled,
                                                                                    result,
                                                                                    ))
         stealthEnemies[enemy_uid] = {'result': result, 'timing': cblocals.game_time}
         return result
+
+    @classmethod
+    def generateStealthIndexHeading(cls, rogueStealthIndex, prey, rogue):
+        """Modify a stealthIndex of a rogue character checking also the headings of the characters
+        
+        """
+        rogueHeading = rogue.heading
+        preyHeading = prey.heading
+        #print rogueHeading, preyHeading, rogueHeading + preyHeading
+        
+        # BBB: to be completed
+        
+        return rogueStealthIndex
 
     def _updateEnemyStatus(self, enemy):
         """Given an enemy, update his status timing.
@@ -136,7 +172,7 @@ class Stealth(object):
             del stealthEnemies[enemy_uid]
 
     def canSeeHiddenCharacter(self, target):
-        """Check this character could see an hidden target
+        """Check if this character could see an hidden target.
         @return: True if the target is not in stealth, or however if can see it
         """
         target_uid = target.UID()
@@ -145,3 +181,11 @@ class Stealth(object):
         if self._stealthEnemies.has_key(target_uid):
             return self._stealthEnemies[target_uid]['result']
         return True
+
+    def noticeForHiddenCharacter(self, enemy):
+        """The use of this method force the character to see an hidden enemy"""
+        target_uid = enemy.UID()
+        if self._stealthEnemies.has_key(target_uid):
+            self._stealthEnemies[target_uid] = {'result': True, 'timing': cblocals.game_time}
+            logging.info("%s notice the %s presence" % (self, enemy))
+

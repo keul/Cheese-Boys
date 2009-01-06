@@ -11,6 +11,7 @@ TH0_HIT_CRITICAL = "critical hit"
 TH0_HIT_SURPRISE_CRITICAL = "critical surprise hit"
 
 TH0_ALL_SUCCESSFUL = (TH0_HIT, TH0_SURPRISE_HIT, TH0_HIT_CRITICAL, TH0_HIT_SURPRISE_CRITICAL)
+TH0_BACKSTABBING = (TH0_SURPRISE_HIT, TH0_SURPRISE_HIT)
 
 class TH0(object):
     """Object of this class is used for combat mechanism.

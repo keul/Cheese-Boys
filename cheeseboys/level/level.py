@@ -201,10 +201,14 @@ class GameLevel(object):
         group = self['charas']
         enemies = []
         for charas in group.sprites():
-            if character.side!=charas.side and character.distanceFrom(charas)<=sight:
+            distanceFromCharas = character.distanceFrom(charas)
+            if character.side!=charas.side and distanceFromCharas<=sight:
                 if charas.stealth:
-                    if character.check_antiStealth(charas):
-                        enemies.append(charas)
+                    # A rogue charas reduce the character sight range
+                    if distanceFromCharas <= int(sight * charas.getPreySightRangeReductionFactor()):
+                        # ... and now the real check for the anti-stealth
+                        if character.check_antiStealth(charas):
+                            enemies.append(charas)
                 else:    
                     enemies.append(charas)
         if enemies:

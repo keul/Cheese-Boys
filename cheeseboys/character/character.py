@@ -213,7 +213,7 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         if distance>magnitude:
             distance = magnitude
         else:
-            # I don't check for a new direction if I'm only fixing the last sted distance
+            # I don't check for a new direction if I'm only fixing the last step distance
             direction = self._generateDirectionFromHeading(self.heading)
             self._checkDirectionChange(direction)
 
@@ -482,11 +482,11 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         heading = Vector2.from_points(self.position, position)
         return heading.normalize()
 
-    def generatePhysicalAttackEffect(self, attack_origin, criticity=None):
+    def generatePhysicalAttackEffect(self, attacker, criticity=None):
         """Called for animate a character hit by a physical blow.
         Character will innaturally move away in a direction opposite to blow origin.
         """
-        damage = cbrandom.throwDices(attack_origin.attackDamage)
+        damage = cbrandom.throwDices(attacker.attackDamage)
         critic = ""
 
         if criticity and criticity==module_th0.TH0_SURPRISE_HIT:
@@ -504,11 +504,17 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         self.hitPointsLeft-= damage
         print "  %s%s wounded for %s points. %s left" % (critic, self.name, damage, self.hitPointsLeft)
         # Below I use lastAttackHeading because may be that attackHeading is now None (enemy ends the attack)
-        self.damageHeading = attack_origin.lastAttackHeading
+        self.damageHeading = attacker.lastAttackHeading
         if self.brain:
             self.brain.setState("hitten")
         if not self.checkAliveState():
             print "%s is dead." % self.name
+        elif attacker.stealth:
+            # The attaccker was hidden in shadows but the character is now dead! Now the character can see it!
+            self.noticeForHiddenCharacter(attacker)
+        # however the character has been hit, so I need to reset it's stealth state
+        if self.stealth:
+            self.stealth = False
 
     @classmethod
     def getHealtColor(cls, total, left):
@@ -545,7 +551,7 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         self._speech.text = text.upper()
         if additional_time:
             self._speech.additionalTime(additional_time)
-        event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position, 'text': text})
+        event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position_int, 'text': text})
         pygame.event.post(event)
 
     def shutup(self):

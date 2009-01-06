@@ -22,6 +22,7 @@ class PlayingCharacter(Character):
         self._speech.textcolor = (0,0,150,0)
         # stealth
         self.stealthLevel = 1
+        self.stealthRestTimeNeeded = 3000
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.

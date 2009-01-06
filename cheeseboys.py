@@ -150,7 +150,7 @@ def game():
                         attackRes = event.character.roll_for_hit(hit)
                         if attackRes in module_th0.TH0_ALL_SUCCESSFUL:
                             print "  hit %s" % hit.name
-                            hit.generatePhysicalAttackEffect(attack_origin=event.character, criticity=attackRes)
+                            hit.generatePhysicalAttackEffect(attacker=event.character, criticity=attackRes)
                         else:
                             print "  missed %s" % hit.name
 
