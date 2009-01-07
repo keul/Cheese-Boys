@@ -37,7 +37,7 @@ except ImportError:
            "  easy_install KezMenu")
     sys.exit(1)
 
-# Checking for KezMenu
+# Checking for KTextSurfaceWriter
 try:
     import ktextsurfacewriter
     print "KTextSurfaceWriter library found."
@@ -75,7 +75,7 @@ def game():
     clock = pygame.time.Clock()
     screen = cblocals.screen
 
-    hero = character.PlayingCharacter("The Hero", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Boscolo", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
     hero.setBrain(HeroStateMachine)
     hero.setCombatValues(2, 13)
 

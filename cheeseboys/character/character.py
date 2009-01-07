@@ -94,6 +94,10 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         return int(speed)
     speed = property(_getSpeed, _setSpeed, doc="""The character current movement speed""")
 
+    @property
+    def isMoving(self):
+        return self._isMoving
+
     def setCombatValues(self, level_bonus, AC):
         """Common method for set all combat values of the character, as far as base AC and TH0 infos are readonly"""
         self._th0 = module_th0.TH0(self, level_bonus)
@@ -308,10 +312,7 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         if self._isMoving:
             # I'm on move
             if self._mustChangeImage:
-                if self._attackDirection:
-                    direction = self._attackDirection
-                else:
-                    direction = self._lastUsedDirection
+                direction = self._getFacedDirection()
                 self._mustChangeImage = False
                 image = self._getImageFromDirectionWalked(direction, weaponOut)
                 self.lastUsedImage = image
@@ -327,6 +328,14 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
             image = self._getImageFromDirectionFaced(direction, weaponOut)
             self.lastUsedImage = image
             return self._manageImageWithStealth(self.images[image])
+
+    def _getFacedDirection(self):
+        """If the character was attacking, the direction is the attack direction (_attackDirection).
+        Otherwise use the common last used direction _lastUsedDirection.
+        """
+        if self._attackDirection:
+            return self._attackDirection
+        return self._lastUsedDirection
 
     def _manageImageWithStealth(self, image):
         """Calculate the alpha value for an image based on the charas stealth level"""
@@ -403,6 +412,18 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
             raise ValueError("Invalid direction %s" % direction) 
         return image
 
+    def _generateHeadingFromFacindDirection(self, direction):
+        """Passed a direction, return a normalized Vector2 based on the faced direction"""
+        if direction==cblocals.DIRECTION_N:
+            return Vector2(0.,-1.)
+        if direction==cblocals.DIRECTION_E:
+            return Vector2(1.,0.)
+        if direction==cblocals.DIRECTION_S:
+            return Vector2(0.,1.)
+        if direction==cblocals.DIRECTION_W:
+            return Vector2(-1.,0.)
+        raise TypeError("Invalid direction %s" % direction)
+
     def _updateStepTime(self, time_passed):
         """Update the time passed from the last step ot this character"""
         self._stepTime+=time_passed
@@ -420,6 +441,10 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         """Change character movement status"""
         if new_move_status!=self._isMoving:
             self._mustChangeImage = True
+        if new_move_status==False:
+            # When the character stops from moving, the character heading is changed by the direction faced
+            direction = self._getFacedDirection()
+            self.heading = self._generateHeadingFromFacindDirection(direction)
         self._isMoving = new_move_status
 
     def setNavPoint(self, xy):
@@ -509,8 +534,8 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
             self.brain.setState("hitten")
         if not self.checkAliveState():
             print "%s is dead." % self.name
-        elif attacker.stealth:
-            # The attaccker was hidden in shadows but the character is now dead! Now the character can see it!
+        elif attacker.stealth and not self.canSeeHiddenCharacter(attacker):
+            # The attacker was hidden in shadows and unseen, but the character (the target) is not dead! Now the character can see it!
             self.noticeForHiddenCharacter(attacker)
         # however the character has been hit, so I need to reset it's stealth state
         if self.stealth:

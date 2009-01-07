@@ -49,10 +49,15 @@ class Stealth(object):
         
         level_stealth = self.currentLevel.stealthLevel
         
-        if self._isMoving:
-            return .7 * level_stealth
-        
-        return .5 * level_stealth
+        if self.isMoving:
+            base_index = .7
+        else:
+            base_index = .5
+
+        index = base_index * level_stealth - ((self.stealthLevel-1+5)*.05)
+        if index<.2:
+            index=.2
+        return index
 
     def canStealthAgain(self):
         """After an hide in shadow attempt, the character can't hide again for a while.
@@ -68,8 +73,8 @@ class Stealth(object):
         also from the character stealthLevel.
         
         The base timing is:
-        10 seconds for expereince level 1 or less
-        8 seconds for expereince level 2 or less
+        10 seconds for experience level 1 or less
+        8 seconds for experience level 2 or less
         
         and the formula is:
         int(base_timing - base_timing * (stealthLevel * .05))
@@ -95,6 +100,29 @@ class Stealth(object):
             reduction-= .1 + (.05*self.stealthLevel)
         return reduction
 
+    @classmethod
+    def generateStealthIndexFromHeadings(cls, rogueStealthIndex, prey, rogue):
+        """Modify a stealthIndex of a rogue character checking also the headings of the characters
+        
+        The headings are commonly a couple of real values from -1 to +1 (a normalized x,y Vector2).
+        The idea is that the rogue has good bonus if he's arriving from behind the prey.
+        He gets no bonus if is arriving from beside the prey.
+        Finally he get some malus if is arriving in front of the prey.
+        
+        This is not enough. If the rogue is not moving, he can get only malus, so he's counted like if
+        he's always facing the prey.
+        
+        Again: is impossible to backstab the prey facing it directly!
+        
+        """
+        rogueHeading = rogue.heading
+        preyHeading = prey.heading
+        print rogueHeading, preyHeading, rogueHeading + preyHeading
+        
+        # BBB: to be completed
+        
+        return rogueStealthIndex
+
     # *** below there are method used for notice hidden enemyes
 
     def check_antiStealth(self, enemy):
@@ -109,6 +137,11 @@ class Stealth(object):
         This value is also influenced by the character and enemy direction. If the rogue in moving in the same
         direction of the character (he is going away, or he is going behind the character), the rogue has
         some bonus!
+        
+        This method is really called once for a period of time (stealthRestTimeNeeded). Before this the value returned
+        is cached. The cache is invalidated when:
+        1) The rogue stop hiding.
+        2) The rogue begin was still but now is moving.
         
         @return: True if the attemp to find the enemy had success.
         """
@@ -126,14 +159,21 @@ class Stealth(object):
         
         # I have already tried a check for the enemy before
         if stealthEnemies.has_key(enemy_uid):
-            result = stealthEnemies[enemy_uid]['result']
-            self._updateEnemyStatus(enemy)
-            return result
+            # Use cache only if the rogue is not moving, or he's moving like he was doing before
+            if not self.isMoving or (self.isMoving and stealthEnemies[enemy_uid]['moving_status']):
+                # BBB: fix here!
+                print self.isMoving, stealthEnemies[enemy_uid]['moving_status']
+                stealthEnemies[enemy_uid]['moving_status'] = self.isMoving
+                result = stealthEnemies[enemy_uid]['result']
+                self._updateEnemyStatus(enemy)
+                return result
+            else:
+                logging.info("%s begin moving again" % self)
         
         enemyStealthIndex = enemy.stealthIndex
         
         # Now I need to modify the enemyStealthIndex based on the characters headings
-        enemyStealthIndex = self.generateStealthIndexHeading(enemyStealthIndex, self, enemy)
+        enemyStealthIndex = self.generateStealthIndexFromHeadings(enemyStealthIndex, self, enemy)
         
         # I need to check again for the hidden enemy
         rolled = cbrandom.cbrandom.uniform(0,1)
@@ -144,21 +184,11 @@ class Stealth(object):
                                                                                    rolled,
                                                                                    result,
                                                                                    ))
-        stealthEnemies[enemy_uid] = {'result': result, 'timing': cblocals.game_time}
-        return result
+        # now the moving status
+        moving_status = self.isMoving
 
-    @classmethod
-    def generateStealthIndexHeading(cls, rogueStealthIndex, prey, rogue):
-        """Modify a stealthIndex of a rogue character checking also the headings of the characters
-        
-        """
-        rogueHeading = rogue.heading
-        preyHeading = prey.heading
-        #print rogueHeading, preyHeading, rogueHeading + preyHeading
-        
-        # BBB: to be completed
-        
-        return rogueStealthIndex
+        stealthEnemies[enemy_uid] = {'result': result, 'timing': cblocals.game_time, 'moving_status': moving_status}
+        return result
 
     def _updateEnemyStatus(self, enemy):
         """Given an enemy, update his status timing.
@@ -184,8 +214,10 @@ class Stealth(object):
 
     def noticeForHiddenCharacter(self, enemy):
         """The use of this method force the character to see an hidden enemy"""
-        target_uid = enemy.UID()
-        if self._stealthEnemies.has_key(target_uid):
-            self._stealthEnemies[target_uid] = {'result': True, 'timing': cblocals.game_time}
-            logging.info("%s notice the %s presence" % (self, enemy))
+        enemy_uid = enemy.UID()
+        try:
+            del self._stealthEnemies[enemy_uid]
+        except KeyError:
+            pass
+        logging.info("%s notice the %s presence" % (self, enemy))
 
