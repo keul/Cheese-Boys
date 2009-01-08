@@ -65,8 +65,7 @@ class GameSprite(pygame.sprite.Sprite):
     @property
     def v(self):
         """Return position as Vector2 object"""
-        x,y = self.position
-        return Vector2(x, y)
+        return Vector2(self.position)
 
     def isNearTo(self, point):
         """Check if the sprite collision rect (the basement) is near to a point.

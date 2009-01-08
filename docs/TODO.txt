@@ -13,7 +13,7 @@ Entries I will fix/implement someday.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
   
- * Surnames from Veneto region!
+ * Surnames from Veneto region and other Emilian's ones!
  
  * Shout can warn near enemies.
  
@@ -30,7 +30,7 @@ Entries I will fix/implement someday.
  
  * REFACTORING - All the draw parts (tips, speech, rain, shadows, ...) must the ordered in the main GameLevel.draw method.
 
- * BUG - exit a level during speech in progresso make the character to be unable to speak in the newx level...
+ * BUG - exit a level during speech in progress make the character to be unable to speak in the newx level...
 
 Wishlist entries
 ----------------

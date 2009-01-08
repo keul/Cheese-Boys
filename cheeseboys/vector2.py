@@ -7,11 +7,12 @@
 # So: if the python used for Cheese Boys don't include the original Will's library, this source
 # is used instead.
 
-# BBB: 14 Aug, 2008
+# Aug 14, 2008
 # I fixed the __nonzero__ implementation. Something is changed in the code and original version break all.
 
 from math import sqrt
 from math import pi
+from math import acos
 
 def format_number(n, accuracy=6):
     """Formats a number in a friendly manner (removes trailing zeros and unneccesary point."""
@@ -286,9 +287,7 @@ class Vector2(object):
         keys -- A string containing a list of component names
         i.e. vec = Vector(1, 2)
         vec('yx') --> (2, 1)
-        
         """        
-        
         ord_x = ord('x')
         v = self._v
         return tuple( v[ord(c) - ord_x] for c in keys )
@@ -336,8 +335,32 @@ class Vector2(object):
         dy = yy-y
         return sqrt( dx*dx + dy*dy )
 
+
+    # Vector2 addons - those functions aren't opera of McGugan
+
+    def rotate(self, degree):
+        """Rotate the vector of a given angles in degree"""
+        x,y = self._v
+        self._v = [ (x * cos(degree) - y * sin(degree)), (y * cos(degree)) + (x * sin(degree)) ]
+
+    def dot_mul(self, v2):
+        """Dot multiply the Vector2 for another Vector2
+        The result is a scalar value that's equals to:
+        Ax * Bx + Ay * By + Az * Bz
+        """
+        ax,ay = self._v
+        bx,by = v2._v
+        return ax * bx + ay * by
+
+    def angle_between(self, v2):
+        """Return the angle in degree from this Vector2 and another one
+        The two Vector2 must be normalized
+        """
+        if self.get_magnitude() != v2.get_magnitude() != 1.:
+            raise ValueError("Vectors must be normalized")
+        return acos(self.dot_mul(v2))*180/pi
+
 if __name__ == "__main__":
-    
     v1 = Vector2(1, 2)    
     print v1('yx')
     print Vector2.from_points((5,5), (10,10))
