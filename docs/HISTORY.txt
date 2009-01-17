@@ -21,6 +21,7 @@ You can also find:
    Now is used the new _updateStepTime (time based). This fix an ugly effect on very slow characters.
    
  * TODO - (!!!) Stealth mode. UNFINISHED
+   Also added some new vector's features to the Vector2 class.
  
  * Healt level now influence the general character speed. More wound lead to a slower movement.
  

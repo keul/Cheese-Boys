@@ -37,6 +37,13 @@ except ImportError:
            "  easy_install KezMenu")
     sys.exit(1)
 
+# Checking for KezMenu > 0.3
+from kezmenu.kezmenu import __version__ as kezmenu_version
+kezmenu_version = [int(x) for x in kezmenu_version.split(".")]
+if kezmenu_version[1]<3:
+    print ("WARNING: your KezMenu version is %s\n"
+           "Cheese Boys rely on KezMenu 0.3, or a better version.\n")  % kezmenu_version
+
 # Checking for KTextSurfaceWriter
 try:
     import ktextsurfacewriter
@@ -366,22 +373,26 @@ def menu():
     screen = cblocals.screen
     menu = kezmenu.KezMenu(
         [_(u"Start Game"), game],
-        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,230),(350,300) ) )],
+        [_(u"Check for new version"), lambda: utils.update_version(screen, pygame.Rect( (50,230),(350,300) ))],
         [_(u"Quit"), game_over],
         )
-    menu.set_font(cblocals.leveltext_font)    
+    menu.font = cblocals.leveltext_font
     image = utils.load_image('cheese-boys-logo.png')
     
     menu.center_at(600, 300)
-    menu.set_normal_color( (255,255,255) )
+    menu.color = (255,255,255)
+    menu.enableEffect('raise-line-padding-on-focus')
+    menu.enableEffect('raise-col-padding-on-focus')    
     to_display = u'Cheese Boys'
     to_display_size = cblocals.main_title_font.size(to_display)
     title_text = cblocals.main_title_font.render(to_display, True, (252,252,112))
     text_start_pos_x, text_start_pos_y = (cblocals.SCREEN_SIZE[0]/2-to_display_size[0]/2, 100)
-
+    
+    clock = pygame.time.Clock()
     while True:
+        time_passed = clock.tick() / 1000.
         events = pygame.event.get()
-        menu.update(events)
+        menu.update(events, time_passed)
 
         for e in events:
             if e.type == pygame.QUIT:
