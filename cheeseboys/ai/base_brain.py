@@ -66,6 +66,7 @@ class BaseStateHunting(State):
 
     def do_actions(self, time_passed):
         character = self.character
+        # BBB: if the attacker is hiding in shadows, the character has not an enemyTarget! I must add it!
         character.moveBasedOnNavPoint(time_passed, character.enemyTarget.position)
 
     def check_conditions(self):
@@ -167,7 +168,7 @@ class BaseStateHit(State):
 
     def entry_actions(self, old_state_name):
         self.character.speed = cbrandom.randint(cblocals.HIT_MOVEMENT_SPEED/2, cblocals.HIT_MOVEMENT_SPEED)
-        self.distance_to_move = 50
+        self.distance_to_move = 30
         self.old_state_name = old_state_name
 
     def exit_actions(self, new_state_name):

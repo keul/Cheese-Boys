@@ -290,7 +290,7 @@ class GameLevel(object):
             referencePointOnScreen = reference
         else:
             referencePointOnScreen = reference.position_int
-        if self.isPointAtScreenCenter(referencePointOnScreen, (200,200) ):
+        if self.isPointAtScreenCenter(referencePointOnScreen, (160,160) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)
         # More near to screen border, faster will be the screen centering procedure

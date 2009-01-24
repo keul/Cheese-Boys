@@ -56,7 +56,8 @@ class Stealth(object):
         else:
             base_index = .5
 
-        index = base_index * level_stealth - ((self.stealthLevel-1+5)*.05)
+        # base_index * level_stealth - (5% for stealhLevel)
+        index = base_index * level_stealth - ((self.stealthLevel-1 +5 )*.05) # BBB: debug value here
         if index<.2:
             index=.2
         return index
@@ -117,7 +118,6 @@ class Stealth(object):
         """
         distance = rogue.v.get_distance_to(prey.v)
         preySight = int(prey.sightRange * prey.getPreySightRangeReductionFactor())
-        prey_to_rogue = Vector2.from_points(prey.position, rogue.position).normalize()
 
         if distance<preySight/5:
             rogueStealthIndex*=1.3         # malus 30%
@@ -126,12 +126,21 @@ class Stealth(object):
         elif distance<preySight/3*2:
             rogueStealthIndex*=1.1         # malus 10%
         
-        print prey.heading, prey_to_rogue
+        # The rogue has malus if the prey is watching it: +25% (angle >=-30° and <=+30°)
+        # The rogue has bonus if the prey is watching in the other direction: -20% (angle <=-150° and >=+150°)
+        prey_to_rogue = Vector2.from_points(prey.position, rogue.position).normalize()
+        angle_between = prey.heading.angle_between(prey_to_rogue)
+        logging.debug("Prey heading: %s - Prey to rogue: %s - Angle: %s" % (prey.heading, prey_to_rogue, angle_between))
         
-        # BBB: to be completed
+        if angle_between>=-30 or angle_between<=30:
+            rogueStealthIndex*=1.3
+        elif angle_between<=-150 or angle_between>=150:
+            rogueStealthIndex*=.8
         
         if rogueStealthIndex>1.:
             rogueStealthIndex=1.
+        elif rogueStealthIndex<.2:
+            rogueStealthIndex=.2
         return rogueStealthIndex
 
     # *** below there are method used for notice hidden enemyes
@@ -178,13 +187,13 @@ class Stealth(object):
         # I need to check again for the hidden enemy
         rolled = cbrandom.cbrandom.uniform(0,1)
         result = rolled<enemyStealthIndex
-        logging.info("%s try to find %s that have a stealth index of %0.2f (%0.2f): rolled %0.2f (%s)" % (self,
-                                                                                                          enemy,
-                                                                                                          enemyStealthIndex,
-                                                                                                          enemy.stealthIndex,
-                                                                                                          rolled,
-                                                                                                          result,
-                                                                                                          ))
+        logging.info("%s try to find %s that have a stealth index of %0.2f (base is %0.2f): rolled %0.2f (%s)" % (self,
+                                                                                                                  enemy,
+                                                                                                                  enemyStealthIndex,
+                                                                                                                  enemy.stealthIndex,
+                                                                                                                  rolled,
+                                                                                                                  result,
+                                                                                                                  ))
         stealthEnemies[enemy_uid] = {'result': result, 'timing': cblocals.game_time,}
         return result
 
