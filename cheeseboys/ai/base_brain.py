@@ -66,7 +66,6 @@ class BaseStateHunting(State):
 
     def do_actions(self, time_passed):
         character = self.character
-        # BBB: if the attacker is hiding in shadows, the character has not an enemyTarget! I must add it!
         character.moveBasedOnNavPoint(time_passed, character.enemyTarget.position)
 
     def check_conditions(self):
@@ -184,7 +183,7 @@ class BaseStateRetreat(State):
         State.__init__(self, "retreat", character)
         self.old_state_name = None
         self.collected_distance = 0
-        self.distance_to_move = 50
+        self.distance_to_move = 30
         # rest after the real action
         self.rest_time = .5
         self.collected_rest_time = 0

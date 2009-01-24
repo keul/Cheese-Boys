@@ -51,7 +51,7 @@ class PlayingCharacter(Character):
             attackHeading.normalize()
             cblocals.global_lastMouseRightClickPosition = ()
             # Right click on a distant enemy will move the hero towards him...
-            if self.seeking and not pressed_keys[K_LCTRL]:
+            if self.seeking:
                 # enable the hero brain
                 enemy = self.seeking
                 print "Seeking %s" % enemy.name

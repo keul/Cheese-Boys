@@ -284,8 +284,8 @@ class GameLevel(object):
         """Slowly move drawn portion of the total level, for centering it on the given reference object.
         reference can be a GameSprite or a position tuple info.
         """
-        if pygame.key.get_pressed()[K_LCTRL]:
-            return
+#        if pygame.key.get_pressed()[K_LCTRL]:
+#            return
         if type(reference)==tuple:
             referencePointOnScreen = reference
         else:

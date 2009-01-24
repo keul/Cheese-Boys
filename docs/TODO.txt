@@ -20,8 +20,6 @@ Entries I will fix/implement someday.
  * REFACTORING - Move the wind attribute from RainDrops effect to GameLevel. The wind can in future influence other
    things like ranged weapon and other sprites.
 
- * Change keys: CTRL can only stop time, while adding of the SHIFT key can attack without move, and use stealth.
- 
  * Add sprites that are not only drawn on the ground but are not physical (like dead corpse, or grass...).
  
  * A "Game Over" nice display.
@@ -31,6 +29,10 @@ Entries I will fix/implement someday.
  * REFACTORING - All the draw parts (tips, speech, rain, shadows, ...) must the ordered in the main GameLevel.draw method.
 
  * BUG - exit a level during speech in progress make the character to be unable to speak in the newx level...
+
+ * Fix the Z (retreat) action.
+ 
+ * Draw hit points number anfter damage, floating above the character.
 
 Wishlist entries
 ----------------

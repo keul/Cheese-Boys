@@ -357,7 +357,6 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         if x<0:
             return cblocals.DIRECTION_W
         return cblocals.DIRECTION_E
-        # BBB
 
     def _getWalkImagePrefix(self, direction, weaponOut):
         """Simply return a prefix using to generate the key to retrieve the charas image.
@@ -586,3 +585,5 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
     def __str__(self):
         return "%s <%s>" % (self.name, self.UID())
 
+    def __repr__(self):
+        return "%s <%s>" % (self.name, self.UID())

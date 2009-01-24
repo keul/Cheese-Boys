@@ -195,12 +195,10 @@ def game():
 
         # ******* EVENTS LOOP END *******
 
-
-        if level.presentation is None or not pygame.key.get_pressed()[K_LCTRL]:
-            time_passed = clock.tick() / 1000.  * cblocals.game_speed
-            cblocals.game_time = pygame.time.get_ticks()
-        else:
-            continue
+        time_passed = clock.tick() / 1000.  * cblocals.game_speed
+        cblocals.game_time = pygame.time.get_ticks()
+        if pygame.key.get_pressed()[K_LCTRL]:            
+            time_passed = 0
         
         # Level text overlay
         if level.update_text(time_passed):

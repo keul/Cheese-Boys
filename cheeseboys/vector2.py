@@ -356,8 +356,8 @@ class Vector2(object):
         """Return the angle in degree from this Vector2 and another one
         The two Vector2 must be normalized
         """
-        if self.get_magnitude() != v2.get_magnitude() != 1.:
-            raise ValueError("Vectors must be normalized")
+        if self.get_magnitude()<0.999 and v2.get_magnitude()<0.999:
+            raise ValueError("Vectors must be normalized: gets %s and %s" % (self, v2))
         return acos(self.dot_mul(v2))*180/pi
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ class Stealth(object):
             base_index = .5
 
         # base_index * level_stealth - (5% for stealhLevel)
-        index = base_index * level_stealth - ((self.stealthLevel-1 +5 )*.05) # BBB: debug value here
+        index = base_index * level_stealth - ((self.stealthLevel-1 +8 )*.05) # BBB: debug value here
         if index<.2:
             index=.2
         return index
@@ -222,9 +222,6 @@ class Stealth(object):
     def noticeForHiddenCharacter(self, enemy):
         """The use of this method force the character to see an hidden enemy"""
         enemy_uid = enemy.UID()
-        try:
-            del self._stealthEnemies[enemy_uid]
-        except KeyError:
-            pass
+        self._stealthEnemies[enemy_uid] = {'result': True, 'timing': cblocals.game_time,}
         logging.info("%s notice the %s presence" % (self, enemy))
 

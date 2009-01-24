@@ -20,14 +20,18 @@ You can also find:
  * BBB - Change the handle of the character step time: removed the addDistanceWalked methods (pixel based).
    Now is used the new _updateStepTime (time based). This fix an ugly effect on very slow characters.
    
- * TODO - (!!!) Stealth mode. UNFINISHED
+ * TODO - (!!!) Stealth mode.
    Also added some new vector's features to the Vector2 class.
  
- * Healt level now influence the general character speed. More wound lead to a slower movement.
+ * Healt level now influence the general character speed. More damages lead to a slower movement.
  
  * Added dependency from the KezMenu Python Library, instead of releasing this with the game itself.
 
  * Added dependency from the KTextSurfaceWriter Python Library, instead of releasing this with the game itself.
+
+ * Now the CTRL key stop the time passing. Always. You can so seek and hunt an enemy.
+
+ * SHIFT key handle stealth but also block the hero from moving during hunt and attacks.
 
 0.1.1
 -----
