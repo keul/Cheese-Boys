@@ -29,7 +29,7 @@ class HeroStateHunting(BaseStateHunting):
         """Even while the hero is using the brain, the player can prevent him from moving
         using keys.
         """
-        if not pygame.key.get_pressed()[K_LSHIFT]:
+        if not pygame.key.get_pressed()[K_x]:
             BaseStateHunting.do_actions(self, time_passed)
 
     def check_conditions(self):
@@ -51,10 +51,10 @@ class HeroStateAttacking(BaseStateAttacking):
     """
 
     def do_actions(self, time_passed):
-        """Changes from the base do_actions: we need to handle the SHIFT key here"""
+        """Changes from the base do_actions: we need to handle the X key here"""
         character = self.character
         enemy = character.enemyTarget
-        if not pygame.key.get_pressed()[K_LSHIFT]:
+        if not pygame.key.get_pressed()[K_x]:
             character.moveBasedOnNavPoint(time_passed, enemy.position)
         if not character.isAttacking():
             character.setAttackState(character.getHeadingTo(enemy))

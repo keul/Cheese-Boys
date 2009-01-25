@@ -66,19 +66,22 @@ class BaseStateHunting(State):
 
     def do_actions(self, time_passed):
         character = self.character
-        character.moveBasedOnNavPoint(time_passed, character.enemyTarget.position)
+        enemy = character.enemyTarget
+        if not enemy:
+            return
+        character.moveBasedOnNavPoint(time_passed, enemy.position)
 
     def check_conditions(self):
         character = self.character
         enemy = character.enemyTarget
-        if not enemy.isAlive:
+        if not enemy or not enemy.isAlive:
             return "waiting"
         
         if character.distanceFrom(enemy)>character.sightRange*2:
             return "waiting"
         
         # BBB... withdraw
-        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget==character and \
+        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget is character and \
                 enemy.distanceFrom(character) < enemy.attackRange:
             return "retreat"
         
@@ -100,6 +103,8 @@ class BaseStateAttacking(State):
     def do_actions(self, time_passed):
         character = self.character
         enemy = character.enemyTarget
+        if not enemy:
+            return
         character.moveBasedOnNavPoint(time_passed, enemy.position)
         if not character.isAttacking():
             character.setAttackState(character.getHeadingTo(enemy))
@@ -113,7 +118,7 @@ class BaseStateAttacking(State):
         if character.isAttacking():
             return None
 
-        if enemy and not enemy.isAlive:
+        if not enemy or not enemy.isAlive:
             return "waiting"
 
         if character.distanceFrom(enemy)>character.attackRange:
@@ -127,8 +132,6 @@ class BaseStateAttacking(State):
     def exit_actions(self, new_state_name):
         character = self.character
         character.stopAttack()
-#        if new_state_name!="hunting":
-#            self.character.enemyTarget = None
 
 
 class BaseStateHit(State):
@@ -183,7 +186,7 @@ class BaseStateRetreat(State):
         State.__init__(self, "retreat", character)
         self.old_state_name = None
         self.collected_distance = 0
-        self.distance_to_move = 30
+        self.distance_to_move = 50
         # rest after the real action
         self.rest_time = .5
         self.collected_rest_time = 0

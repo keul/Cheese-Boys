@@ -13,6 +13,7 @@
 from math import sqrt
 from math import pi
 from math import acos
+from math import cos, sin
 
 def format_number(n, accuracy=6):
     """Formats a number in a friendly manner (removes trailing zeros and unneccesary point."""
@@ -356,9 +357,10 @@ class Vector2(object):
         """Return the angle in degree from this Vector2 and another one
         The two Vector2 must be normalized
         """
-        if self.get_magnitude()<0.999 and v2.get_magnitude()<0.999:
-            raise ValueError("Vectors must be normalized: gets %s and %s" % (self, v2))
-        return acos(self.dot_mul(v2))*180/pi
+        try:
+            return acos(self.dot_mul(v2))*180/pi
+        except ValueError, inst:
+            raise ValueError("%s - Vectors must be normalized: gets %s and %s" % (str(inst), self, v2))            
 
 if __name__ == "__main__":
     v1 = Vector2(1, 2)    

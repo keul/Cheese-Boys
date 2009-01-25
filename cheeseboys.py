@@ -379,7 +379,6 @@ def menu():
     
     menu.center_at(600, 300)
     menu.color = (255,255,255)
-    menu.enableEffect('raise-line-padding-on-focus')
     menu.enableEffect('raise-col-padding-on-focus')    
     to_display = u'Cheese Boys'
     to_display_size = cblocals.main_title_font.size(to_display)

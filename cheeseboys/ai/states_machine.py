@@ -90,7 +90,6 @@ class State(object):
     def isLockedState(self):
         """True if the state is unchangable"""
         return False
-    
 
     def _chooseRandomDestination(self, maxdistance=200):
         """Set a destination at random on map"""
@@ -109,3 +108,5 @@ class State(object):
             return 0
         # distanceFromEnemy / attackRange * 100
         return distanceFromEnemy / attackRange * 100
+
+

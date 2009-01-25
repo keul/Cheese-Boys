@@ -81,16 +81,24 @@ class PlayingCharacter(Character):
 
     def moveBasedOnRetreatAction(self, time_passed):
         """See moveBasedOnRetreatAction of Character class.
-        The playing character movement is based on the mouse position on the screen"""
+        The playing character movement is based on the mouse position on the screen, but you can't retreat moving
+        in front.
+        """
         cpos = self.toScreenCoordinate()
         mpos = pygame.mouse.get_pos()
         toMouse = Vector2.from_points(cpos,mpos)
         toMouse.normalize()
-        heading = -toMouse
+        rheading = -toMouse
+        
+        heading = self.heading
+        angle_between = heading.angle_between(rheading)
+        if angle_between>=-30 and angle_between<=30:
+            return
         
         distance = time_passed * self.speed
-        movement = heading * distance
+        movement = rheading * distance
         x = movement.get_x()
         y = movement.get_y()
         if not self.checkCollision(x, y) and self.checkValidCoord(x, y):
             self.move(x, y)
+

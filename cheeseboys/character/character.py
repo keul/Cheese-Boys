@@ -247,8 +247,11 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
             self.move(x, y)
 
     def moveBasedOnRetreatAction(self, time_passed):
-        """This is similar to moveBasedOnNavPoint, but is called to animate a character that wanna retreat"""
+        """This is similar to moveBasedOnNavPoint, but is called to animate a character that wanna retreat.
+        The movement is done in the direction opposite to the heading, but with an offeset of +/- 50° degree.
+        """
         heading = -self.heading
+        heading.rotate(cbrandom.randint(-50,50))
         distance = time_passed * self.speed
         movement = heading * distance
         x = movement.get_x()
@@ -515,14 +518,14 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
 
         if criticity and criticity==module_th0.TH0_SURPRISE_HIT:
             critic = "BACKSTAB! "
-            damage*=cbrandom.randint(2,4)
+            damage*=cbrandom.randint(3,4)
         elif criticity and criticity==module_th0.TH0_HIT_CRITICAL:
             if cbrandom.randint(1,2)==1:
                 self.shout(_("Ouch!"))
             damage = int(damage * 1.5)
             critic = "CRITICAL! "
         elif criticity and criticity==module_th0.TH0_HIT_SURPRISE_CRITICAL:
-            damage*=cbrandom.randint(3,6)
+            damage*=cbrandom.randint(4,6)
             critic = "DEADLY! "
 
         self.hitPointsLeft-= damage
