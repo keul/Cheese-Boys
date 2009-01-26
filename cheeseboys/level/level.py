@@ -60,18 +60,21 @@ class GameLevel(object):
         all = GameGroup("all")
         dead = GameGroup("dead", drawable=True, updatable=True)
         physical = GameGroup("physical", drawable=True, updatable=True)
+        # visual_obstacles are sprites that block character sight
+        visual_obstacles = GameGroup("visual_obstacles")
         charas = GameGroup("charas")
         enemies = GameGroup("enemies")
         animations = GameGroup("animations", drawable=True, updatable=True)
         top_animations = GameGroup("top_animations", drawable=True, updatable=True)
-        speech = GameGroup("speech", updatable=True)            # speechs are handled in a special way
+        speech = GameGroup("speech", updatable=True)                                # speechs are handled in a special way
         level_text = GameGroup("level_text")
         exits = GameGroup("exits", drawable=True, updatable=True)
         triggers = GameGroup("triggers", drawable=True, updatable=True)
-        tippable = GameGroup("tippable")                        # Tips are handled in a special way
+        tippable = GameGroup("tippable")                                            # Tips are handled in a special way
         self.addGroup(all)
         self.addGroup(dead, zindex=5)
         self.addGroup(physical, zindex=10)
+        self.addGroup(visual_obstacles)
         self.addGroup(charas, zindex=10)
         self.addGroup(enemies)
         self.addGroup(animations, zindex=3)

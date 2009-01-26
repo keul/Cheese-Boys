@@ -585,6 +585,24 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         """Immediatly shut up the character"""
         self._speech.endSpeech()
 
+    def hasFreeSightOn(self, sprite):
+        """Return True if the target sprite is in sight of the current character"""
+        to_target = Vector2.from_points(self.position, sprite.position)
+        magnitude = to_target.get_magnitude()
+        # 1 - False if sprite position is outside the character sight
+        if self.sightRange<magnitude:
+            return False
+        # 2 - Now I need to get the line sight on the target
+        to_target.normalize()
+        magnitude_portion = max(magnitude/100., 15)
+        visual_obstacles = self.currentLevel['visual_obstacles']
+        while magnitude>0:
+            
+            # BBB: finish me
+            
+            magnitude-=magnitude_portion
+        return True
+
     def __str__(self):
         return "%s <%s>" % (self.name, self.UID())
 
