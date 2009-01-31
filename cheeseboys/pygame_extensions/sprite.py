@@ -29,6 +29,11 @@ class GameSprite(pygame.sprite.Sprite):
         pygame.sprite.Sprite.update(self, time_passed)
         self.refresh()
 
+    def refresh(self):
+        """Refresh sprite position based on x,y tuple"""
+        x, y = self.toScreenCoordinate()
+        self.rect.midbottom = (x, y)
+
     def topleft(self, x=0, y=0):
         """Return top left rect coordinate for this sprite.
         x and y can be coordinate modifier the the values returned.
@@ -76,11 +81,6 @@ class GameSprite(pygame.sprite.Sprite):
         collide_rect.height+=3
         return collide_rect.collidepoint(x, y)
 
-    def refresh(self):
-        """Refresh sprite position based on x,y tuple"""
-        x, y = self.toScreenCoordinate()
-        self.rect.midbottom = (x, y)
-
     def toScreenCoordinate(self):
         """Return (x,y) tuple information relative to the screen position"""
         return self.currentLevel.transformToScreenCoordinate(self.position_int)
@@ -110,11 +110,11 @@ class GameSprite(pygame.sprite.Sprite):
             cblocals.object_registry.register(self)
 
     def checkCollision(self, x, y):
-        """Check collision of this sprite with other.
+        """Check collision of this sprite with others taken from the 'physical' group.
         Params x and y are used to adjust the collire_rect before detection.
         If a collision occurs, a SPRITE_COLLISION_EVENT is raised.
-        BBB: use of the zindex info here can be useful?
         """
+        # BBB: use of the zindex info can be useful here in future?
         x, y = utils.normalizeXY(x, y)
         collide_rect = self.collide_rect.move(x,y)
         collideGroups = (self.currentLevel['physical'],)

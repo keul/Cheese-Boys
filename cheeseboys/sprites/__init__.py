@@ -9,3 +9,4 @@ from storm import Thunders, Lighting
 from stains import DarkLargeStain
 from level_exit import LevelExit
 from gate import Gate
+from crate import Crate

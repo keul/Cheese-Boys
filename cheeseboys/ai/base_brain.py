@@ -28,7 +28,8 @@ class BaseStateExploring(State):
     def entry_actions(self, old_state_name):
         # "Relaxed" enemy never run... ;-)
         self.character.speed = self.character.maxSpeed * cbrandom.uniform(0.3, 0.6)
-        self._chooseRandomDestination()
+        if not self.character.navPoint:
+            self._chooseRandomDestination()
 
 
 class BaseStateWaiting(State):
@@ -77,8 +78,9 @@ class BaseStateHunting(State):
         if not enemy or not enemy.isAlive:
             return "waiting"
         
-        if character.distanceFrom(enemy)>character.sightRange*2:
-            return "waiting"
+        if character.distanceFrom(enemy)>character.sightRange or not character.hasFreeSightOn(enemy):
+            self.character.navPoint = enemy.position
+            return "exploring"
         
         # BBB... withdraw
         if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget is character and \

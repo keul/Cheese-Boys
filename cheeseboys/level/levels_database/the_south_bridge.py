@@ -4,7 +4,7 @@ from cheeseboys.level import GameLevel
 from cheeseboys import character
 from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine
-from cheeseboys.sprites import CodigoroSign, LevelExit
+from cheeseboys.sprites import CodigoroSign, LevelExit, Crate
 
 def load(name, hero):
     level = GameLevel(_(str(name)), (800, 1500))
@@ -14,6 +14,7 @@ def load(name, hero):
     charas = level['charas']
     enemies = level['enemies']
     physical = level['physical']
+    visual_obstacles = level['visual_obstacles']
     exits = level['exits']
     animations = level['animations']
     hero.addToGroups(all, charas, physical)
@@ -44,6 +45,12 @@ def load(name, hero):
 
     level.addPhysicalBackground( (118,1338), (235, 1130) )
     level.addPhysicalBackground( (642,1338), (310, 1130) )
+
+    crate1 = Crate( (450, 788), 1, 0, physical, visual_obstacles)
+    level.addSprite(crate1)
+    crate2 = Crate( (390, 768), 1, 1, physical, visual_obstacles)
+    level.addSprite(crate2)
+
     
     level.addAnimations(((110,980),(623, 1284),(704, 1149),(30, 1299),(610, 869),(157, 527),(642, 357),(5, 363)), 'water-wave')
     

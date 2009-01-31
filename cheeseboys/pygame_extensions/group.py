@@ -4,6 +4,7 @@ import pygame
 from pygame import sprite
 
 from cheeseboys import utils
+from cheeseboys.character import Character
 
 def groupSortingByYAxis(sprite1, sprite2):
     """This function is made to be used by the sort procedure of the GameGroup.sprites().
@@ -66,6 +67,38 @@ class GameGroup(sprite.RenderUpdates):
                     collisionList.append(sprite)
         return collisionList
 
+    def draw(self, surface, ref_sprite=None):
+        """Like the pygame.RenderUpdates.draw method, but this didn't draw character that the ref_sprite can't see.
+        This special draw procedure is used only if the ref_sprite parameter is passed.
+        """
+        spritedict = self.spritedict
+        surface_blit = surface.blit
+        dirty = self.lostsprites
+        self.lostsprites = []
+        dirty_append = dirty.append
+        for s in self.sprites():
+            # Special hero handling
+            # BBB: must be moved away from there
+            if ref_sprite and isinstance(s,Character) and not ref_sprite.hasFreeSightOn(s):
+                try:
+                    del ref_sprite.can_see_list[s.UID()]
+                except:
+                    pass
+                continue
+            elif ref_sprite and isinstance(s,Character):
+                ref_sprite.can_see_list[s.UID()] = True
+            r = spritedict[s]
+            newrect = surface_blit(s.image, s.rect)
+            if r is 0:
+                dirty_append (newrect)
+            else:
+                if newrect.colliderect(r):
+                    dirty_append(newrect.union(r))
+                else:
+                    dirty_append(newrect)
+                    dirty_append(r)
+            spritedict[s] = newrect
+        return dirty
 
     # ******* DEBUG HELPER METHODS *******
     def drawCollideRect(self, surface, color=(0,255,255), width=1):

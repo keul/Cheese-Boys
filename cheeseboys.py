@@ -64,7 +64,7 @@ from pygame.locals import *
 
 from cheeseboys import cblocals, utils, character
 from cheeseboys import th0 as module_th0
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.pygame_extensions.unique import UniqueObjectRegistry
 from cheeseboys.level import loadLevelByName
 from cheeseboys.ai.hero import HeroStateMachine
@@ -82,7 +82,8 @@ def game():
     clock = pygame.time.Clock()
     screen = cblocals.screen
 
-    hero = character.PlayingCharacter("Boscolo", ("hero_sword1_vest1.png","hero_vest1.png"), (), realSize=(18,25), weaponInAndOut=True)
+    hero = character.PlayingCharacter("Boscolo", ("hero_sword1_vest1.png","hero_vest1.png"), (),
+                                      realSize=(18,25), weaponInAndOut=True, sightRange=300)
     hero.setBrain(HeroStateMachine)
     hero.setCombatValues(2, 13)
 
@@ -237,12 +238,12 @@ def game():
 
         # points
         if cblocals.globals['points']:
-            for displayable in [x for x in charas.sprites() if x.isAlive]:
+            for displayable in [x for x in charas.sprites() if hero.can_see_list.get(x.UID(),False)]:
                 displayable.drawPointsInfos(screen)
 
         # textTips
         if cblocals.globals['text_tips']:
-            for displayable in [x for x in tippable.sprites() if x.getTip()]:
+            for displayable in [x for x in tippable.sprites() if x.getTip() and hero.can_see_list.get(x.UID(),False)]:
                 level.displayTip(screen, displayable)
 
         # Mouse cursor hover an enemy

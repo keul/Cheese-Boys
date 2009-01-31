@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from cheeseboys import utils
 from cheeseboys import cblocals
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.utils import Vector2
 from character import Character
 
@@ -23,6 +23,8 @@ class PlayingCharacter(Character):
         # stealth
         self.stealthLevel = 1
         self.stealthRestTimeNeeded = 3000
+        # list of visible other character
+        self.can_see_list = {}
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -44,7 +46,7 @@ class PlayingCharacter(Character):
         
         # Check for mouse actions setted
         if cblocals.global_lastMouseLeftClickPosition:
-            self.setNavPoint(self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition))
+            self.navPoint = self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition)
             cblocals.global_lastMouseLeftClickPosition = ()
         if cblocals.global_lastMouseRightClickPosition and not self.isAttacking():
             attackHeading = Vector2.from_points(self.position, self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseRightClickPosition))

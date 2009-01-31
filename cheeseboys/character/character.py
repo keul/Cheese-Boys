@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -
 
+import logging
+
 import pygame
 from pygame.locals import *
 
@@ -7,7 +9,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.pygame_extensions.unique import UniqueObject
 from cheeseboys import th0 as module_th0
 from cheeseboys.sprites import SpeechCloud
@@ -449,13 +451,6 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
             self.heading = self._generateHeadingFromFacindDirection(direction)
         self._isMoving = new_move_status
 
-    def setNavPoint(self, xy):
-        """Set a new target navPoint for current character"""
-        if isinstance(xy, Vector2):
-            self.navPoint = xy
-        else:
-            self.navPoint = Vector2(xy)
-
     def setBrain(self, smBrain):
         """Set a AI StateMachine istance"""
         self._brain = smBrain(self)
@@ -596,10 +591,15 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         to_target.normalize()
         magnitude_portion = max(magnitude/100., 15)
         visual_obstacles = self.currentLevel['visual_obstacles']
+        screen_position = self.toScreenCoordinate()
         while magnitude>0:
-            
-            # BBB: finish me
-            
+            for obstacle in visual_obstacles:
+                temp_v = (to_target*magnitude).as_tuple()
+                temp_pos = screen_position[0]+temp_v[0], screen_position[1]+temp_v[1]
+                #print temp_pos, obstacle.rect
+                if obstacle.collide_rect.collidepoint(temp_pos):
+                    logging.debug("%s can't see %s due to the presence of %s" % (self, sprite, obstacle))
+                    return False
             magnitude-=magnitude_portion
         return True
 
@@ -607,4 +607,4 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         return "%s <%s>" % (self.name, self.UID())
 
     def __repr__(self):
-        return "%s <%s>" % (self.name, self.UID())
+        return str(self)

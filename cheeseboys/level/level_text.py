@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.cblocals import LEVEL_TEXT_TYPE_NORMAL, LEVEL_TEXT_TYPE_BLACKSCREEN
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 
 # only used for non-fullscreen level text
 V_DIFF = 30

@@ -8,6 +8,7 @@ from pygame.locals import *
 from cheeseboys.cbrandom import cbrandom
 
 AVERAGE_RAINDROPS = 50
+MIN_RAINDROPS = 10
 MAX_RAINDROPS = 100
 
 class Rain(object):
@@ -17,10 +18,10 @@ class Rain(object):
     The rain is based only on screen coordinates and don't need to be transformed in level coordinate.
 
     Every raindrop is stored in this object within a structure like this:
-    {'position': upper_position_tuple, 'speed':drop_speed, 'length': raindrop_length, 'width': raindrop_width}.
+    {'position': upper_position_tuple, 'speed':drop_speed, 'length': raindrop_length, 'width': raindrop_width, 'end_y': last_drop_y}.
     In any case use the class member emptyRainDrop
     
-    Develop note: I'm not using the Vector2 class in there, because I wanna keep thing simple. This effect can became
+    Develop note: I'm not using the Vector2 class in there, because I wanna keep thing simple. I fear this effect can became
     very speedkiller.
     """
     
@@ -40,15 +41,17 @@ class Rain(object):
 
     @property
     def emptyRainDrop(self):
-        return {'position': [0,-70], 'speed': 500, 'length': 50, 'width': 1}
+        return {'position': [0,-70], 'speed': 500, 'length': 50, 'width': 1, 'end_y': self._surface_size[1]}
 
     def _getRaindropEndPosition(self, raindrop):
         """Use infos of a single raindrop to know the end point to be drawn on the screen"""
         start_position = raindrop['position']
         length = raindrop['length']
+        end_y = raindrop['end_y']
         rain_heading = (self._rain_heading[0]+self._wind, self._rain_heading[1])
         movementx, movementy = (rain_heading[0] * length, rain_heading[1] * length)
-        return [raindrop['position'][0]+movementx, raindrop['position'][1]+movementy]
+        end_point = min(raindrop['position'][1]+movementy, end_y)
+        return (raindrop['position'][0]+movementx, end_point)
 
     def _generateRaindrop(self, totallyRandom=False):
         """Generate a raindrop, changing the raindrop position or generating a new one.
@@ -64,6 +67,7 @@ class Rain(object):
         raindrop['speed'] = cbrandom.randint(500, 800)
         raindrop['length'] = cbrandom.randint(20, 50)
         raindrop['width'] = cbrandom.choice( (1,2) )
+        raindrop['end_y'] = cbrandom.randint(10, int(self._surface_size[1]*1.1))
         return raindrop
 
     def draw(self, surface):
@@ -89,7 +93,7 @@ class Rain(object):
             rain_heading = (self._rain_heading[0]+self._wind, self._rain_heading[1])
             movementx, movementy = (rain_heading[0] * distance, rain_heading[1] * distance)
             raindrop['position'] = [raindrop['position'][0]+movementx, raindrop['position'][1]+movementy]
-            if raindrop['position'][1]+raindrop['length'] > surface_size[1]:
+            if raindrop['position'][1] > raindrop['end_y']:
                 self._raindrops[x] = None
 
         self._time_rain_frequency-= time_passed
@@ -103,11 +107,11 @@ class Rain(object):
         self._time_rain_frequency = cbrandom.randint(20,60)
         ndrops = self._raindrops_length
         ndrops = ndrops + cbrandom.randint(-20,20)
-        if ndrops<4:
-            ndrops = 4
+        if ndrops<MIN_RAINDROPS:
+            ndrops = MIN_RAINDROPS
         elif ndrops>MAX_RAINDROPS:
             ndrops = MAX_RAINDROPS
-        logging.info("Rain frequence changed from %s to %s" % (self._raindrops_length, ndrops))
+        logging.debug("Rain frequence changed from %s to %s" % (self._raindrops_length, ndrops))
         self._raindrops_length = ndrops
 
     def changeWindStrength(self):

@@ -2,7 +2,7 @@
 
 import pygame
 from pygame.locals import *
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import cblocals, utils
 
 CLOUD_MAX_WIDTH = 250

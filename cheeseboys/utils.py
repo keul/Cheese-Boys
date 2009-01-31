@@ -9,10 +9,10 @@ from cheeseboys.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False, simpleLoad=False):
     """Load an image from filesystem, from standard directory.
-    file_name will the name of the file or a tuple of 2 file name (if weaponInAndOut is used)
-    charasFormatImage is used to load not a single image but an array of 12 images in charas format.
-    weaponInAndOut is used to load not 12 but 24 images. The first 12 are normal images with weapon, the others are without.
-    This is only used for charas that can do combat action.
+    @file_name: the file image name, or a tuple of 2 file name (if weaponInAndOut is used).
+    @directory: the subdirectory from witch take the image, default to the root.
+    @charasFormatImage: used to load not a single image but an array of 12 images in charas format.
+    @weaponInAndOut: used to load not 12 but 24 images. The first 12 are normal images with weapon, the others are without.
     """
     if charasFormatImage:
         return _imagesInCharasFormat(file_name, directory, weaponInAndOut)

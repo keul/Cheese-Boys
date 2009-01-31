@@ -31,7 +31,11 @@ You can also find:
 
  * Now the CTRL key stop the time passing. Always. You can so seek and hunt an enemy.
 
- * SHIFT key handle stealth but also block the hero from moving during hunt and attacks.
+ * SHIFT key handle stealth, and X key block the hunt and the movement durin attack.
+ 
+ * (!!!) Characters can't see throught all the physical sprites that also block the path.
+
+ * Raindrop now can end inside the game screen.
 
 0.1.1
 -----

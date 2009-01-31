@@ -5,7 +5,8 @@ from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.utils import Vector2
-from cheeseboys.pygame_extensions import GameSprite, GameGroup
+from cheeseboys.pygame_extensions.sprite import GameSprite
+from cheeseboys.pygame_extensions.group import GameGroup
 from cheeseboys.sprites import PhysicalBackground, Rain
 from cheeseboys.presentation import Presentation
 from level_text import LevelText
@@ -206,26 +207,32 @@ class GameLevel(object):
         for charas in group.sprites():
             distanceFromCharas = character.distanceFrom(charas)
             if character.side!=charas.side and distanceFromCharas<=sight:
-                if charas.stealth:
-                    # A rogue charas reduce the character sight range
-                    if distanceFromCharas <= int(sight * charas.getPreySightRangeReductionFactor()):
-                        # ... and now the real check for the anti-stealth
-                        if character.check_antiStealth(charas):
-                            enemies.append(charas)
-                else:    
-                    enemies.append(charas)
+                if character.hasFreeSightOn(charas):
+                    if charas.stealth:
+                        # A rogue charas reduce the character sight range
+                        if distanceFromCharas <= int(sight * charas.getPreySightRangeReductionFactor()):
+                            # ... and now the real check for the anti-stealth
+                            if character.check_antiStealth(charas):
+                                enemies.append(charas)
+                    else:    
+                        enemies.append(charas)
         if enemies:
             return cbrandom.choice(enemies)
         return None
 
     def draw(self, screen):
         """Draw the level"""
+        physical = self['physical']
         # 1 * Draw the background image
         if self._background:
             screen.blit(self._background.subsurface(pygame.Rect(self.topleft, cblocals.GAME_SCREEN_SIZE) ), (0,0) )
         # 2 * Draw all sprite groups
         for group in self._groups_todraw:
-            group[1].draw(screen)
+            # special handling for the physical group
+            if group[1] is physical and not self.presentation:
+                group[1].draw(screen, self.hero)
+            else:
+                group[1].draw(screen)
         # 3 * Draw screen center (if in DEBUG mode)
         if cblocals.DEBUG:
             xy, wh = self._getScreenCenter()
@@ -352,7 +359,11 @@ class GameLevel(object):
             group = self[group_name]
             group.add(pb)
             self.addSprite(pb, position)
-            
+
+    def addPhysicalSightBlockingBackground(self, position, size, groups=['physical','visual_obstacles']):
+        """Like addPhysicalBackground but also add the sprite to the 'visual_obstacles' group"""
+        self.addPhysicalBackground(position, size, groups)
+
     def addAnimation(self, position, animation, groups=['animations']):
         """Add an animation sprite to this level.
         If animation parameter is a string, the engine try to load an animation with that name.
