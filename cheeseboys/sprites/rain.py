@@ -50,7 +50,7 @@ class Rain(object):
         end_y = raindrop['end_y']
         rain_heading = (self._rain_heading[0]+self._wind, self._rain_heading[1])
         movementx, movementy = (rain_heading[0] * length, rain_heading[1] * length)
-        end_point = min(raindrop['position'][1]+movementy, end_y)
+        end_point = min(raindrop['position'][1]+movementy, end_y+movementy)
         return (raindrop['position'][0]+movementx, end_point)
 
     def _generateRaindrop(self, totallyRandom=False):

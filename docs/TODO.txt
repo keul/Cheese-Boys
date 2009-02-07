@@ -27,9 +27,7 @@ Entries I will fix/implement someday.
  
  * REFACTORING - All the draw parts (tips, speech, rain, shadows, ...) must the ordered in the main GameLevel.draw method.
 
- * BUG - exit a level during speech in progress make the character to be unable to speak in the newx level...
-
- * Fix the Z (retreat) action.
+ * BUG - exit a level during speech in progress make the character to be unable to speak in the next level...
  
  * Draw hit points number anfter damage, floating above the character.
 
