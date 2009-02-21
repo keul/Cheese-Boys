@@ -8,7 +8,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions.unique import UniqueObject
 
-class GameSprite(pygame.sprite.Sprite):
+class GameSprite(pygame.sprite.Sprite, UniqueObject):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
     A GameSprite is always used inside a Level object.
     """
@@ -17,6 +17,7 @@ class GameSprite(pygame.sprite.Sprite):
     
     def __init__(self, *containers):
         pygame.sprite.Sprite.__init__(self, *containers)
+        UniqueObject.__init__(self)
         self.currentLevel = None
         self._x = self._y = None
         self.name = None

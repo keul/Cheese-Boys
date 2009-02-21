@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -
 
 import pygame
-from cheeseboys.pygame_extensions import GameSprite
+from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import cblocals
 
 class Trigger(GameSprite):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -
 
 from cheeseboys.level import GameLevel
-from cheeseboys.pygame_extensions import GameGroup
 from cheeseboys import character
 from cheeseboys.level import GameLevel
 from cheeseboys.ai.base_brain import BaseStateMachine

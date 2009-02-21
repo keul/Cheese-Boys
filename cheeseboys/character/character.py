@@ -10,14 +10,13 @@ from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions.sprite import GameSprite
-from cheeseboys.pygame_extensions.unique import UniqueObject
 from cheeseboys import th0 as module_th0
 from cheeseboys.sprites import SpeechCloud
 
 from stealth import Stealth
 from warrior import Warrior
 
-class Character(GameSprite, Stealth, Warrior, UniqueObject):
+class Character(GameSprite, Stealth, Warrior):
     """Base character class.
     A GameSprite extension with hit points and other properties for combat.
     """
@@ -31,7 +30,6 @@ class Character(GameSprite, Stealth, Warrior, UniqueObject):
         GameSprite.__init__(self, *containers)
         Stealth.__init__(self)
         Warrior.__init__(self, attackTime, afterAttackRestTime)
-        UniqueObject.__init__(self)
 
         self._x = self._y = 0
         self.rect = pygame.Rect( (self.x, self.y), (cblocals.TILE_IMAGE_SIZE) )
