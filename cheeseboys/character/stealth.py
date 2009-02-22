@@ -57,7 +57,7 @@ class Stealth(object):
             base_index = .5
 
         # base_index * level_stealth - (5% for stealhLevel)
-        index = base_index * level_stealth - ((self.stealthLevel-1 +8 )*.05) # BBB: debug value here
+        index = base_index * level_stealth - ((self.stealthLevel-1)*.05)
         if index<.2:
             index=.2
         return index
