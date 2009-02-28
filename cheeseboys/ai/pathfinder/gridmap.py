@@ -7,9 +7,8 @@ class GridMap(object):
         nrows X ncols coordinates (squares). Some of the squares
         can be blocked (by obstacles).
     """
-    def __init__(self, nrows, ncols):
-        """ Create a new GridMap with the given amount of rows
-            and columns.
+    def __init__(self, ncols, nrows):
+        """ Create a new GridMap with the given amount of cols and rows.
         """
         self.nrows = nrows
         self.ncols = ncols
@@ -18,10 +17,11 @@ class GridMap(object):
         self.blocked = defaultdict(lambda: False)
     
     def set_blocked(self, coord, blocked=True):
-        """ Set the blocked state of a coordinate. True for 
-            blocked, False for unblocked.
+        """ Set the blocked state of a coordinate.
+        True for blocked, False for unblocked.
         """
-        self.map[coord[0]][coord[1]] = blocked
+        bx, by = coord
+        self.map[by][bx] = blocked
     
         if blocked:
             self.blocked[coord] = True
@@ -61,7 +61,8 @@ class GridMap(object):
         """ Print the map to stdout in ASCII
         """
         for row in range(self.nrows):
+            st = ""
             for col in range(self.ncols):
-                print "%s" % ('O' if self.map[row][col] else '.'),
-            print ''
+                st+= "%s" % ('O' if self.map[row][col] else '.')
+            print st
 

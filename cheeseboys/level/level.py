@@ -9,17 +9,21 @@ from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.pygame_extensions.group import GameGroup
 from cheeseboys.sprites import PhysicalBackground, Rain
 from cheeseboys.presentation import Presentation
+
 from level_text import LevelText
+from cheeseboys.ai.pathfinder import GridMap
+
+PATHFINDING_GRID_SIZE = 5
 
 class GameLevel(object):
-    """This repr a game level.
+    """This is the class of a game level.
     Character move inside a level using some of its methods.
     
     When the level is draw, after the background image, all groups stored in this level
     are drawn ordered by zindex info.
     
-    A GameLevel object can store a lot of groups; those groups (of time GameGroup) can be updatable or not.
-    When a level is updated - calling the update(time_passed) method - on all groups of updatable tipe is
+    A GameLevel object can store a lot of groups; those groups (of tipe GameGroup) can be updatable or not.
+    When a level is updated - calling the update(time_passed) method - on all groups of updatable type is
     called the update method.
     """
     
@@ -85,6 +89,9 @@ class GameLevel(object):
         self.addGroup(exits, zindex=3)
         self.addGroup(triggers, zindex=4)
         self.addGroup(tippable)
+        
+        # This will store the logical matrix used for pathfinding
+        self.grip_map = None
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
@@ -465,3 +472,28 @@ class GameLevel(object):
                     surface.blit(cblocals.total_shadow_image_09, (0,0) )
             else:
                 surface.blit(cblocals.total_shadow_image_05, (0,0) )
+
+    def computeGridMap(self):
+        """Fill the grid_map attribute with a GridMap instance, to be used in pathfinding
+        Call this method after prepared the level the first time and also when something is changed
+        """
+        tile_size = cblocals.PATHFINDING_GRID_SIZE
+        w,h = self.levelSize
+        self.grid_map = GridMap(w/tile_size, h/tile_size)
+        for y in range(0, self.grid_map.nrows, tile_size):
+            for x in range(0, self.grid_map.ncols, tile_size):
+                tmprect = pygame.Rect( (x*tile_size,y*tile_size), (tile_size,tile_size)  )
+                if self._checkCollision(tmprect):
+                    self.grid_map.set_blocked((x,y))
+
+    def _checkCollision(self, rect):
+        """This method is very similar to checkCollision of the GameSprite class.
+        Use the other version to the collision betweens sprites.
+        This method instead can be used to check spatial collision without having a GameSprite in the level
+        """
+        collideGroups = (self['physical'],)
+        for group in collideGroups:
+            for sprite in group.sprites():
+                if rect.colliderect(sprite.collide_rect):
+                    return True
+        return False

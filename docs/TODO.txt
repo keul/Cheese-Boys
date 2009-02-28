@@ -8,7 +8,7 @@ Open entries
 
 Entries I will fix/implement someday.
 
- * Add the enemy awareness. Non awarned enemy are much simpler to backstab.
+ * Add the enemy awareness. Non warned enemy are much simpler to backstab.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
   
@@ -30,6 +30,8 @@ Entries I will fix/implement someday.
  * BUG - exit a level during speech in progress make the character to be unable to speak in the next level...
  
  * Draw hit points number anfter damage, floating above the character.
+ 
+ * Remove level_text module (or integrate it) and replace it with KTextSurfaceWriter usage.
 
 Wishlist entries
 ----------------

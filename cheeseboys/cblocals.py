@@ -80,4 +80,7 @@ total_shadow_image_09 = total_shadow_image_05 = None
 SHADOW_IMG_SIZE = (1500, 1500)
 SHADOW = True
 
+PATHFINDING_GRID_SIZE = 5
+
 DEBUG = False
+

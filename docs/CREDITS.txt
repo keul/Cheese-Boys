@@ -18,14 +18,19 @@ The Mage (Charasproject.net community)
 --------------------------------------
 * Thanks for his original Glenn image, and for create a new one for Cheese Boys.
 
+Eli Bendersky
+-------------
+* Thanks for a good tutorial about pathfinding on his blog
+  (http://eli.thegreenplace.net/2009/01/09/writing-a-game-in-python-with-pygame-part-iii/).
+  This give me the pathfinding module!
+
 Zion
 ----
-Even if Zion is NOT a software developer, I think he was exacly this in a proveious life.
+Even if Zion is NOT a software developer, I think he was exacly this in a provious life.
 Some of his super ideas:
 
- * Plan a future split of the engine and the game.
- * Suggest to use manually drawen image instead of tiles (this after the failure of the Gareth's Quest project).
- 
- ...and finally, to be a good friend! :-)
+* Plan a future split of the engine and the game.
+* Suggest to use manually drawen image instead of tiles (this after the failure of the Gareth's Quest project).
+* ...and finally, to be a good friend! :-)
  
  

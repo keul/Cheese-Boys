@@ -50,7 +50,6 @@ def load(name, hero):
     level.addSprite(crate1)
     crate2 = Crate( (390, 768), 1, 1, physical, visual_obstacles)
     level.addSprite(crate2)
-
     
     level.addAnimations(((110,980),(623, 1284),(704, 1149),(30, 1299),(610, 869),(157, 527),(642, 357),(5, 363)), 'water-wave')
     
@@ -58,5 +57,11 @@ def load(name, hero):
     level.addAnimation( (535,1475), CodigoroSign((535,1475), (80,53), animations, physical) )
 
     level.enableRainEffect()
+    level.computeGridMap()
+    
+    
+    level.grid_map.printme()
+    
+    
     
     return level
