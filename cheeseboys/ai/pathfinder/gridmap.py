@@ -18,7 +18,7 @@ class GridMap(object):
     
     def set_blocked(self, coord, blocked=True):
         """ Set the blocked state of a coordinate.
-        True for blocked, False for unblocked.
+        @blocked: True for blocked, False for unblocked.
         """
         bx, by = coord
         self.map[by][bx] = blocked
@@ -28,6 +28,11 @@ class GridMap(object):
         else:
             if coord in self.blocked:
                 del self.blocked[coord]
+
+    def set_blocked_multi(self, coords, blocked=True):
+        """As set_blocked but to multiple coordinates"""
+        for coord in coords:
+            self.set_blocked(coord, blocked)
     
     def move_cost(self, c1, c2):
         """ Compute the cost of movement from one coordinate to
@@ -57,12 +62,12 @@ class GridMap(object):
         
         return slist
     
-    def printme(self):
-        """ Print the map to stdout in ASCII
-        """
+    def __str__(self):
+        """Repr the map in ASCII"""
+        st = ""
         for row in range(self.nrows):
-            st = ""
             for col in range(self.ncols):
                 st+= "%s" % ('O' if self.map[row][col] else '.')
-            print st
+            st+="\n"
+        return st
 

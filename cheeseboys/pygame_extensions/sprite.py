@@ -192,7 +192,7 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
     def collide_rect(self):
         """Return a rect used for collision in movement. This must be equals to sprite "foot" area.
         For general GameSprite, the collide rect is the same as the rect attribute.
-        You probably wanna (must) overwrite this in all subclass!
+        You probably wanna (must) overwrite this in all subclasses!
         """
         return self.rect
 
@@ -204,6 +204,21 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """
         return self.collide_rect
 
+    @property
+    def collide_grid(self):
+        """Return the collide_rect infos in a format usable onto a GridMap instance.
+        This must be a list of blocked grid coordinates.
+        The sprite must be added to a GameLevel instance
+        """
+        collide_rect = self.collide_rect
+        tlx, tly = self.currentLevel.toGridCoord(collide_rect.topleft)
+        brx, bry = self.currentLevel.toGridCoord(collide_rect.bottomright)
+        collide_grid = []
+        for x in range(tlx, brx):
+            for y in range(tly, bry):
+                collide_grid.append( (x,y) )
+        return collide_grid
+
     def distanceFrom(self, sprite):
         """Return the distance between this sprite and another one"""
         return Vector2.from_points(self.position,sprite.position).get_magnitude()
@@ -212,7 +227,6 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """Move the sprite, relative to current point"""
         self.x+=x
         self.y+=y
-        #self.rect.move_ip(x, y)
         self.refresh()
 
     @classmethod

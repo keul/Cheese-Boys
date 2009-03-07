@@ -475,25 +475,21 @@ class GameLevel(object):
 
     def computeGridMap(self):
         """Fill the grid_map attribute with a GridMap instance, to be used in pathfinding
-        Call this method after prepared the level the first time and also when something is changed
+        Call this method after init the level the first time and also when something is changed
         """
         tile_size = cblocals.PATHFINDING_GRID_SIZE
         w,h = self.levelSize
         self.grid_map = GridMap(w/tile_size, h/tile_size)
-        for y in range(0, self.grid_map.nrows, tile_size):
-            for x in range(0, self.grid_map.ncols, tile_size):
-                tmprect = pygame.Rect( (x*tile_size,y*tile_size), (tile_size,tile_size)  )
-                if self._checkCollision(tmprect):
-                    self.grid_map.set_blocked((x,y))
-
-    def _checkCollision(self, rect):
-        """This method is very similar to checkCollision of the GameSprite class.
-        Use the other version to the collision betweens sprites.
-        This method instead can be used to check spatial collision without having a GameSprite in the level
-        """
         collideGroups = (self['physical'],)
         for group in collideGroups:
             for sprite in group.sprites():
-                if rect.colliderect(sprite.collide_rect):
-                    return True
-        return False
+                self.grid_map.set_blocked_multi(sprite.collide_grid)
+
+    def toGridCoord(self, coord):
+        """Transforms a level coordinate to a grid point"""
+        tile_size = cblocals.PATHFINDING_GRID_SIZE
+        x, y = coord
+        x/= tile_size; y/=tile_size
+        return x,y
+
+
