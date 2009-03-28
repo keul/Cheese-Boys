@@ -13,8 +13,6 @@ from cheeseboys.presentation import Presentation
 from level_text import LevelText
 from cheeseboys.ai.pathfinder import GridMap
 
-PATHFINDING_GRID_SIZE = 5
-
 class GameLevel(object):
     """This is the class of a game level.
     Character move inside a level using some of its methods.
@@ -477,9 +475,9 @@ class GameLevel(object):
         """Fill the grid_map attribute with a GridMap instance, to be used in pathfinding
         Call this method after init the level the first time and also when something is changed
         """
-        tile_size = cblocals.PATHFINDING_GRID_SIZE
+        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
         w,h = self.levelSize
-        self.grid_map = GridMap(w/tile_size, h/tile_size)
+        self.grid_map = GridMap(w/tile_size_x, h/tile_size_y)
         collideGroups = (self['physical'],)
         for group in collideGroups:
             for sprite in group.sprites():
@@ -487,9 +485,9 @@ class GameLevel(object):
 
     def toGridCoord(self, coord):
         """Transforms a level coordinate to a grid point"""
-        tile_size = cblocals.PATHFINDING_GRID_SIZE
+        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
         x, y = coord
-        x/= tile_size; y/=tile_size
+        x/= tile_size_x; y/=tile_size_y
         return x,y
 
 

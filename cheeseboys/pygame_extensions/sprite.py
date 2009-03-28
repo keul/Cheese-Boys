@@ -44,6 +44,20 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
             return (topleft[0]+x, topleft[1]+y)
         return topleft
 
+    @property
+    def absolute_collide_topleft(self):
+        """Get the topleft absolute sprite position."""
+        x,y = self.position_int
+        rect = self.collide_rect
+        return (x-rect.width/2, y-rect.height)
+
+    @property
+    def absolute_collide_bottomright(self):
+        """Get the bottomright absolute sprite position."""
+        x,y = self.position_int
+        rect = self.collide_rect
+        return (x+rect.width/2, y)
+
     def _setX(self, newx):
         self._x = newx
     x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
@@ -207,16 +221,19 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
     @property
     def collide_grid(self):
         """Return the collide_rect infos in a format usable onto a GridMap instance.
-        This must be a list of blocked grid coordinates.
         The sprite must be added to a GameLevel instance
+        @return: list of blocked grid coordinates.
         """
-        collide_rect = self.collide_rect
-        tlx, tly = self.currentLevel.toGridCoord(collide_rect.topleft)
-        brx, bry = self.currentLevel.toGridCoord(collide_rect.bottomright)
+        topleft = self.absolute_collide_topleft
+        bottomright = self.absolute_collide_bottomright
+        tlx, tly = self.currentLevel.toGridCoord(topleft)
+        brx, bry = self.currentLevel.toGridCoord(bottomright)
         collide_grid = []
         for x in range(tlx, brx):
             for y in range(tly, bry):
                 collide_grid.append( (x,y) )
+        if not collide_grid:
+            collide_grid = [(tlx,tly)]
         return collide_grid
 
     def distanceFrom(self, sprite):

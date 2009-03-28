@@ -60,8 +60,5 @@ def load(name, hero):
     level.computeGridMap()
     
     
-    print level.grid_map # BBB: debug
-    
-    
     
     return level

@@ -21,7 +21,11 @@ class GridMap(object):
         @blocked: True for blocked, False for unblocked.
         """
         bx, by = coord
-        self.map[by][bx] = blocked
+        try:
+            self.map[by][bx] = blocked
+        except IndexError:
+            # Some sprite can be out of the level area
+            return
     
         if blocked:
             self.blocked[coord] = True

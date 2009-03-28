@@ -116,6 +116,11 @@ def game():
                 if not level.presentation and pressed_keys[K_0]:
                     hero.shout("Hey!")
 
+                if pressed_keys[K_d]:
+                    level.computeGridMap()
+                    print "\n"
+                    print level.grid_map
+
                 if level.presentation is not None:
                     if pressed_keys[K_RIGHT]:
                         cblocals.game_speed = cblocals.game_speed*2
