@@ -87,6 +87,11 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """Return position as Vector2 object"""
         return Vector2(self.position)
 
+    @property
+    def position_grid(self):
+        """Return the position of the sprite on the gridmap of the level"""
+        return self.currentLevel.toGridCoord(self.position_int)
+
     def isNearTo(self, point):
         """Check if the sprite collision rect (the basement) is near to a point.
         """

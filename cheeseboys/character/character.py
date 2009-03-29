@@ -8,6 +8,7 @@ from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
+from cheeseboys.ai.pathfinder import PathFinder
 from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import th0 as module_th0
@@ -70,6 +71,10 @@ class Character(GameSprite, Stealth, Warrior):
         self._th0 = None
 
         self._speech = SpeechCloud(self)
+        
+        # *** Pathfinding ***
+        self.pathfinder = None        # This is inited only after the call onto addToGameLevel
+        self.computed_path = []
 
         self.afterInit()
 
@@ -578,6 +583,7 @@ class Character(GameSprite, Stealth, Warrior):
         """Immediatly shut up the character"""
         self._speech.endSpeech()
 
+
     def hasFreeSightOn(self, sprite):
         """Return True if the target sprite is in sight of the current character"""
         to_target = Vector2.from_points(self.position, sprite.position)
@@ -600,6 +606,23 @@ class Character(GameSprite, Stealth, Warrior):
                     return False
             magnitude-=magnitude_portion
         return True
+
+    def addToGameLevel(self, level, firstPosition):
+        """Call the GameSprite.addToGameLevel but also init the pathfinder object"""
+        GameSprite.addToGameLevel(self, level, firstPosition)
+        self.pathfinder = PathFinder(self.currentLevel.grid_map_successors,
+                                     self.currentLevel.grid_map_move_cost,
+                                     self.currentLevel.grid_map_heuristic_to_goal)
+
+    def compute_path(self):
+        """Call PathFinder.compute_path using the character position as start point
+        and his navPoint as goal"""
+        if self.navPoint:
+            goal = self.currentLevel.toGridCoord(self.navPoint.as_tuple())
+            self.computed_path = self.pathfinder.compute_path(self.position_grid, goal)
+        else:
+            self.computed_path = []
+        return self.computed_path
 
     def __str__(self):
         return "%s <%s>" % (self.name, self.UID())

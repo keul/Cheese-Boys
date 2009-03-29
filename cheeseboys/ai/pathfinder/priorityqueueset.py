@@ -83,7 +83,7 @@ class PriorityQueueSet(object):
                     return True
         
         return False
-        
+
 
 if __name__ == "__main__":
     import unittest

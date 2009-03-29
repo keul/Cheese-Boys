@@ -8,6 +8,8 @@ Open entries
 
 Entries I will fix/implement someday.
 
+ * Transform the navPoint to complex object with more features.
+
  * Add the enemy awareness. Non warned enemy are much simpler to backstab.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.

@@ -471,6 +471,7 @@ class GameLevel(object):
             else:
                 surface.blit(cblocals.total_shadow_image_05, (0,0) )
 
+    # ******* Gridmap methods *******
     def computeGridMap(self):
         """Fill the grid_map attribute with a GridMap instance, to be used in pathfinding
         Call this method after init the level the first time and also when something is changed
@@ -488,6 +489,41 @@ class GameLevel(object):
         tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
         x, y = coord
         x/= tile_size_x; y/=tile_size_y
-        return x,y
+        return int(x),int(y)
 
 
+    # methods needed to init a PathFinder object
+    def grid_map_successors(self, point):
+        """Given a point get all possible successors where you can freely move into from the given point.
+        @return a list of successors, free, points
+        """
+        successors = []
+        grid_map = self.grid_map
+        px, py = point
+        for y in range(-1, 2):
+            for x in range(-1, 2):
+                if x==0 and y==0: # skipping the point itself
+                    continue
+                try:
+                    blocked = grid_map.isBlocked( (px+x,py+y) )
+                except IndexError:
+                    blocked = True
+                if not blocked:
+                    successors.append( (px+x,py+y) )
+        return successors
+
+    def grid_map_move_cost(self, point_a, point_b):
+        """Get the numeric cost of moving from the first point to the second."""
+        # TODO: check the speed
+        ax,ay = point_a
+        bx,by = point_b
+        lx = abs(ax-bx)
+        ly = abs(ay-by)
+        return int( (lx**2 + ly**2) //2 )
+
+    def grid_map_heuristic_to_goal(self, point, goal):
+        """Given a point and a goal point,
+        obtains the numeric heuristic estimation of 
+        the cost of reaching the goal from the point.
+        """
+        return self.grid_map_move_cost(point, goal)

@@ -15,6 +15,11 @@ class GridMap(object):
         
         self.map = [[0] * self.ncols for i in range(self.nrows)]
         self.blocked = defaultdict(lambda: False)
+
+    def isBlocked(self, coord):
+        """Check if a coordinate is blocked"""
+        bx, by = coord
+        return self.map[by][bx]
     
     def set_blocked(self, coord, blocked=True):
         """ Set the blocked state of a coordinate.
