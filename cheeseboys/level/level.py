@@ -491,6 +491,12 @@ class GameLevel(object):
         x/= tile_size_x; y/=tile_size_y
         return int(x),int(y)
 
+    def fromGridCoord(self, coord):
+        """Transforms a grid coordinate to a level absolute ones"""
+        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
+        x, y = coord
+        return x*tile_size_x, y*tile_size_y
+
 
     # methods needed to init a PathFinder object
     def grid_map_successors(self, point):

@@ -116,13 +116,16 @@ def game():
                 if not level.presentation and pressed_keys[K_0]:
                     hero.shout("Hey!")
 
+
+                # ******* DEBUG *******
                 if pressed_keys[K_d]:
                     level.computeGridMap()
                     print "\n"
                     print level.grid_map
 
                 if pressed_keys[K_c]:
-                    print str([x for x in hero.compute_path()])
+                    print str(hero.compute_path())
+                # ******* END DEBUG *******
 
 
                 if level.presentation is not None:
@@ -139,6 +142,7 @@ def game():
 
                 if pressed_keys[K_ESCAPE]:
                     if level.presentation is not None:
+                        # TODO: the ESC key to exit presentation is ugly, just move to a "safe" next part in the presentation...
                         cblocals.game_speed = 128.
                     else:
                         game_over()

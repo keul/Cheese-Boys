@@ -63,7 +63,7 @@ class Character(GameSprite, Stealth, Warrior):
         self.damageHeading = None
         
         self.size = realSize
-        self._heatRectData = (5, 5, 10,15)
+        self._heatRectData = (5, 5, 10, 15)
 
         self.hitPoints = self.hitPointsLeft = 20
         
@@ -230,14 +230,14 @@ class Character(GameSprite, Stealth, Warrior):
         self._updateStepTime(time_passed)
         x = movement.get_x()
         y = movement.get_y()
-#        new_coord = self.getBestCoordinateToAvoidCollision(x,y)
-#        if new_coord:
-#            self.move(*new_coord)
-        if not self.checkCollision(x, y):
+        collision = self.checkCollision(x, y)
+        if not collision:
             self.move(x, y)
             if self.isNearTo(self.navPoint.as_tuple()):
                 self.navPoint = None
                 self.moving(False)
+#        elif self.computed_path:
+#            self.navPoint = self.computed_path.pop(0)
         else:
             self.navPoint = None
             self.moving(False)
@@ -617,9 +617,10 @@ class Character(GameSprite, Stealth, Warrior):
     def compute_path(self):
         """Call PathFinder.compute_path using the character position as start point
         and his navPoint as goal"""
+        fromGridCoord = self.currentLevel.fromGridCoord
         if self.navPoint:
             goal = self.currentLevel.toGridCoord(self.navPoint.as_tuple())
-            self.computed_path = self.pathfinder.compute_path(self.position_grid, goal)
+            self.computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
         else:
             self.computed_path = []
         return self.computed_path
