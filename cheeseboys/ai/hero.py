@@ -37,7 +37,7 @@ class HeroStateHunting(BaseStateHunting):
         level = character.currentLevel
         enemy = character.enemyTarget
 
-        if not enemy.isAlive:
+        if not enemy or not enemy.isAlive:
             return "controlled"
         
         if character.distanceFrom(enemy)<=character.attackRange:

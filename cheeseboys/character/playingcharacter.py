@@ -46,7 +46,7 @@ class PlayingCharacter(Character):
         
         # Check for mouse actions setted
         if cblocals.global_lastMouseLeftClickPosition:
-            self.navPoint = self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition)
+            self.navPoint.set(self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseLeftClickPosition))
             cblocals.global_lastMouseLeftClickPosition = ()
         if cblocals.global_lastMouseRightClickPosition and not self.isAttacking():
             attackHeading = Vector2.from_points(self.position, self.currentLevel.transformToLevelCoordinate(cblocals.global_lastMouseRightClickPosition))
@@ -103,4 +103,9 @@ class PlayingCharacter(Character):
         y = movement.get_y()
         if not self.checkCollision(x, y) and self.checkValidCoord(x, y):
             self.move(x, y)
+
+    def kill(self):
+        """When playing character die all mouse pointer must be disabled"""
+        Character.kill(self)
+        cblocals.global_controlsEnabled = False
 

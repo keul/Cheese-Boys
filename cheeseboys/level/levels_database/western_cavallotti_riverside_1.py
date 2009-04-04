@@ -75,5 +75,6 @@ def load(name, hero):
     level.addSprite(endPresentation)
 
     level.enableRainEffect()
+    level.computeGridMap()
     
     return level

@@ -13,6 +13,7 @@ from cheeseboys.utils import Vector2
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import th0 as module_th0
 from cheeseboys.sprites import SpeechCloud
+from cheeseboys.character.navpoint import NavPoint
 
 from stealth import Stealth
 from warrior import Warrior
@@ -56,7 +57,7 @@ class Character(GameSprite, Stealth, Warrior):
         self.side = 'Cheese Boys'
         self._enemyTarget = None
         
-        self._navPoint = None
+        self.navPoint = NavPoint(self)
         self.heading =  None
         
         # From where a succesfull attack is coming
@@ -74,7 +75,6 @@ class Character(GameSprite, Stealth, Warrior):
         
         # *** Pathfinding ***
         self.pathfinder = None        # This is inited only after the call onto addToGameLevel
-        self.computed_path = []
 
         self.afterInit()
 
@@ -103,16 +103,20 @@ class Character(GameSprite, Stealth, Warrior):
     def isMoving(self):
         return self._isMoving
 
+    def moving(self, new_move_status):
+        """Change character movement status"""
+        if new_move_status!=self._isMoving:
+            self._mustChangeImage = True
+        if new_move_status==False:
+            # When the character stops from moving, the character heading is changed by the direction faced
+            direction = self._getFacedDirection()
+            self.heading = self._generateHeadingFromFacindDirection(direction)
+        self._isMoving = new_move_status
+
     def setCombatValues(self, level_bonus, AC):
         """Common method for set all combat values of the character, as far as base AC and TH0 infos are readonly"""
         self._th0 = module_th0.TH0(self, level_bonus)
         self._baseAC = AC
-
-    def _setNavPoint(self, value):
-        if type(value)==tuple:
-            value = Vector2(value)
-        self._navPoint = value
-    navPoint = property(lambda self: self._navPoint, _setNavPoint, doc="""The character navigation point""")
 
     @property
     def th0(self):
@@ -203,7 +207,7 @@ class Character(GameSprite, Stealth, Warrior):
         relative parameter.
         """
         if not destination:
-            destination = self.navPoint
+            destination = self.navPoint.get()
         else:
             if type(destination)==tuple:
                 if relative:
@@ -211,12 +215,11 @@ class Character(GameSprite, Stealth, Warrior):
                     cx, cy = self.position
                     destination = (cx+ox, cy+oy)
                 destination = Vector2(destination)
-            self.navPoint = destination
+            self.navPoint.set(destination)
         self.heading = Vector2.from_points(self.position, destination)
         magnitude = self.heading.get_magnitude()
         self.heading.normalize()
 
-        self.moving(True)
         distance = time_passed * self.speed
         # I don't wanna move over the destination!
         if distance>magnitude:
@@ -234,13 +237,9 @@ class Character(GameSprite, Stealth, Warrior):
         if not collision:
             self.move(x, y)
             if self.isNearTo(self.navPoint.as_tuple()):
-                self.navPoint = None
-                self.moving(False)
-#        elif self.computed_path:
-#            self.navPoint = self.computed_path.pop(0)
+                self.navPoint.next()
         else:
-            self.navPoint = None
-            self.moving(False)
+            self.navPoint.reroute()
 
     def moveBasedOnHitTaken(self, time_passed):
         """This is similar to moveBasedOnNavPoint, but is called to animate a character hit by a blow"""
@@ -444,16 +443,6 @@ class Character(GameSprite, Stealth, Warrior):
             self._lastUsedDirection = direction
             self._mustChangeImage = True
 
-    def moving(self, new_move_status):
-        """Change character movement status"""
-        if new_move_status!=self._isMoving:
-            self._mustChangeImage = True
-        if new_move_status==False:
-            # When the character stops from moving, the character heading is changed by the direction faced
-            direction = self._getFacedDirection()
-            self.heading = self._generateHeadingFromFacindDirection(direction)
-        self._isMoving = new_move_status
-
     def setBrain(self, smBrain):
         """Set a AI StateMachine istance"""
         self._brain = smBrain(self)
@@ -614,16 +603,19 @@ class Character(GameSprite, Stealth, Warrior):
                                      self.currentLevel.grid_map_move_cost,
                                      self.currentLevel.grid_map_heuristic_to_goal)
 
-    def compute_path(self):
+    def compute_path(self, target=None):
         """Call PathFinder.compute_path using the character position as start point
         and his navPoint as goal"""
+        if not target:
+            target = self.navPoint.as_tuple()
         fromGridCoord = self.currentLevel.fromGridCoord
-        if self.navPoint:
-            goal = self.currentLevel.toGridCoord(self.navPoint.as_tuple())
-            self.computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
+        if target:
+            goal = self.currentLevel.toGridCoord(target)
+            self.navPoint.computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
+            self.navPoint.computed_path.append(target)
         else:
-            self.computed_path = []
-        return self.computed_path
+            self.navPoint.computed_path = []
+        return self.navPoint.computed_path
 
     def __str__(self):
         return "%s <%s>" % (self.name, self.UID())

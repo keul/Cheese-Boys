@@ -7,32 +7,39 @@ class NavPoint(object):
     and manage the path to follow.
     """
     
-    def __init__(self):
+    def __init__(self, character):
+        self._character = character
         self._navPoint = None
-        self._computed_path = []
+        self.computed_path = []
     
-    def set(self, value, computed_path):
+    def set(self, value):
         if type(value)==tuple:
             value = Vector2(value)
-        self._navPoint = value
-        self._computed_path = computed_path
+        self._character.moving(True)
+        self._character.compute_path(value)
+        self.next()
     
     def get(self):
         return self._navPoint
 
-    @property
-    def computed_path(self):
-        return self._computed_path
-
     def reset(self):
         self._navPoint = None
+        self._character.moving(False)
 
     def next(self):
         """Get the next navPoint from the computed_path list"""
         try:
-            self._navPoint = Vector2(self._computed_path.pop(0))
+            self._navPoint = Vector2(self.computed_path.pop(0))
         except IndexError:
             self._navPoint = None
+
+    def reroute(self):
+        """Re-compute the route to the target"""
+        try:
+            self._character.compute_path(self.computed_path[-1])
+        except IndexError:
+            pass
+        self.next()
 
     def as_tuple(self):
         return self._navPoint.as_tuple()

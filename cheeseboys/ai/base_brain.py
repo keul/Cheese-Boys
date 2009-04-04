@@ -79,7 +79,7 @@ class BaseStateHunting(State):
             return "waiting"
         
         if character.distanceFrom(enemy)>character.sightRange or not character.hasFreeSightOn(enemy):
-            self.character.navPoint = enemy.position
+            self.character.navPoint.set(enemy.position)
             return "exploring"
         
         # BBB... withdraw
@@ -212,8 +212,7 @@ class BaseStateRetreat(State):
     def entry_actions(self, old_state_name):
         character = self.character
         character.speed = character.maxSpeed * 2
-        character.navPoint = None
-        character.moving(False)
+        character.navPoint.reset()
         self.old_state_name = old_state_name
         print "%s dodge" % character.name
 

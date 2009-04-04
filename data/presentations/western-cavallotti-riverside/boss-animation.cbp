@@ -3,7 +3,7 @@
 # Intro for show the presence of The Boss when the hero enter the Western Cavallotti Riverside.
 
 [00:00:00 000]
-	hero.navPoint = None
+	hero.navPoint.reset()
 	boss = level['The Boss']
 	enemy = level['Phil']
 	gate = level['Exit']
@@ -24,13 +24,13 @@
 
 [00:00:15 000]
     enemy.real_brain.setState("exploring")
-	enemy.navPoint = hero.position
+	enemy.navPoint.set(hero.position)
     enemy.brain_enabled=True
     enemy.speed = enemy.maxSpeed
 
 [00:00:15 400]
     boss.real_brain.setState("exploring")
-	boss.navPoint = hero.position
+	boss.navPoint.set(hero.position)
     boss.brain_enabled=True
     boss.speed = boss.maxSpeed
 

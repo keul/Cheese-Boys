@@ -191,7 +191,7 @@ def game():
                 level.topleft = exit.nextTopleft
                 level.timeIn=0.
                 hero.position = exit.start_position
-                hero.navPoint = exit.firstNavPoint
+                hero.navPoint.set(exit.firstNavPoint)
                 utils.changeMouseCursor(None)
                 charas = level['charas']
                 enemies = level['enemies']

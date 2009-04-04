@@ -4,7 +4,6 @@ import pygame
 import ktextsurfacewriter
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
-
 from cheeseboys.vector2 import Vector2
 
 def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=False, simpleLoad=False):

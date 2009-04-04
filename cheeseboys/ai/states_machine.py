@@ -93,8 +93,9 @@ class State(object):
 
     def _chooseRandomDestination(self, maxdistance=200):
         """Set a destination at random on map"""
-        self.character.navPoint = self.character.currentLevel.generateRandomPoint(fromPoint=self.character.position_int,
-                                                                                  maxdistance=maxdistance)
+        randomdest = self.character.currentLevel.generateRandomPoint(fromPoint=self.character.position_int,
+                                                                     maxdistance=maxdistance)
+        self.character.navPoint.set(randomdest)
         
     def _getChanceForAttackBasedOnDistance(self, distanceFromEnemy, attackRange):
         """This method helps to simulate more real attack.

@@ -375,6 +375,7 @@
 	hero.faceTo(cblocals.DIRECTION_N)
 	hero.say("Good...")
 	max.kill()
+	level.screenReferenceSprite = hero
 
 [+00:00:05 000]
 	hero.say("Let's do it")
