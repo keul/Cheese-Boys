@@ -239,7 +239,8 @@ class Character(GameSprite, Stealth, Warrior):
             if self.isNearTo(self.navPoint.as_tuple()):
                 self.navPoint.next()
         else:
-            self.navPoint.reroute()
+            #self.navPoint.reroute()
+            self.navPoint.reset()
 
     def moveBasedOnHitTaken(self, time_passed):
         """This is similar to moveBasedOnNavPoint, but is called to animate a character hit by a blow"""
@@ -605,14 +606,17 @@ class Character(GameSprite, Stealth, Warrior):
 
     def compute_path(self, target=None):
         """Call PathFinder.compute_path using the character position as start point
-        and his navPoint as goal"""
+        and his navPoint as goal.
+        First and last path elements are ignored so we get:
+        [character_position, path2, path3, ... pathn-1, navPoint]
+        """
         if not target:
-            target = self.navPoint.as_tuple()
+            target = self.navPoint
         fromGridCoord = self.currentLevel.fromGridCoord
         if target:
-            goal = self.currentLevel.toGridCoord(target)
+            goal = self.currentLevel.toGridCoord(target.as_tuple())
             self.navPoint.computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
-            self.navPoint.computed_path.append(target)
+            self.navPoint.computed_path = [self.position_int] + self.navPoint.computed_path[1:-1] + [target.as_tuple()]
         else:
             self.navPoint.computed_path = []
         return self.navPoint.computed_path

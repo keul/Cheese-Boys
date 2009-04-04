@@ -501,8 +501,9 @@ class GameLevel(object):
     # methods needed to init a PathFinder object
     def grid_map_successors(self, point):
         """Given a point get all possible successors where you can freely move into from the given point.
-        @return a list of successors, free, points
+        @return: a list of successors, free, points
         """
+        # BBB: need to handle the corner behaviour (no diag movement on corners)
         successors = []
         grid_map = self.grid_map
         px, py = point
@@ -519,13 +520,18 @@ class GameLevel(object):
         return successors
 
     def grid_map_move_cost(self, point_a, point_b):
-        """Get the numeric cost of moving from the first point to the second."""
-        # TODO: check the speed
+        """Get the numeric cost of moving from the first point to the second.
+        
+        Diagonal distance is:
+        h(n) = D * max(abs(n.x-goal.x), abs(n.y-goal.y))
+        
+        Euclidean distance is:
+        h(n) = D * sqrt((n.x-goal.x)^2 + (n.y-goal.y)^2)
+        """
         ax,ay = point_a
         bx,by = point_b
-        lx = abs(ax-bx)
-        ly = abs(ay-by)
-        return int( (lx**2 + ly**2) //2 )
+        return max(abs(ax-bx), abs(ay-by))
+
 
     def grid_map_heuristic_to_goal(self, point, goal):
         """Given a point and a goal point,

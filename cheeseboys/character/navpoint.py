@@ -32,6 +32,7 @@ class NavPoint(object):
             self._navPoint = Vector2(self.computed_path.pop(0))
         except IndexError:
             self._navPoint = None
+            self._character.moving(False)
 
     def reroute(self):
         """Re-compute the route to the target"""
