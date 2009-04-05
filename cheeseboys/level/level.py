@@ -9,11 +9,11 @@ from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.pygame_extensions.group import GameGroup
 from cheeseboys.sprites import PhysicalBackground, Rain
 from cheeseboys.presentation import Presentation
+from cheeseboys.level.grid_map_support import GridMapSupport
 
 from level_text import LevelText
-from cheeseboys.ai.pathfinder import GridMap
 
-class GameLevel(object):
+class GameLevel(GridMapSupport):
     """This is the class of a game level.
     Character move inside a level using some of its methods.
     
@@ -32,6 +32,7 @@ class GameLevel(object):
         is used instead.
         If you really don't have a level image, please use a background parameter to None
         """
+        GridMapSupport.__init__(self)
         self.name = name
         self.levelSize = size
         if background == '':
@@ -87,9 +88,6 @@ class GameLevel(object):
         self.addGroup(exits, zindex=3)
         self.addGroup(triggers, zindex=4)
         self.addGroup(tippable)
-        
-        # This will store the logical matrix used for pathfinding
-        self.grip_map = None
 
     def __getitem__(self, key):
         """Get a group by its name, or look for a GameSprite with that name if no group is found.
@@ -238,11 +236,13 @@ class GameLevel(object):
                 group[1].draw(screen, self.hero)
             else:
                 group[1].draw(screen)
-        # 3 * Draw screen center (if in DEBUG mode)
         if cblocals.DEBUG:
+            # 3 * Draw screen center (if in DEBUG mode)
             xy, wh = self._getScreenCenter()
             xy = self.transformToScreenCoordinate(xy)
-            pygame.draw.rect(screen, (50,250,250), (xy, wh), 2)
+            pygame.draw.rect(screen, (50,250,250), (xy, wh), 1)
+            # 4 * Draw gripmap squares
+            self.drawGridMapSquares(screen)
         self.drawRain(screen)
         # Special use of the level_text group
         if self['level_text']:
@@ -299,8 +299,6 @@ class GameLevel(object):
         """Slowly move drawn portion of the total level, for centering it on the given reference object.
         reference can be a GameSprite or a position tuple info.
         """
-#        if pygame.key.get_pressed()[K_LCTRL]:
-#            return
         if type(reference)==tuple:
             referencePointOnScreen = reference
         else:
@@ -471,71 +469,4 @@ class GameLevel(object):
             else:
                 surface.blit(cblocals.total_shadow_image_05, (0,0) )
 
-    # ******* Gridmap methods *******
-    def computeGridMap(self):
-        """Fill the grid_map attribute with a GridMap instance, to be used in pathfinding
-        Call this method after init the level the first time and also when something is changed
-        """
-        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
-        w,h = self.levelSize
-        self.grid_map = GridMap(w/tile_size_x, h/tile_size_y)
-        collideGroups = (self['physical'],)
-        for group in collideGroups:
-            for sprite in group.sprites():
-                self.grid_map.set_blocked_multi(sprite.collide_grid)
 
-    def toGridCoord(self, coord):
-        """Transforms a level coordinate to a grid point"""
-        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
-        x, y = coord
-        x/= tile_size_x; y/=tile_size_y
-        return int(x),int(y)
-
-    def fromGridCoord(self, coord):
-        """Transforms a grid coordinate to a level absolute ones"""
-        tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
-        x, y = coord
-        return x*tile_size_x, y*tile_size_y
-
-
-    # methods needed to init a PathFinder object
-    def grid_map_successors(self, point):
-        """Given a point get all possible successors where you can freely move into from the given point.
-        @return: a list of successors, free, points
-        """
-        # BBB: need to handle the corner behaviour (no diag movement on corners)
-        successors = []
-        grid_map = self.grid_map
-        px, py = point
-        for y in range(-1, 2):
-            for x in range(-1, 2):
-                if x==0 and y==0: # skipping the point itself
-                    continue
-                try:
-                    blocked = grid_map.isBlocked( (px+x,py+y) )
-                except IndexError:
-                    blocked = True
-                if not blocked:
-                    successors.append( (px+x,py+y) )
-        return successors
-
-    def grid_map_move_cost(self, point_a, point_b):
-        """Get the numeric cost of moving from the first point to the second.
-        
-        Diagonal distance is:
-        h(n) = D * max(abs(n.x-goal.x), abs(n.y-goal.y))
-        
-        Euclidean distance is:
-        h(n) = D * sqrt((n.x-goal.x)^2 + (n.y-goal.y)^2)
-        """
-        ax,ay = point_a
-        bx,by = point_b
-        return max(abs(ax-bx), abs(ay-by))
-
-
-    def grid_map_heuristic_to_goal(self, point, goal):
-        """Given a point and a goal point,
-        obtains the numeric heuristic estimation of 
-        the cost of reaching the goal from the point.
-        """
-        return self.grid_map_move_cost(point, goal)
