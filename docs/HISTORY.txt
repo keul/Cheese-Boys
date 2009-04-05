@@ -31,7 +31,7 @@ You can also find:
 
  * Now the CTRL key stop the time passing. Always. You can so seek and hunt an enemy.
 
- * SHIFT key handle stealth, and X key block the hunt and the movement durin attack.
+ * SHIFT key handle stealth, and X key block the hunt and the movement during attack.
 
  * Fixed the Z (retreat) action.
  
@@ -39,7 +39,7 @@ You can also find:
 
  * Raindrop now can end inside the game screen.
  
- * (!!!) Pathfinding! UNCOMPLETED
+ * (!!!) Pathfinding!
 
 0.1.1
 -----

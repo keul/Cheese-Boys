@@ -283,6 +283,9 @@ def game():
         speech.draw(screen)
 
         screen.blit(console_area, (cblocals.GAME_SCREEN_SIZE[0],0) )
+        # fps:
+        if cblocals.SHOW_FPS:
+            utils.show_fps(screen, clock.get_fps())
 
         pygame.display.update()
 

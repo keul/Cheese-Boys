@@ -16,7 +16,11 @@ class NavPoint(object):
         if type(value)==tuple:
             value = Vector2(value)
         self._character.moving(True)
-        self._character.compute_path(value)
+        value_t = value.as_tuple()
+        if self._character.hasNoFreeMovementTo(value_t):
+            self._character.compute_path(value)
+        else:
+            self.computed_path = [value_t,]
         self.next()
     
     def get(self):

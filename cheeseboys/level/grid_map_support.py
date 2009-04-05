@@ -34,7 +34,7 @@ class GridMapSupport(object):
         """Transforms a grid coordinate to a level absolute ones"""
         tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
         x, y = coord
-        return x*tile_size_x, y*tile_size_y
+        return x*tile_size_x+tile_size_x/2, y*tile_size_y+tile_size_y-1
 
     def drawGridMapSquares(self, surface):
         """Draw on a surface the gridmap areas"""
@@ -49,21 +49,31 @@ class GridMapSupport(object):
     # methods needed to init a PathFinder object
     def grid_map_successors(self, point):
         """Given a point get all possible successors where you can freely move into from the given point.
-        @return: a list of successors, free, points
+        Freepoint are all non blocked point near the point itself.
+        Also no diagonal movement is possible if one of the two near non-diagolan point is blocked.
+        @return: a list of successors, free points
         """
-        # BBB: need to handle the corner behaviour (no diag movement on corners)
         successors = []
         grid_map = self.grid_map
         px, py = point
-        for y in range(-1, 2):
-            for x in range(-1, 2):
-                if x==0 and y==0: # skipping the point itself
-                    continue
-                try:
-                    blocked = grid_map.isBlocked( (px+x,py+y) )
-                except IndexError:
-                    blocked = True
-                if not blocked:
+        
+        # linear near points
+        for y,x in ( (-1,0), (0,1), (1,0), (0,-1),):
+            try:
+                blocked = grid_map.isBlocked( (px+x,py+y) )
+            except IndexError:
+                blocked = True
+            if not blocked:
+                successors.append( (px+x,py+y) )
+        # diagonal movements
+        for y,x in ( (-1,-1), (-1,1), (1,1), (1,-1),):
+            try:
+                blocked = grid_map.isBlocked( (px+x,py+y) )
+            except IndexError:
+                blocked = True
+            if not blocked:
+                # must check near non-diag points also
+                if (0,x) not in successors and (y,0) not in successors:
                     successors.append( (px+x,py+y) )
         return successors
 

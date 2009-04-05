@@ -175,8 +175,8 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         tlx, tly = self.currentLevel.toGridCoord(topleft)
         brx, bry = self.currentLevel.toGridCoord(bottomright)
         collide_grid = []
-        for x in range(tlx, brx):
-            for y in range(tly, bry):
+        for x in range(tlx, brx+1):
+            for y in range(tly, bry+1):
                 collide_grid.append( (x,y) )
         if not collide_grid:
             collide_grid = [(tlx,tly)]

@@ -159,6 +159,7 @@ def normalizeTextLength(text_too_long, font, max_length):
         return [txt1] + normalizeTextLength(txt2, font, max_length)
 # **************
 
+# ******* CHECK UPDATE *******
 CHECK_NEW_VERSION_TEXT = ("Checking for a new version.\n"
                           "Connecting to %s\n"
                           "Please, wait..." % cblocals.URL_CHEESEBOYS_LAST_VERSION)
@@ -204,3 +205,13 @@ def update_version(surface, rect):
                 still_inside = False
         ktswriter.draw(surface)
         pygame.display.flip()
+# ***************
+
+def show_fps(screen, fps):
+    """Display the frame per seconds value on the screen bottom right corner"""
+    fps = "FPS: %0d" % fps
+    to_display_size = cblocals.font_mini.size(fps)
+    to_diplay = cblocals.font_mini.render(fps, True, (255,255,255))
+    w,h = cblocals.GAME_SCREEN_SIZE
+    screen.blit(to_diplay, (w+5, h-to_display_size[1]-5) )
+

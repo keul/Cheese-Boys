@@ -68,6 +68,11 @@ class Stealth(object):
         """
         return cblocals.game_time-self.last_stealth_timing>self.stealthRestTimeNeeded
         
+    def _manageImageWithStealth(self, image):
+        """Calculate the alpha value for an image based on the charas stealth level"""
+        alpha = 255*self.stealthIndex
+        image.set_alpha(alpha)
+        return image
 
     def getTimingBeforeCheckForStealth(self):
         """This method return the number of millisecond needed from the character to perform a new

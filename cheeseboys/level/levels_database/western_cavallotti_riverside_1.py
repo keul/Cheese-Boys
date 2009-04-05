@@ -78,3 +78,4 @@ def load(name, hero):
     level.computeGridMap()
     
     return level
+

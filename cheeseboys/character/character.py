@@ -203,9 +203,10 @@ class Character(GameSprite, Stealth, Warrior):
     def moveBasedOnNavPoint(self, time_passed, destination=None, relative=False):
         """Main method for move character using navPoint infos.
         If a destination is not specified, then the current character navPoint is used.
-        You can also specify a destination as relative coordinate starting from the current navPoint, using the
-        relative parameter.
+        @destination: can be None (navPoint will be taken), a point or a Vector2 instance
+        @relative: destination is a relative offset from the character position
         """
+        # TODO: the current collision checking is a fake: a too fast character can pass over an obstacle
         if not destination:
             destination = self.navPoint.get()
         else:
@@ -241,6 +242,53 @@ class Character(GameSprite, Stealth, Warrior):
         else:
             #self.navPoint.reroute()
             self.navPoint.reset()
+
+    def hasNoFreeMovementTo(self, target):
+        """Check if the character hasn't a free straight movement to a destination point.
+        If this is True, the character can't move directly on the vector that link his current
+        position to the target due to a collision that will be raised.
+        @return False if no collision is detected, or the collisions points tuples
+        """
+        v = Vector2.from_points(self.position_int, target)
+        magnitude = v.get_magnitude()
+        heading = v.normalize()
+        collide_rect = self.collide_rect
+        distance = min(collide_rect.w, collide_rect.h)
+        total_distance = 0
+        while True:
+            total_distance+=distance
+            movement = heading * total_distance
+            x = movement.get_x()
+            y = movement.get_y()
+            collision = self.checkCollision(x, y)
+            if collision:
+                return (x,y)
+            if total_distance>=magnitude:
+                return False
+
+    def hasFreeSightOn(self, sprite):
+        """Return True if the target sprite is in sight of the current character"""
+        # BBB: check if this can be enanched someway; the use of 15pixel is ugly
+        to_target = Vector2.from_points(self.position, sprite.position)
+        magnitude = to_target.get_magnitude()
+        # 1 - False if sprite position is outside the character sight
+        if self.sightRange<magnitude:
+            return False
+        # 2 - Now I need to get the line sight on the target
+        to_target.normalize()
+        magnitude_portion = max(magnitude/100., 15)
+        visual_obstacles = self.currentLevel['visual_obstacles']
+        screen_position = self.toScreenCoordinate()
+        while magnitude>0:
+            for obstacle in visual_obstacles:
+                temp_v = (to_target*magnitude).as_tuple()
+                temp_pos = screen_position[0]+temp_v[0], screen_position[1]+temp_v[1]
+                #print temp_pos, obstacle.rect
+                if obstacle.collide_rect.collidepoint(temp_pos):
+                    logging.debug("%s can't see %s due to the presence of %s" % (self, sprite, obstacle))
+                    return False
+            magnitude-=magnitude_portion
+        return True
 
     def moveBasedOnHitTaken(self, time_passed):
         """This is similar to moveBasedOnNavPoint, but is called to animate a character hit by a blow"""
@@ -344,12 +392,6 @@ class Character(GameSprite, Stealth, Warrior):
         if self._attackDirection:
             return self._attackDirection
         return self._lastUsedDirection
-
-    def _manageImageWithStealth(self, image):
-        """Calculate the alpha value for an image based on the charas stealth level"""
-        alpha = 255*self.stealthIndex
-        image.set_alpha(alpha)
-        return image
 
     def faceTo(self, direction):
         """Change the character direction faced"""
@@ -550,7 +592,7 @@ class Character(GameSprite, Stealth, Warrior):
         topright = (pr.topright[0], pr.bottomright[1] - (pr.height * hitPointsLeft / hitPoints) )
         pygame.draw.line(surface, self.getHealtColor(hitPoints, hitPointsLeft), pr.bottomright, topright, 3)
 
-    # Talking methods
+    # ******* Talking methods *******
     def say(self, text, additional_time=0, silenceFirst=False):
         """Say something, displaying the speech cloud"""
         if silenceFirst:
@@ -572,30 +614,7 @@ class Character(GameSprite, Stealth, Warrior):
     def shutup(self):
         """Immediatly shut up the character"""
         self._speech.endSpeech()
-
-
-    def hasFreeSightOn(self, sprite):
-        """Return True if the target sprite is in sight of the current character"""
-        to_target = Vector2.from_points(self.position, sprite.position)
-        magnitude = to_target.get_magnitude()
-        # 1 - False if sprite position is outside the character sight
-        if self.sightRange<magnitude:
-            return False
-        # 2 - Now I need to get the line sight on the target
-        to_target.normalize()
-        magnitude_portion = max(magnitude/100., 15)
-        visual_obstacles = self.currentLevel['visual_obstacles']
-        screen_position = self.toScreenCoordinate()
-        while magnitude>0:
-            for obstacle in visual_obstacles:
-                temp_v = (to_target*magnitude).as_tuple()
-                temp_pos = screen_position[0]+temp_v[0], screen_position[1]+temp_v[1]
-                #print temp_pos, obstacle.rect
-                if obstacle.collide_rect.collidepoint(temp_pos):
-                    logging.debug("%s can't see %s due to the presence of %s" % (self, sprite, obstacle))
-                    return False
-            magnitude-=magnitude_portion
-        return True
+     # *******
 
     def addToGameLevel(self, level, firstPosition):
         """Call the GameSprite.addToGameLevel but also init the pathfinder object"""
@@ -609,10 +628,13 @@ class Character(GameSprite, Stealth, Warrior):
         and his navPoint as goal.
         First and last path elements are ignored so we get:
         [character_position, path2, path3, ... pathn-1, navPoint]
+        @target: an optional Vector2 instance; the current navPoint is userd as default
+        @return: the computed path itself
         """
         if not target:
             target = self.navPoint
         fromGridCoord = self.currentLevel.fromGridCoord
+        # TODO: I need to do nothing (of return the simple navpoint) if I click on a occupied position of the level
         if target:
             goal = self.currentLevel.toGridCoord(target.as_tuple())
             self.navPoint.computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
