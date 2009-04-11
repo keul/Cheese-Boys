@@ -10,8 +10,11 @@ class BaseStateExploring(State):
     def __init__(self, character):
         State.__init__(self, "exploring", character)
 
-    def do_actions(self, time_passed):        
-        self.character.moveBasedOnNavPoint(time_passed)
+    def do_actions(self, time_passed):
+        try:
+            self.character.moveBasedOnNavPoint(time_passed)
+        except:
+            import pdb;pdb.set_trace()
 
     def check_conditions(self):
         character = self.character

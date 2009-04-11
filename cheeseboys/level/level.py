@@ -188,6 +188,15 @@ class GameLevel(GridMapSupport):
         elif y>self.levelSize[1]-1: return False 
         return True
 
+    def checkPointIsFree(self, point):
+        """Check if a coordinate is related to a free point on the level"""
+        physical = self['physical']
+        point = self.transformToScreenCoordinate(point)
+        for sprite in physical.sprites():
+            if sprite.collide_rect.collidepoint(point):
+                return False
+        return True
+
     def checkRectIsInLevel(self, r):
         """Check if a rect is inside the level area"""
         levelRect = pygame.Rect( (0,0), self.levelSize)

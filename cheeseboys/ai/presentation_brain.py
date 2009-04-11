@@ -8,7 +8,7 @@ from cheeseboys.cbrandom import cbrandom
 class PresentationStateExploring(BaseStateExploring):
     """Exploring state. The character will move to a position then wait"""
 
-    def do_actions(self, time_passed):        
+    def do_actions(self, time_passed):
         self.character.moveBasedOnNavPoint(time_passed)
             
     def check_conditions(self):
