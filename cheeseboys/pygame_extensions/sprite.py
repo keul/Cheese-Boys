@@ -129,12 +129,13 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         if isinstance(self, UniqueObject):
             cblocals.object_registry.register(self)
 
-    def checkCollision(self, x, y):
+    def checkCollision(self, x, y, silent=False):
         """Check collision of this sprite with others taken from the 'physical' group.
-        Params x and y are used to adjust the collire_rect before detection.
         If a collision occurs, a SPRITE_COLLISION_EVENT is raised.
+        @x, y: used to adjust the collire_rect before detection.
+        @silent: default to False. If True, no event is raised on collision
         """
-        # BBB: use of the zindex info can be useful here in future?
+        # BBB: use of the zindex info can be useful here in future (flying characters)?
         x, y = utils.normalizeXY(x, y)
         collide_rect = self.collide_rect.move(x,y)
         collideGroups = (self.currentLevel['physical'],)
@@ -143,8 +144,9 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
                 if sprite is self:
                     continue
                 if collide_rect.colliderect(sprite.collide_rect):
-                    event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': sprite})
-                    pygame.event.post(event)
+                    if not silent:
+                        event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': sprite})
+                        pygame.event.post(event)
                     return True
         return False
 

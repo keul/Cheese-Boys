@@ -38,7 +38,6 @@ class PresentationStateWaiting(BaseStateWaiting):
         pass
 
 
-# ******* ladies and gentlemen: The Amazing State Machine *******
 
 class PresentationStateMachine(StateMachine):
     """State machine used for non AI.
@@ -52,3 +51,5 @@ class PresentationStateMachine(StateMachine):
                   PresentationStateExploring(character),
                   )
         StateMachine.__init__(self, states)
+
+

@@ -241,16 +241,25 @@ class Character(GameSprite, Stealth, Warrior):
             #self.navPoint.reroute()
             self.navPoint.reset()
 
-    def hasNoFreeMovementTo(self, target):
+    def hasNoFreeMovementTo(self, target, source=None):
         """Check if the character hasn't a free straight movement to a destination point.
         If this is True, the character can't move directly on the vector that link his current
         position to the target due to a collision that will be raised.
+        @target: a point coordinate, goal of the movement
+        @source: optional parameter to test the free movement from a coordinate different fron the current one.
         @return False if no collision is detected, or the collisions points tuples
         """
-        v = Vector2.from_points(self.position_int, target)
+        position_int = self.position_int
+        collide_rect = self.collide_rect
+        if not source:
+            source = position_int
+        else:
+            # I need a collide_rect traslated to the new source
+            rx, ry = position_int[0]-int(source[0]), position_int[1]-int(source[1])
+            collide_rect = collide_rect.move(rx, ry)
+        v = Vector2.from_points(source, target)
         magnitude = v.get_magnitude()
         heading = v.normalize()
-        collide_rect = self.collide_rect
         distance = min(collide_rect.w, collide_rect.h)
         total_distance = 0
         while True:
@@ -258,7 +267,7 @@ class Character(GameSprite, Stealth, Warrior):
             movement = heading * total_distance
             x = movement.get_x()
             y = movement.get_y()
-            collision = self.checkCollision(x, y)
+            collision = self.checkCollision(x, y, silent=True)
             if collision:
                 return (x,y)
             if total_distance>=magnitude:

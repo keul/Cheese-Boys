@@ -71,6 +71,7 @@ GAME_STEALTH = True
 # Menu
 game_menu = None
 
+# TODO: this structure was a bad idea... to be fixed
 globals = {'text_tips': True,
            'points': True,
            }

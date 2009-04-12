@@ -3,7 +3,6 @@
 # This intro is still a test
 
 [00:00:00 000]
-	#cblocals.game_speed = 32.
 	level.topleft = (100,500)									# position the scene in a place
 	max = level['Max']
 	john = level['John']
@@ -35,6 +34,9 @@
 [+00:00:01 000]
 	max.moveBasedOnNavPoint(time_passed, (345, 670))
 
+[+00:00:01 700]
+	max.navPoint.reroute()									# out of the screen the pathfinding is now working
+
 [+00:00:02 000]
 	max.say("It's raining men...")
 
@@ -43,6 +45,7 @@
 
 [+00:00:05 000]
 	level.screenReferenceSprite = jack
+	max.faceTo(cblocals.DIRECTION_N)
 	max.say("Hi all guys!")
 
 [+00:00:04 000]

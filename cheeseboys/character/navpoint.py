@@ -9,7 +9,7 @@ class NavPoint(object):
     
     def __init__(self, character):
         self._character = character
-        self._navPoint = None
+        self._v = None
         self.computed_path = []
     
     def set(self, value):
@@ -24,34 +24,36 @@ class NavPoint(object):
         self.next()
     
     def get(self):
-        return self._navPoint
+        return self._v
 
     def reset(self):
-        self._navPoint = None
+        self._v = None
         self._character.moving(False)
 
     def next(self):
         """Get the next navPoint from the computed_path list"""
         try:
-            self._navPoint = Vector2(self.computed_path.pop(0))
+            self._v = Vector2(self.computed_path.pop(0))
         except IndexError:
             self.reset()
 
     def reroute(self):
         """Re-compute the route to the target"""
         try:
-            self._character.compute_path(self.computed_path[-1])
+            if self.computed_path:
+                self.compute_path(Vector2(self.computed_path[-1]))
+            self.compute_path(self._v)
         except IndexError:
             pass
         self.next()
 
     def as_tuple(self):
-        return self._navPoint.as_tuple()
+        return self._v.as_tuple()
 
     def compute_path(self, target=None):
         """Call PathFinder.compute_path using the character position as start point
         and his navPoint as goal.
-        First and last path elements are ignored so we get:
+        First and last path elements are ignored (last element only sometimes) so we get:
         [path2, path3, ... pathn-1, navPoint]
         @target: an optional Vector2 instance; the current navPoint is used as default
         @return: the computed path itself
@@ -73,19 +75,24 @@ class NavPoint(object):
             fromGridCoord = level.fromGridCoord
             goal = level.toGridCoord(target_tuple)
             temp_computed_path = [fromGridCoord(x) for x in character.pathfinder.compute_path(character.position_grid, goal)]
-            # BBB: cutting the last temp_computed_path element is not always a good idea; sometimes can lead to collisions
-            self.computed_path = temp_computed_path[1:-1] + [target_tuple,]
+            # For a better animation I like to cut the last pathfinding step before the real navPoint;
+            # this can lead to collision sometimes.
+            if len(temp_computed_path)>2 and character.hasNoFreeMovementTo(target_tuple, source=temp_computed_path[-2]):
+                # BBB: fixme!
+                self.computed_path = temp_computed_path[1:] + [target_tuple,]
+            else:
+                self.computed_path = temp_computed_path[1:-1] + [target_tuple,]
         else:
             self.computed_path = []
         return self.computed_path
 
     def __nonzero__(self):
-        if self._navPoint is None:
+        if self._v is None:
             return False
         return True
     
     def __str__(self):
-        st = 'to %s' % self._navPoint
+        st = 'to %s' % self._v
         if self.computed_path:
             st+= '(' + ', '.join(self.computed_path) + ')'
         return st
