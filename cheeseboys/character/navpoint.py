@@ -18,7 +18,7 @@ class NavPoint(object):
         self._character.moving(True)
         value_t = value.as_tuple()
         if self._character.hasNoFreeMovementTo(value_t):
-            self._character.compute_path(value)
+            self.compute_path(value)
         else:
             self.computed_path = [value_t,]
         self.next()
@@ -47,7 +47,38 @@ class NavPoint(object):
 
     def as_tuple(self):
         return self._navPoint.as_tuple()
-    
+
+    def compute_path(self, target=None):
+        """Call PathFinder.compute_path using the character position as start point
+        and his navPoint as goal.
+        First and last path elements are ignored so we get:
+        [path2, path3, ... pathn-1, navPoint]
+        @target: an optional Vector2 instance; the current navPoint is used as default
+        @return: the computed path itself
+        """
+        character = self._character
+        level = character.currentLevel
+        if not target:
+            target = self.get()
+        if target:
+            target_tuple = target.as_tuple()
+            # Checking for a free slot to on the grid, to be the target of the pathfinding
+            free_near_slot = level.getFreeNearSlot(level.toGridCoord(target_tuple))
+            if free_near_slot:
+                target_tuple = level.fromGridCoord(free_near_slot)
+            if not level.checkPointIsFree(target_tuple) or not level.isPointOnFreeSlot(target_tuple):
+                # The character wanna move on a non free point, or onto a free point but in a non free gridmap slot: no path computed!
+                self.computed_path = [target_tuple,]
+                return self.computed_path
+            fromGridCoord = level.fromGridCoord
+            goal = level.toGridCoord(target_tuple)
+            temp_computed_path = [fromGridCoord(x) for x in character.pathfinder.compute_path(character.position_grid, goal)]
+            # BBB: cutting the last temp_computed_path element is not always a good idea; sometimes can lead to collisions
+            self.computed_path = temp_computed_path[1:-1] + [target_tuple,]
+        else:
+            self.computed_path = []
+        return self.computed_path
+
     def __nonzero__(self):
         if self._navPoint is None:
             return False

@@ -124,7 +124,7 @@ def game():
                     print level.grid_map
 
                 if pressed_keys[K_c]:
-                    print str(hero.compute_path())
+                    print str(hero.navPoint.compute_path())
                 # ******* END DEBUG *******
 
 

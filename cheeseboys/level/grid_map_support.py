@@ -37,7 +37,7 @@ class GridMapSupport(object):
         return x*tile_size_x+tile_size_x/2, y*tile_size_y+tile_size_y-1
 
     def drawGridMapSquares(self, surface):
-        """Draw on a surface the gridmap areas"""
+        """Draw on a surface the gridmap areas, for debug purposes"""
         gw, gh = cblocals.PATHFINDING_GRID_SIZE
         w,h = self.levelSize
         transformToScreenCoordinate = self.transformToScreenCoordinate
@@ -46,7 +46,32 @@ class GridMapSupport(object):
         for y in range(0,h,gh):
             pygame.draw.line(surface, (255,255,255), transformToScreenCoordinate((0,y)), transformToScreenCoordinate((w,y)), 1)
 
-    # methods needed to init a PathFinder object
+    def isPointOnFreeSlot(self, point):
+        """Check if a given point is placed on a free slot.
+        This can be different from GameLevel.checkPointIsFree, beacuse a point can be free (don't collide with anything) but placed
+        on a occupied slot.
+        """
+        grid_point = self.toGridCoord(point)
+        return not self.grid_map.isBlocked(grid_point)
+
+    def getFreeNearSlot(self, point):
+        """This method check for a free slot near the point passed. The free slot can be the point itself (if it's free).
+        @return: The free slot coord, or None if no free slot is found.
+        """
+        grid_map = self.grid_map
+        if not grid_map.isBlocked(point):
+            return point
+        px, py = point
+        for y,x in ( (-1,0), (0,1), (1,0), (0,-1),):
+            try:
+                blocked = grid_map.isBlocked( (px+x,py+y) )
+            except IndexError:
+                blocked = True
+            if not blocked:
+                return (px+x,py+y)
+        return None
+
+    # ******* methods needed to init a PathFinder object *******
     def grid_map_successors(self, point):
         """Given a point get all possible successors where you can freely move into from the given point.
         Freepoint are all non blocked point near the point itself.
@@ -105,5 +130,4 @@ class GridMapSupport(object):
         the cost of reaching the goal from the point.
         """
         return self.grid_map_move_cost(point, goal)
-
-
+    # ******* *******

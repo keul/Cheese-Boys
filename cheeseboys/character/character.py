@@ -209,9 +209,6 @@ class Character(GameSprite, Stealth, Warrior):
         # TODO: the current collision checking is a fake: a too fast character can pass over an obstacle
         if not destination:
             destination = self.navPoint.get()
-#        if not destination:
-#            logging.debug("Invalid call to moveBasedOnNavPoint from %s: null navPoint" % self.name)
-#            return
         else:
             if type(destination)==tuple and relative:
                 ox, oy = destination
@@ -623,29 +620,6 @@ class Character(GameSprite, Stealth, Warrior):
         self.pathfinder = PathFinder(self.currentLevel.grid_map_successors,
                                      self.currentLevel.grid_map_move_cost,
                                      self.currentLevel.grid_map_heuristic_to_goal)
-
-    def compute_path(self, target=None):
-        """Call PathFinder.compute_path using the character position as start point
-        and his navPoint as goal.
-        First and last path elements are ignored so we get:
-        [path2, path3, ... pathn-1, navPoint]
-        @target: an optional Vector2 instance; the current navPoint is used as default
-        @return: the computed path itself
-        """
-        if not target:
-            target = self.navPoint.get()
-        if target:
-            target_tuple = target.as_tuple()
-            if not self.currentLevel.checkPointIsFree(target_tuple):
-                self.navPoint.computed_path = [target_tuple,]
-                return self.navPoint.computed_path
-            fromGridCoord = self.currentLevel.fromGridCoord
-            goal = self.currentLevel.toGridCoord(target_tuple)
-            temp_computed_path = [fromGridCoord(x) for x in self.pathfinder.compute_path(self.position_grid, goal)]
-            self.navPoint.computed_path = temp_computed_path[1:-1] + [target_tuple,]
-        else:
-            self.navPoint.computed_path = []
-        return self.navPoint.computed_path
 
     def __str__(self):
         return "%s <%s>" % (self.name, self.UID())
