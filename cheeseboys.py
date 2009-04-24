@@ -263,7 +263,7 @@ def game():
         # BBB: can I check this in the enemy update method?
         if cblocals.global_controlsEnabled:
             for enemy in enemies.sprites():
-                if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()):
+                if enemy.physical_rect.collidepoint(pygame.mouse.get_pos()) and hero.can_see_list.get(enemy.UID(),False):
                     hero.seeking = enemy
                     utils.changeMouseCursor(cblocals.IMAGE_CURSOR_ATTACK_TYPE)
                     break

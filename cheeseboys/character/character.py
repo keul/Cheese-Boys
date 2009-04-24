@@ -256,7 +256,7 @@ class Character(GameSprite, Stealth, Warrior):
         else:
             # I need a collide_rect traslated to the new source
             rx, ry = position_int[0]-int(source[0]), position_int[1]-int(source[1])
-            collide_rect = collide_rect.move(rx, ry)
+            collide_rect.move_ip(rx, ry)
         v = Vector2.from_points(source, target)
         magnitude = v.get_magnitude()
         heading = v.normalize()

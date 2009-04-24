@@ -34,7 +34,7 @@ class GridMapSupport(object):
         """Transforms a grid coordinate to a level absolute ones"""
         tile_size_x, tile_size_y = cblocals.PATHFINDING_GRID_SIZE
         x, y = coord
-        return x*tile_size_x+tile_size_x/2, y*tile_size_y+tile_size_y-1
+        return int(x*tile_size_x+tile_size_x/2), int(y*tile_size_y+tile_size_y/2)
 
     def drawGridMapSquares(self, surface):
         """Draw on a surface the gridmap areas, for debug purposes"""
@@ -59,8 +59,11 @@ class GridMapSupport(object):
         @return: The free slot coord, or None if no free slot is found.
         """
         grid_map = self.grid_map
-        if not grid_map.isBlocked(point):
-            return point
+        try:
+            if not grid_map.isBlocked(point):
+                return point
+        except IndexError:
+            blocked = True
         px, py = point
         for y,x in ( (-1,0), (0,1), (1,0), (0,-1),):
             try:
@@ -68,7 +71,7 @@ class GridMapSupport(object):
             except IndexError:
                 blocked = True
             if not blocked:
-                return (px+x,py+y)
+                return (px+x, py+y)
         return None
 
     # ******* methods needed to init a PathFinder object *******
@@ -98,7 +101,7 @@ class GridMapSupport(object):
                 blocked = True
             if not blocked:
                 # must check near non-diag points also
-                if (0,x) not in successors and (y,0) not in successors:
+                if (0,x) in successors and (y,0) in successors:
                     successors.append( (px+x,py+y) )
         return successors
 

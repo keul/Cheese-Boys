@@ -64,21 +64,25 @@ class NavPoint(object):
             target = self.get()
         if target:
             target_tuple = target.as_tuple()
+            target_is_free_point = level.checkPointIsFree(target_tuple)
+            target_is_free_slot = level.isPointOnFreeSlot(target_tuple)
             # Checking for a free slot to on the grid, to be the target of the pathfinding
-            free_near_slot = level.getFreeNearSlot(level.toGridCoord(target_tuple))
-            if free_near_slot:
-                target_tuple = level.fromGridCoord(free_near_slot)
-            if not level.checkPointIsFree(target_tuple) or not level.isPointOnFreeSlot(target_tuple):
-                # The character wanna move on a non free point, or onto a free point but in a non free gridmap slot: no path computed!
+            free_near_slot = None
+            if target_is_free_point and not target_is_free_slot:
+                free_near_slot = level.getFreeNearSlot(level.toGridCoord(target_tuple))
+            if not target_is_free_point or not target_is_free_slot and not free_near_slot:
+                # The character wanna move on a non-free point, or onto a free point but in a non free gridmap slot: no path computed!
                 self.computed_path = [target_tuple,]
                 return self.computed_path
             fromGridCoord = level.fromGridCoord
-            goal = level.toGridCoord(target_tuple)
+            if free_near_slot:
+                goal = free_near_slot
+            else:
+                goal = level.toGridCoord(target_tuple)
             temp_computed_path = [fromGridCoord(x) for x in character.pathfinder.compute_path(character.position_grid, goal)]
             # For a better animation I like to cut the last pathfinding step before the real navPoint;
             # this can lead to collision sometimes.
             if len(temp_computed_path)>2 and character.hasNoFreeMovementTo(target_tuple, source=temp_computed_path[-2]):
-                # BBB: fixme!
                 self.computed_path = temp_computed_path[1:] + [target_tuple,]
             else:
                 self.computed_path = temp_computed_path[1:-1] + [target_tuple,]

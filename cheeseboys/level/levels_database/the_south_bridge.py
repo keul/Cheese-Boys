@@ -46,9 +46,9 @@ def load(name, hero):
     level.addPhysicalBackground( (118,1338), (235, 1130) )
     level.addPhysicalBackground( (642,1338), (310, 1130) )
 
-    crate1 = Crate( (433, 788), 1, 0, physical, visual_obstacles)
+    crate1 = Crate( (433, 785), 1, 0, physical, visual_obstacles)
     level.addSprite(crate1)
-    crate2 = Crate( (370, 768), 1, 1, physical, visual_obstacles)
+    crate2 = Crate( (370, 765), 1, 1, physical, visual_obstacles)
     level.addSprite(crate2)
     
     level.addAnimations(((110,980),(623, 1284),(704, 1149),(30, 1299),(610, 869),(157, 527),(642, 357),(5, 363)), 'water-wave')
