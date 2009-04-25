@@ -26,8 +26,12 @@ class BaseStateExploring(State):
         return None
     
     def entry_actions(self, old_state_name):
-        # "Relaxed" enemy never run... ;-)
-        self.character.speed = self.character.maxSpeed * cbrandom.uniform(0.3, 0.6)
+        if old_state_name=='hunting':
+            # I passed from hunting to exploring; may be that the enemy is gone outside the sight: keep max speed for now!
+            self.character.speed = self.character.maxSpeed
+        else:
+            # "Relaxed" enemy never run... ;-)
+            self.character.speed = self.character.maxSpeed * cbrandom.uniform(0.3, 0.6)
         if not self.character.navPoint:
             self._chooseRandomDestination()
 
@@ -82,7 +86,7 @@ class BaseStateHunting(State):
             self.character.navPoint.set(enemy.position)
             return "exploring"
         
-        # BBB... withdraw
+        # BBB: withdraw
         if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget is character and \
                 enemy.distanceFrom(character) < enemy.attackRange:
             return "retreat"
@@ -172,7 +176,7 @@ class BaseStateHit(State):
 
     def entry_actions(self, old_state_name):
         self.character.speed = cbrandom.randint(cblocals.HIT_MOVEMENT_SPEED/2, cblocals.HIT_MOVEMENT_SPEED)
-        self.distance_to_move = 30
+        self.distance_to_move = 20
         self.old_state_name = old_state_name
 
     def exit_actions(self, new_state_name):
@@ -188,7 +192,7 @@ class BaseStateRetreat(State):
         State.__init__(self, "retreat", character)
         self.old_state_name = None
         self.collected_distance = 0
-        self.distance_to_move = 50
+        self.distance_to_move = 40
         # rest after the real action
         self.rest_time = .5
         self.collected_rest_time = 0

@@ -52,7 +52,10 @@ class GridMapSupport(object):
         on a occupied slot.
         """
         grid_point = self.toGridCoord(point)
-        return not self.grid_map.isBlocked(grid_point)
+        try:
+            return not self.grid_map.isBlocked(grid_point)
+        except IndexError:
+            return False
 
     def getFreeNearSlot(self, point):
         """This method check for a free slot near the point passed. The free slot can be the point itself (if it's free).

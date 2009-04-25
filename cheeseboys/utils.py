@@ -215,3 +215,21 @@ def show_fps(screen, fps):
     w,h = cblocals.GAME_SCREEN_SIZE
     screen.blit(to_diplay, (w+5, h-to_display_size[1]-5) )
 
+
+
+
+class memoize_playingtime(object):
+    """A playing-time based memoization"""
+    def __init__(self, function):
+        self.function = function
+        self.memoized = None
+        self.playing_time = 0
+
+    def __call__(self, *args):
+        print self._zzz
+        if not self.memoized or self.playing_time!=cblocals.playing_time:
+            self.memoized = self.function(*args)
+            self.playing_time = cblocals.playing_time
+        return self.memoized
+
+

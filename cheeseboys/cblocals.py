@@ -64,7 +64,9 @@ global_mouseCursor = None
 global_mouseCursorType = None
 global_controlsEnabled = True
 gameLanguage = "en"
-game_time = 0
+
+game_time = 0                           # Time passed from game init
+playing_time = 0                        # Total playing time (not updated during pause)
 
 GAME_STEALTH = True
 

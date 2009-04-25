@@ -118,12 +118,13 @@ def game():
 
 
                 # ******* DEBUG *******
-                if pressed_keys[K_d]:
+                if pressed_keys[K_d] and pressed_keys[K_LSHIFT]:
+                    import pdb;pdb.set_trace()
+                elif pressed_keys[K_d]:
                     level.computeGridMap()
                     print "\n"
                     print level.grid_map
-
-                if pressed_keys[K_c]:
+                elif pressed_keys[K_c]:
                     print str(hero.navPoint.compute_path())
                 # ******* END DEBUG *******
 
@@ -209,10 +210,13 @@ def game():
 
         # ******* EVENTS LOOP END *******
 
-        time_passed = clock.tick() / 1000.  * cblocals.game_speed
+        time_passed_mm = clock.tick()
+        time_passed =  time_passed_mm / 1000. * cblocals.game_speed
         cblocals.game_time = pygame.time.get_ticks()
         if pygame.key.get_pressed()[K_LCTRL]:            
             time_passed = 0
+        else:
+            cblocals.playing_time+= time_passed_mm
         
         # Level text overlay
         if level.update_text(time_passed):
@@ -350,8 +354,6 @@ def cheeseBoysInit():
             sys.exit(0)
 
     cblocals.object_registry = UniqueObjectRegistry()
-
-    cblocals.game_time = pygame.time.get_ticks()
 
     # init of some pygame graphics stuff
     pygame.init()

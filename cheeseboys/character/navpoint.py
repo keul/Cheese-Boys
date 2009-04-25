@@ -68,9 +68,9 @@ class NavPoint(object):
             target_is_free_slot = level.isPointOnFreeSlot(target_tuple)
             # Checking for a free slot to on the grid, to be the target of the pathfinding
             free_near_slot = None
-            if target_is_free_point and not target_is_free_slot:
+            if not target_is_free_slot and target_is_free_point:
                 free_near_slot = level.getFreeNearSlot(level.toGridCoord(target_tuple))
-            if not target_is_free_point or not target_is_free_slot and not free_near_slot:
+            if not target_is_free_point or (not target_is_free_slot and not free_near_slot):
                 # The character wanna move on a non-free point, or onto a free point but in a non free gridmap slot: no path computed!
                 self.computed_path = [target_tuple,]
                 return self.computed_path

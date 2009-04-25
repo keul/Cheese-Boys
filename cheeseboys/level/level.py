@@ -219,6 +219,7 @@ class GameLevel(GridMapSupport):
         for charas in group.sprites():
             distanceFromCharas = character.distanceFrom(charas)
             if character.side!=charas.side and distanceFromCharas<=sight:
+                # Check now if he can see the character
                 if character.hasFreeSightOn(charas):
                     if charas.stealth:
                         # A rogue charas reduce the character sight range

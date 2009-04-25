@@ -121,12 +121,18 @@ class GameGroup(sprite.RenderUpdates):
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.heat_rect, width)
 
-    def drawNavPoint(self, surface, color=(255,0,0), radius=3):
+    def drawNavPoint(self, surface):
         """Draw a point to the character navPoint"""
+        np_color = (255,0,0)
+        cp_color = (0,255,0)
         for sprite in self.sprites():
             if hasattr(sprite,'navPoint') and sprite.navPoint:
                 pos = sprite.currentLevel.transformToScreenCoordinate(sprite.navPoint.as_tuple())
                 pos = (int(pos[0]), int(pos[1]))
-                pygame.draw.circle(surface, color, pos, radius, 0)
+                pygame.draw.circle(surface, np_color, pos, 3, 0)
+                for p in sprite.navPoint.computed_path:
+                    pos = sprite.currentLevel.transformToScreenCoordinate(p)
+                    pos = (int(pos[0]), int(pos[1]))
+                    pygame.draw.circle(surface, cp_color, pos, 3, 0)                    
     # *******
 

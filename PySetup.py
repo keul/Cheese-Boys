@@ -14,13 +14,13 @@ import py2exe
 ### Variables to edit ###
 #########################
 
-script = "cheeseboys.py"  # Starting .py or .pyw script
-dest_file = "cheeseboys"   # Final name of .exe file
-dest_folder = "bin" # Final folder for the files
-icon_file = "data/images/cheese_icon.ico"  # Icon file. Leave blank for the pygame icon.
-extra_data = ["data","docs"]        # Extra data to copy in the final folder
-extra_modules = []      # Extra modules to be included in the .exe (leave blank if no extra modules)
-dll_excludes = []       # excluded dlls ["w9xpopen.exe", "msvcr71.dll"]
+script = "cheeseboys.py"                              # Starting .py or .pyw script
+dest_file = "cheeseboys"                              # Final name of .exe file
+dest_folder = "bin"                                   # Final folder for the files
+icon_file = "data/images/cheese_icon.ico"             # Icon file. Leave blank for the pygame icon.
+extra_data = ["data","docs"]                          # Extra data to copy in the final folder
+extra_modules = ['kezmenu','ktextsurfacewriter']      # Extra modules to be included in the .exe (leave blank if no extra modules)
+dll_excludes = []                                     # excluded dlls ["w9xpopen.exe", "msvcr71.dll"]
 
 # Stuff to show who made it, etc.
 name = "Cheese Boys"
@@ -28,9 +28,10 @@ license = "GPL"
 author = "Keul"
 author_email = "lucafbb@gmail.com"
 company = "Keul Software"
-version = "0.1.1"
 keywords = ['arcade', '2d', 'rpg', 'adventure', 'roleplaying', 'engine', 'humor', 'keul', ]
 description = u"A humor arcade and roleplaying game played in a future, post-apocalypse world"
+
+from cheeseboys.cblocals import __version__ as version
 
 ##################################################################
 ### Below if you edit variables, you could mess up the program ###

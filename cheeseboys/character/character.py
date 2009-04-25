@@ -206,7 +206,7 @@ class Character(GameSprite, Stealth, Warrior):
         @destination: can be None (navPoint will be taken), a point or a Vector2 instance
         @relative: destination is a relative offset from the character position
         """
-        # TODO: the current collision checking is a fake: a too fast character can pass over an obstacle
+        # TODO: the current collision checking is broken: a too fast character can pass over an obstacle
         if not destination:
             destination = self.navPoint.get()
         else:
@@ -215,6 +215,8 @@ class Character(GameSprite, Stealth, Warrior):
                 cx, cy = self.position
                 destination = (cx+ox, cy+oy)
             self.navPoint.set(destination)
+        if not destination:
+            return
         self.heading = Vector2.from_points(self.position, destination)
         magnitude = self.heading.get_magnitude()
         self.heading.normalize()
@@ -242,7 +244,7 @@ class Character(GameSprite, Stealth, Warrior):
             self.navPoint.reset()
 
     def hasNoFreeMovementTo(self, target, source=None):
-        """Check if the character hasn't a free straight movement to a destination point.
+        """Check if the character has NOT free straight movement to a destination point.
         If this is True, the character can't move directly on the vector that link his current
         position to the target due to a collision that will be raised.
         @target: a point coordinate, goal of the movement
@@ -274,8 +276,11 @@ class Character(GameSprite, Stealth, Warrior):
                 return False
 
     def hasFreeSightOn(self, sprite):
-        """Return True if the target sprite is in sight of the current character"""
-        # BBB: check if this can be enanched someway; the use of 15pixel is ugly
+        """Check if the target sprite is in sight of the current character
+        @sprite: the sprite to be tested.
+        @return: True if the target sprite is in sight; False otherwise.
+        """
+        # BBB: check if this can be enanched someway; the use of 5 pixel is ugly and imperfect
         to_target = Vector2.from_points(self.position, sprite.position)
         magnitude = to_target.get_magnitude()
         # 1 - False if sprite position is outside the character sight
@@ -283,14 +288,13 @@ class Character(GameSprite, Stealth, Warrior):
             return False
         # 2 - Now I need to get the line sight on the target
         to_target.normalize()
-        magnitude_portion = max(magnitude/100., 15)
+        magnitude_portion = 5
         visual_obstacles = self.currentLevel['visual_obstacles']
         screen_position = self.toScreenCoordinate()
         while magnitude>0:
             for obstacle in visual_obstacles:
                 temp_v = (to_target*magnitude).as_tuple()
                 temp_pos = screen_position[0]+temp_v[0], screen_position[1]+temp_v[1]
-                #print temp_pos, obstacle.rect
                 if obstacle.collide_rect.collidepoint(temp_pos):
                     logging.debug("%s can't see %s due to the presence of %s" % (self, sprite, obstacle))
                     return False
@@ -320,11 +324,12 @@ class Character(GameSprite, Stealth, Warrior):
             self.move(x, y)
 
     @property
+#    @utils.memoize_playingtime
     def collide_rect(self):
         """See GameSprite.collide_rect.
         for characters, the foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
         """
-        # BBB: some bigger or different images can behave other rect as "foot"?
+        # BBB: some bigger or different images can behave multiple rects as "foot"?
         rect = self.rect
         ly = rect.bottom
         h = rect.h*0.25
@@ -334,6 +339,7 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (lx, hy), (w, h) )
 
     @property
+#    @utils.memoize_playingtime
     def physical_rect(self):
         """See GameSprite.physical_rect.
         Return a rect used for collision in combat (not movement).
@@ -345,6 +351,7 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.size )
 
     @property
+#    @utils.memoize_playingtime
     def heat_rect(self):
         """Return a rect used for collision as heat rect, sensible to attack and other evil effects.
         """
@@ -366,7 +373,6 @@ class Character(GameSprite, Stealth, Warrior):
         """Sprite must have an image property.
         In this way I can control what image return.
         """
-        # BBB: I need a way to memoize this!!!!
         if self._attackDirection:
             weaponOut = True
         else:
