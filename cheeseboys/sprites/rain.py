@@ -120,3 +120,5 @@ class Rain(object):
         wind = cbrandom.choice( (-.4,-.3,-.2,-.1,0) )
         logging.info("Wind strength changed from %s to %s" % (self._wind, wind))        
         self._wind = wind
+
+

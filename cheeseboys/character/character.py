@@ -209,14 +209,15 @@ class Character(GameSprite, Stealth, Warrior):
         # TODO: the current collision checking is broken: a too fast character can pass over an obstacle
         if not destination:
             destination = self.navPoint.get()
+            if not destination:
+                return
         else:
             if type(destination)==tuple and relative:
                 ox, oy = destination
                 cx, cy = self.position
                 destination = (cx+ox, cy+oy)
             self.navPoint.set(destination)
-        if not destination:
-            return
+            destination = self.navPoint.get()
         self.heading = Vector2.from_points(self.position, destination)
         magnitude = self.heading.get_magnitude()
         self.heading.normalize()
@@ -324,7 +325,7 @@ class Character(GameSprite, Stealth, Warrior):
             self.move(x, y)
 
     @property
-#    @utils.memoize_playingtime
+    @utils.memoize_playingtime
     def collide_rect(self):
         """See GameSprite.collide_rect.
         for characters, the foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
@@ -339,7 +340,7 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (lx, hy), (w, h) )
 
     @property
-#    @utils.memoize_playingtime
+    @utils.memoize_playingtime
     def physical_rect(self):
         """See GameSprite.physical_rect.
         Return a rect used for collision in combat (not movement).
@@ -351,7 +352,7 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.size )
 
     @property
-#    @utils.memoize_playingtime
+    @utils.memoize_playingtime
     def heat_rect(self):
         """Return a rect used for collision as heat rect, sensible to attack and other evil effects.
         """
@@ -369,10 +370,12 @@ class Character(GameSprite, Stealth, Warrior):
         return self.currentLevel.checkRectIsInLevel(r)
     
     @property
+    @utils.memoize_charasimage
     def image(self):
         """Sprite must have an image property.
         In this way I can control what image return.
         """
+        # BBB: it's better to memoize this someway
         if self._attackDirection:
             weaponOut = True
         else:
@@ -390,7 +393,7 @@ class Character(GameSprite, Stealth, Warrior):
             # Stand and wait
             if self._attackDirection:
                 # I change the last faced direction because when I right click on a direction when the character isn't moving
-                # I wanna turn in that direction.
+                # I wanna face this direction.
                 direction = self._lastUsedDirection = self._attackDirection
             else:
                 direction = self._lastUsedDirection
@@ -503,9 +506,9 @@ class Character(GameSprite, Stealth, Warrior):
         """Set a AI StateMachine istance"""
         self._brain = smBrain(self)
 
-    def _set_braine_enabled(self, value):
+    def _set_brain_enabled(self, value):
         self._brain.enabled = value
-    brain_enabled = property(lambda self: self._brain.enabled, _set_braine_enabled, doc="""The current character's brain status""")
+    brain_enabled = property(lambda self: self._brain.enabled, _set_brain_enabled, doc="""The current character's brain status""")
   
     @property
     def active_state(self):

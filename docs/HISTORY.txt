@@ -40,6 +40,8 @@ You can also find:
  * Raindrop now can end inside the game screen.
  
  * (!!!) Pathfinding!
+ 
+ * Some memoize tuning, to speed up a little the FPS of the game.
 
 0.1.1
 -----

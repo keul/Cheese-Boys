@@ -32,6 +32,7 @@ class NavPoint(object):
 
     def next(self):
         """Get the next navPoint from the computed_path list"""
+        # BBB: check there if with the new navPoint we can now move freely to the target
         try:
             self._v = Vector2(self.computed_path.pop(0))
         except IndexError:
@@ -42,7 +43,8 @@ class NavPoint(object):
         try:
             if self.computed_path:
                 self.compute_path(Vector2(self.computed_path[-1]))
-            self.compute_path(self._v)
+            else:
+                self.compute_path(self._v)
         except IndexError:
             pass
         self.next()
@@ -98,6 +100,6 @@ class NavPoint(object):
     def __str__(self):
         st = 'to %s' % self._v
         if self.computed_path:
-            st+= '(' + ', '.join(self.computed_path) + ')'
+            st+= ' (' + ', '.join([str(x) for x in self.computed_path]) + ')'
         return st
 

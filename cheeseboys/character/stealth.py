@@ -123,13 +123,14 @@ class Stealth(object):
         """
         distance = rogue.v.get_distance_to(prey.v)
         preySight = int(prey.sightRange * prey.getPreySightRangeReductionFactor())
+        modifier = 1.
 
         if distance<preySight/5:
-            rogueStealthIndex*=1.3         # malus 30%
+            modifier+=.2                    # malus 20%
         elif distance<preySight/3:
-            rogueStealthIndex*=1.2         # malus 20%
+            modifier+=.15                   # malus 15%
         elif distance<preySight/3*2:
-            rogueStealthIndex*=1.1         # malus 10%
+            modifier+=.10                   # malus 10%
         
         # The rogue has malus if the prey is watching it: +25% (angle >=-30° and <=+30°)
         # The rogue has bonus if the prey is watching in the other direction: -20% (angle <=-150° and >=+150°)
@@ -137,13 +138,15 @@ class Stealth(object):
         angle_between = prey.heading.angle_between(prey_to_rogue)
         logging.debug("Prey heading: %s - Prey to rogue: %s - Angle: %s" % (prey.heading, prey_to_rogue, angle_between))
         
-        if angle_between>=-30 or angle_between<=30:
-            rogueStealthIndex*=1.3
+        if angle_between>=-30 and angle_between<=30:
+            modifier+=.25
         elif angle_between<=-150 or angle_between>=150:
-            rogueStealthIndex*=.8
+            modifier-=.2
         
-        if rogueStealthIndex>1.:
-            rogueStealthIndex=1.
+        rogueStealthIndex = rogueStealthIndex*modifier
+        
+        if rogueStealthIndex>.95:
+            rogueStealthIndex=.95
         elif rogueStealthIndex<.2:
             rogueStealthIndex=.2
         return rogueStealthIndex

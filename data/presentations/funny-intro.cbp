@@ -12,11 +12,11 @@
 	max.x = 400
 	max.y = 1600
 	john.x = 300
-	john.y = 600
+	john.y = 570
 	jack.x = 350
-	jack.y = 550
+	jack.y = 520
 	roger.x = 400
-	roger.y = 600
+	roger.y = 570
 
 [00:00:00 001]
 	level.levelTextIntro({'text':'CHEESE BOYS', 'color': (150,255,150)}, colophon_flag=True)
@@ -32,7 +32,7 @@
 	level.screenReferenceSprite = max
 
 [+00:00:01 000]
-	max.moveBasedOnNavPoint(time_passed, (345, 670))
+	max.moveBasedOnNavPoint(time_passed, (345, 640))
 
 [+00:00:01 700]
 	max.navPoint.reroute()									# out of the screen the pathfinding is now working
@@ -48,7 +48,7 @@
 	max.faceTo(cblocals.DIRECTION_N)
 	max.say("Hi all guys!")
 
-[+00:00:04 000]
+[+00:00:05 000]
 	max.say("...guys?")
 
 [+00:00:04 000]

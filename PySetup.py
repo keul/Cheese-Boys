@@ -28,7 +28,7 @@ license = "GPL"
 author = "Keul"
 author_email = "lucafbb@gmail.com"
 company = "Keul Software"
-keywords = ['arcade', '2d', 'rpg', 'adventure', 'roleplaying', 'engine', 'humor', 'keul', ]
+keywords = ['arcade', '2d', 'rpg', 'adventure', 'roleplaying', 'roguelike', 'engine', 'humor', 'keul', ]
 description = u"A humor arcade and roleplaying game played in a future, post-apocalypse world"
 
 from cheeseboys.cblocals import __version__ as version

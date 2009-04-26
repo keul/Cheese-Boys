@@ -28,7 +28,7 @@ def load(name, hero):
     enemy3 = character.Character("Jack", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=125., weaponInAndOut=True)
     enemy3.setBrain(BaseStateMachine)
     enemy3.setCombatValues(0, 5)
-    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=160., weaponInAndOut=True)
+    enemy4 = character.Character("Roger", ("enemy1_sword.png","enemy1.png"), (all,charas,enemies,physical), realSize=(18,25), speed=140., weaponInAndOut=True)
     enemy4.setBrain(BaseStateMachine)
     enemy4.setCombatValues(0, 5)
 
