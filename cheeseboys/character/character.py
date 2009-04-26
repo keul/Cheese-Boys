@@ -9,7 +9,7 @@ from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 from cheeseboys.ai import PresentationStateMachine
 from cheeseboys.ai.pathfinder import PathFinder
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import th0 as module_th0
 from cheeseboys.sprites import SpeechCloud

@@ -3,8 +3,8 @@
 import pygame
 from pygame.locals import *
 
-import cblocals
-from utils import Vector2
+from cheeseboys import cblocals
+from cheeseboys.vector2 import Vector2
 
 class Attack(object):
     """Instances of this class wanna repr the attack action for every character.

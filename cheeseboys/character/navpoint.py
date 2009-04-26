@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 
 class NavPoint(object):
     """A class for store the target of movement action of GameCharacter sprites,

@@ -6,7 +6,7 @@ from pygame.locals import *
 from cheeseboys import utils
 from cheeseboys import cblocals
 from cheeseboys.pygame_extensions.sprite import GameSprite
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 from character import Character
 
 class PlayingCharacter(Character):

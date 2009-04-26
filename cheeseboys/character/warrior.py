@@ -3,7 +3,7 @@
 import pygame
 from pygame.locals import *
 
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 from cheeseboys.attack import Attack
 
 class Warrior(object):

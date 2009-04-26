@@ -4,7 +4,7 @@ import logging
 import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, cbrandom
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 
 class Stealth(object):
     """This class groups all feats of a Character to go in stealth-mode and hide in shadows.

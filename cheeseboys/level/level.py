@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys.pygame_extensions.group import GameGroup
 from cheeseboys.sprites import PhysicalBackground, Rain

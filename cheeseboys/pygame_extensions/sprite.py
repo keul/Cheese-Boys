@@ -5,7 +5,7 @@ import logging
 import pygame
 from pygame.locals import *
 from cheeseboys import cblocals, utils
-from cheeseboys.utils import Vector2
+from cheeseboys.vector2 import Vector2
 from cheeseboys.pygame_extensions.unique import UniqueObject
 
 class GameSprite(pygame.sprite.Sprite, UniqueObject):
