@@ -467,12 +467,13 @@ class GameLevel(GridMapSupport):
     def blitShadow(self, surface, refSprite):
         """Blit game general shadow.
         If the shadow has a light area, its based on a reference sprite.
-        Do nothing if GameLevel.shadow is False"""
+        Do nothing if GameLevel.shadow is False
+        """
         if self.shadow:
             if not self.presentation:
                 if not refSprite.outOfScreen:
                     spriteposx, spriteposy = self.transformToScreenCoordinate(refSprite.position)
-                    imgsizew,imgsizeh = cblocals.SHADOW_IMG_SIZE
+                    imgsizew, imgsizeh = cblocals.SHADOW_IMG_SIZE
                     surface.blit(cblocals.shadow_image, (spriteposx-imgsizew/2, spriteposy-imgsizeh/2))
                 else:
                     surface.blit(cblocals.total_shadow_image_09, (0,0) )

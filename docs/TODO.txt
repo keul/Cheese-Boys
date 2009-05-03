@@ -8,8 +8,6 @@ Open entries
 
 Entries I will fix/implement someday.
 
- * Transform the navPoint to complex object with more features.
-
  * Add the enemy awareness. Non warned enemy are much simpler to backstab.
 
  * Add character methods properties to get current character bonus/malus to AC, TH0, etc.
@@ -31,7 +29,7 @@ Entries I will fix/implement someday.
 
  * BUG - exit a level during speech in progress make the character to be unable to speak in the next level...
  
- * Draw hit points number anfter damage, floating above the character.
+ * Draw hit points number after damage, floating above the character.
  
  * Remove level_text module (or integrate it) and replace it with KTextSurfaceWriter usage.
 
@@ -43,8 +41,6 @@ Those aren't needed changes.
 
  * Integration (but optional) with Psyco?
 
- * Add a path finder alghoritm for character movements (at least for NPC).
-
  * Enhance the enemies random movements.
    Enemies simply must not move to an invalid position.
     
@@ -52,4 +48,4 @@ Those aren't needed changes.
 
  * REFACTORING - Move Attack and character attack infos to other structure, may be merged with TH0 class?
   
-  * What about use of the python PIL library?
+ * What about use of the python PIL library?

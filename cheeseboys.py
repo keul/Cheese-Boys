@@ -71,9 +71,9 @@ from cheeseboys.ai.hero import HeroStateMachine
 
 def handleFullScreen():
     if cblocals.FULLSCREEN:
-        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN, 32)
+        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, FULLSCREEN|HWSURFACE|HWPALETTE|DOUBLEBUF, 32)
     else:
-        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, 0, 32)
+        screen = pygame.display.set_mode(cblocals.SCREEN_SIZE, HWSURFACE|HWPALETTE|DOUBLEBUF, 32)
     cblocals.screen = screen
     return screen
 
@@ -92,7 +92,7 @@ def game():
     
     pygame.display.set_caption("Cheese Boys (alpha release) %s - %s" % (cblocals.__version__, level.name))
 
-    console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA, depth=32 )
+    console_area = pygame.Surface( cblocals.CONSOLE_SCREEN_SIZE, flags=SRCALPHA|HWSURFACE, depth=32 )
     console_area.set_alpha(255)
     console_area.fill( (20,20,20) )
     console_area.blit(cblocals.default_font_big.render("This will be the", True, (255, 255, 255)), (2,0) )
@@ -305,7 +305,6 @@ def cheeseBoysInit():
     p.add_option('--logverbosity', '-l', default="WARN", action="store", choices=LOGLEVEL_CHOICES, help='set the game log verbosity, one of %s (default is ERROR)' % ",".join(LOGLEVEL_CHOICES), metavar="VERBOSITY")
     p.add_option('--tests', '-t', action='store_true', help='run all game unittests') 
     p.add_option('--fullscreen', '-f', action='store_true', help='load the game in fullscreen mode')
-    p.add_option('--darkness', '-k', default="on", action="store", choices=DARKNESS_CHOICES, help='valid values are on (default) or off. Act on darkness effect. This can slow down the game engine on less powerfull systems')
     p.add_option("--parse", "-p" , action='store_true', help=("parse a data file for dinamically change the content. See also -cbp options"
                                                               "You can also use the --timestamp option to begin begin operation only after found a specific timestamp"))
     p.add_option("--cbp", "-c" , dest="cbp_filename", help="Must be used in combination of -p option. Parse a .cbp file to change absolute timestamps with dinamical ones. ", metavar="FILE")
@@ -336,11 +335,6 @@ def cheeseBoysInit():
     if options.fullscreen:
         cblocals.FULLSCREEN = True
 
-    if options.darkness=='on':
-        cblocals.SHADOW = True
-    elif options.darkness=='off':
-        cblocals.SHADOW = False
-
     if options.parse:
         if not options.cbp_filename:
             print "error: The --parse parameter need also the use of --cbp option."
@@ -365,9 +359,9 @@ def cheeseBoysInit():
         cblocals.shadow_image = utils.load_image("lightray_1.png", "shadows", simpleLoad=True)
         cblocals.shadow_image.set_alpha(0, RLEACCEL)
         cblocals.total_shadow_image_09 = utils.load_image("total_dark_09.png", "shadows", simpleLoad=True)
-        cblocals.total_shadow_image_09.set_alpha(0, RLEACCEL)
+        #cblocals.total_shadow_image_09.set_alpha(0, RLEACCEL)
         cblocals.total_shadow_image_05 = utils.load_image("total_dark_05.png", "shadows", simpleLoad=True)
-        cblocals.total_shadow_image_05.set_alpha(0, RLEACCEL)
+        #cblocals.total_shadow_image_05.set_alpha(0, RLEACCEL)
 
     cblocals.default_font = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 12)
     cblocals.font_mini = pygame.font.Font("%s/%s" % (cblocals.FONTS_DIR_PATH, cblocals.DEFAULT_FONT), 10)

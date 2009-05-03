@@ -200,7 +200,7 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         You can enter alpha value, fill color and colorkey color for per-pixel-alpha.
         """
         # BBB: move this away from here, like in a simple module
-        surface = pygame.Surface(size, depth=32)
+        surface = pygame.Surface(size, flags=HWSURFACE|HWPALETTE, depth=32)
         if fillWith:
             surface.fill(fillWith)
         if alpha is not None:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -
 
 import pygame
+from pygame.locals import *
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
@@ -18,7 +19,7 @@ def load_image(file_name, directory="", charasFormatImage=False, weaponInAndOut=
     else:
         path = "%s/%s/%s" % (cblocals.IMAGES_DIR_PATH, directory, file_name)
     if simpleLoad:
-        return pygame.image.load(path)
+        return pygame.image.load(path).convert(32, HWSURFACE|SRCALPHA)
     return pygame.image.load(path).convert_alpha()
 
 def _imagesInCharasFormat(file_name, directory="", weaponInAndOut=False):

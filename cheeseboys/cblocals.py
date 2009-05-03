@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from pygame.locals import USEREVENT
 
@@ -78,13 +78,13 @@ globals = {'text_tips': True,
            'points': True,
            }
 
+SHADOW = True
 shadow_image = None
 total_shadow_image_09 = total_shadow_image_05 = None
 SHADOW_IMG_SIZE = (1500, 1500)
-SHADOW = True
 
 PATHFINDING_GRID_SIZE = (24,32) # as TILE_IMAGE_SIZE
 SHOW_FPS = True
 
-DEBUG = False
+DEBUG = False 
 
