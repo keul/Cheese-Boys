@@ -58,7 +58,7 @@ class NavPoint(object):
         First and last path elements are ignored (last element only sometimes) so we get:
         [path2, path3, ... pathn-1, navPoint]
         @target: an optional Vector2 instance; the current navPoint is used as default
-        @return: the computed path itself
+        @return: the computed path itself (that can be an empty list)
         """
         character = self._character
         level = character.currentLevel
@@ -68,9 +68,10 @@ class NavPoint(object):
             target_tuple = target.as_tuple()
             target_is_free_point = level.checkPointIsFree(target_tuple)
             target_is_free_slot = level.isPointOnFreeSlot(target_tuple)
-            # Checking for a free slot to on the grid, to be the target of the pathfinding
+            # Checking for a free slot on the grid, to be the target of the pathfinding
             free_near_slot = None
             if not target_is_free_slot and target_is_free_point:
+                # The target is on a non free slot but is a free point: I need to move to a free near slot
                 free_near_slot = level.getFreeNearSlot(level.toGridCoord(target_tuple))
             if not target_is_free_point or (not target_is_free_slot and not free_near_slot):
                 # The character wanna move on a non-free point, or onto a free point but in a non free gridmap slot: no path computed!

@@ -32,8 +32,11 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
 
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""
+        return
+        print "Pre: %s" % str(self.rect.midbottom)
         x, y = self.toScreenCoordinate()
         self.rect.midbottom = (x, y)
+        print "Post: %s" % str(self.rect.midbottom)
 
     def topleft(self, x=0, y=0):
         """Return top left rect coordinate for this sprite.

@@ -78,7 +78,6 @@ def handleFullScreen():
     return screen
 
 def game():
-    
     clock = pygame.time.Clock()
     screen = cblocals.screen
 
