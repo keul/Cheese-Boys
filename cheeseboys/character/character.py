@@ -532,14 +532,16 @@ class Character(GameSprite, Stealth, Warrior):
             return False
         return True
     
-    def kill(self):
+    def kill(self, corpse=True):
         """Kill the character, removing it from all groups and draw a dead corpse.
         As far as the Character objects are also UniqueObject, we need also to
         unregister a killed sprite from the object_registry.
+        @corpse: True (default) for generating the dead corpse; with False the Sprite simply disappear
         """
         GameSprite.kill(self)
-        self.currentLevel.generateDeadSprite(self)
         cblocals.object_registry.unregister(self.UID())
+        if corpse:
+            self.currentLevel.generateDeadSprite(self)
 
     def getHeadingTo(self, target):
         """Return the heading to a given object or position.

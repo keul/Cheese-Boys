@@ -10,28 +10,26 @@
 	gate.open()
 	level.screenReferenceSprite = gate
 
-[00:00:05 000]
+[+00:00:04 500]
 	gate.close()
 
-[00:00:07 000]
+[+00:00:02 000]
 	level.screenReferenceSprite = boss
 
-[00:00:12 000]
+[+00:00:04 000]
 	boss.say("He's... him")
 
-[00:00:14 000]
+[+00:00:02 000]
 	boss.shout("Attack!!!")
 
-[00:00:15 000]
+[+00:00:01 000]
     enemy.real_brain.setState("exploring")
 	enemy.navPoint.set(hero.position)
     enemy.brain_enabled=True
     enemy.speed = enemy.maxSpeed
 
-[00:00:15 400]
+[+00:00:00 400]
     boss.real_brain.setState("exploring")
 	boss.navPoint.set(hero.position)
     boss.brain_enabled=True
     boss.speed = boss.maxSpeed
-
-    
