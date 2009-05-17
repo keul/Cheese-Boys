@@ -2,6 +2,31 @@
 
 from cheeseboys import cblocals
 
+class memoize_observer(object):
+    """An object attributes memoization decorator; the method results is memoized as far as given property doesn't change"""
+    def __init__ (self, f, attribute_name):
+        self.f = f
+        self._attribute_name = attribute_name
+        self.mem = {}
+
+    def __call__ (self, *args, **kwargs):
+        memoized = None
+        observable = args[0]
+        attribute_name = self._attribute_name
+        cur_observable_value = observable.__getattribute__(attribute_name)
+        if (args, str(kwargs)) in self.mem:
+            stored_observable_value, memoized = self.mem[args, str(kwargs)]
+            if cur_observable_value!=stored_observable_value:
+                memoized = None
+            #else:
+            #    print "cache it"
+        if not memoized:
+            #print "cache miss"
+            memoized = self.f(*args, **kwargs)
+            self.mem[args, str(kwargs)] = (cur_observable_value, memoized)
+        return memoized
+
+
 class memoize_playingtime(object):
     """A playing-time based memoization; store the same value until the playing time is the same
     (and also the parameters).

@@ -312,7 +312,7 @@ class GameLevel(GridMapSupport):
         if type(reference)==tuple:
             referencePointOnScreen = reference
         else:
-            referencePointOnScreen = reference.position_int
+            referencePointOnScreen = reference.position
         if self.isPointAtScreenCenter(referencePointOnScreen, (160,160) ):
             return
         heading = Vector2.from_points(self.center, referencePointOnScreen)

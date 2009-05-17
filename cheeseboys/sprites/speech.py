@@ -35,7 +35,7 @@ class SpeechCloud(GameSprite):
         level = character.currentLevel
         self.rect = self._getRect()
         level['speech'].add(self)
-        self._last_charX = self._last_charY = character.position_int
+        self._last_charX = self._last_charY = character.position
         self.addToGameLevel(level, firstPosition=level.transformToLevelCoordinate(self.rect.midbottom))
 
     def _setText(self, text):

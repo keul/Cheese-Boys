@@ -252,13 +252,13 @@ class Character(GameSprite, Stealth, Warrior):
         @source: optional parameter to test the free movement from a coordinate different fron the current one.
         @return False if no collision is detected, or the collisions points tuples
         """
-        position_int = self.position_int
+        position = self.position
         collide_rect = self.collide_rect
         if not source:
-            source = position_int
+            source = position
         else:
             # I need a collide_rect traslated to the new source
-            rx, ry = position_int[0]-int(source[0]), position_int[1]-int(source[1])
+            rx, ry = position[0]-int(source[0]), position[1]-int(source[1])
             collide_rect.move_ip(rx, ry)
         v = Vector2.from_points(source, target)
         magnitude = v.get_magnitude()
@@ -325,7 +325,6 @@ class Character(GameSprite, Stealth, Warrior):
             self.move(x, y)
 
     @property
-    @utils.memoize_playingtime
     def collide_rect(self):
         """See GameSprite.collide_rect.
         for characters, the foot area is the 25% of the height and 60% in width of the charas, centered on the bottom.
@@ -340,7 +339,6 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (lx, hy), (w, h) )
 
     @property
-    @utils.memoize_playingtime
     def physical_rect(self):
         """See GameSprite.physical_rect.
         Return a rect used for collision in combat (not movement).
@@ -352,7 +350,6 @@ class Character(GameSprite, Stealth, Warrior):
         return pygame.Rect( (rect.left+diffW/2, rect.top+diffH), self.size )
 
     @property
-    @utils.memoize_playingtime
     def heat_rect(self):
         """Return a rect used for collision as heat rect, sensible to attack and other evil effects.
         """
@@ -624,7 +621,7 @@ class Character(GameSprite, Stealth, Warrior):
         self._speech.text = text.upper()
         if additional_time:
             self._speech.additionalTime(additional_time)
-        event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position_int, 'text': text})
+        event = pygame.event.Event(cblocals.SHOUT_EVENT, {'character':self, 'position':self.position, 'text': text})
         pygame.event.post(event)
 
     def shutup(self):

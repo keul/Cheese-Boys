@@ -23,6 +23,30 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         self.name = None
         self.rect = None
 
+    def _setX(self, newx):
+        self._x = int(newx)
+    x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
+
+    def _setY(self, newy):
+        self._y = int(newy)
+    y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
+
+    def _setPosition(self, new_position):
+        x, y = new_position
+        self._x = int(x)
+        self._y = int(y)        
+    def _getPosition(self):
+        if not self.x and not self.y:
+            return ()
+        return (self.x, self.y)
+    position = property(_getPosition, _setPosition, doc="""Character position (midbottom) as tuple""")
+
+    @property
+    def v(self):
+        """Return position as Vector2 object"""
+        return Vector2(self.position)
+
+
     def update(self, time_passed):
         """Update method of pygame Sprite class.
         Keep updated sprite position on level.
@@ -32,11 +56,8 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
 
     def refresh(self):
         """Refresh sprite position based on x,y tuple"""
-        return
-        print "Pre: %s" % str(self.rect.midbottom)
         x, y = self.toScreenCoordinate()
         self.rect.midbottom = (x, y)
-        print "Post: %s" % str(self.rect.midbottom)
 
     def topleft(self, x=0, y=0):
         """Return top left rect coordinate for this sprite.
@@ -50,50 +71,21 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
     @property
     def absolute_collide_topleft(self):
         """Get the topleft absolute sprite position."""
-        x,y = self.position_int
+        x,y = self.position
         rect = self.collide_rect
         return (x-rect.width/2, y-rect.height)
 
     @property
     def absolute_collide_bottomright(self):
         """Get the bottomright absolute sprite position."""
-        x,y = self.position_int
+        x,y = self.position
         rect = self.collide_rect
         return (x+rect.width/2, y)
-
-    def _setX(self, newx):
-        self._x = newx
-    x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
-
-    def _setY(self, newy):
-        self._y = newy
-    y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
-
-    def _setPosition(self, new_position):
-        x, y = new_position
-        self.x = x
-        self.y = y        
-    def _getPosition(self):
-        if not self.x and not self.y:
-            return ()
-        return (self.x, self.y)
-    position = property(_getPosition, _setPosition, doc="""Character position (midbottom) as tuple""")
-    
-    @property
-    def position_int(self):
-        """Same as position but in integer format"""
-        x,y = self.position
-        return (int(x), int(y))
-
-    @property
-    def v(self):
-        """Return position as Vector2 object"""
-        return Vector2(self.position)
 
     @property
     def position_grid(self):
         """Return the position of the sprite on the gridmap of the level"""
-        return self.currentLevel.toGridCoord(self.position_int)
+        return self.currentLevel.toGridCoord(self.position)
 
     def isNearTo(self, point):
         """Check if the sprite collision rect (the basement) is near to a point.
@@ -106,7 +98,7 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
 
     def toScreenCoordinate(self):
         """Return (x,y) tuple information relative to the screen position"""
-        return self.currentLevel.transformToScreenCoordinate(self.position_int)
+        return self.currentLevel.transformToScreenCoordinate(self.position)
 
     def toLevelCoordinate(self):
         """Return (x,y) tuple information in the absolute level coordinate, taken from the sprite rect"""
