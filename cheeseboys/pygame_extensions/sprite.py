@@ -24,21 +24,21 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         self.rect = None
 
     def _setX(self, newx):
-        self._x = int(newx)
+        self._x = newx
     x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
 
     def _setY(self, newy):
-        self._y = int(newy)
+        self._y = newy
     y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
 
     def _setPosition(self, new_position):
         x, y = new_position
-        self._x = int(x)
-        self._y = int(y)        
+        self._x = x
+        self._y = y        
     def _getPosition(self):
         if not self.x and not self.y:
             return ()
-        return (self.x, self.y)
+        return (int(self.x), int(self.y))
     position = property(_getPosition, _setPosition, doc="""Character position (midbottom) as tuple""")
 
     @property
@@ -52,12 +52,7 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         Keep updated sprite position on level.
         """
         pygame.sprite.Sprite.update(self, time_passed)
-        self.refresh()
-
-    def refresh(self):
-        """Refresh sprite position based on x,y tuple"""
-        x, y = self.toScreenCoordinate()
-        self.rect.midbottom = (x, y)
+        self.rect.midbottom = self.toScreenCoordinate()
 
     def topleft(self, x=0, y=0):
         """Return top left rect coordinate for this sprite.
@@ -187,7 +182,6 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """Move the sprite, relative to current point"""
         self.x+=x
         self.y+=y
-        self.refresh()
 
     @classmethod
     def generateEmptySprite(cls, size, alpha=None, fillWith=None, colorKey=None):
