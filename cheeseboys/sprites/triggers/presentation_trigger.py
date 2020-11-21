@@ -4,10 +4,10 @@ import pygame
 from cheeseboys.sprites.triggers import Trigger
 from cheeseboys import cblocals
 
+
 class PresentationTrigger(Trigger):
-    """A trigger that run a presentation on the current level.
-    """
-    
+    """A trigger that run a presentation on the current level."""
+
     def __init__(self, position, size, fireOnCollistionWith=(), *containers):
         Trigger.__init__(self, position, size, fireOnCollistionWith, *containers)
         self._presentation_to_run = None
@@ -17,7 +17,9 @@ class PresentationTrigger(Trigger):
         """Load a presentation object"""
         self._presentation_to_run = presentation
         self._presentation_dir = presentation_dir
-    
+
     def getResult(self):
         """Run the presentation in the level"""
-        return self.currentLevel.enablePresentation(self._presentation_to_run, self._presentation_dir)
+        return self.currentLevel.enablePresentation(
+            self._presentation_to_run, self._presentation_dir
+        )

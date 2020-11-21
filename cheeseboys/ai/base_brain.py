@@ -4,6 +4,7 @@ from cheeseboys.ai import State, StateMachine
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
+
 class BaseStateExploring(State):
     """Exploring state. The character will move to a random position near to the current one"""
 
@@ -19,14 +20,14 @@ class BaseStateExploring(State):
         if enemy is not None:
             character.enemyTarget = enemy
             return "hunting"
-        
+
         if not character.navPoint:
             return "waiting"
-        
+
         return None
-    
+
     def entry_actions(self, old_state_name):
-        if old_state_name=='hunting':
+        if old_state_name == "hunting":
             # I passed from hunting to exploring; may be that the enemy is gone outside the sight: keep max speed for now!
             self.character.speed = self.character.maxSpeed
         else:
@@ -43,9 +44,9 @@ class BaseStateWaiting(State):
         State.__init__(self, "waiting", character)
         self.waiting_time = cbrandom.randint(0, 20)
 
-    def do_actions(self, time_passed): 
+    def do_actions(self, time_passed):
         self.waiting_time -= time_passed
-            
+
     def check_conditions(self):
         character = self.character
         level = character.currentLevel
@@ -53,19 +54,17 @@ class BaseStateWaiting(State):
         if enemy is not None:
             character.enemyTarget = enemy
             return "hunting"
-        
-        if self.waiting_time<0:
+
+        if self.waiting_time < 0:
             return "exploring"
-        
+
         return None
 
     def entry_actions(self, old_state_name):
         self.waiting_time = cbrandom.randint(0, 20)
 
 
-
-class BaseStateHunting(State):   
-
+class BaseStateHunting(State):
     def __init__(self, character):
         State.__init__(self, "hunting", character)
 
@@ -81,19 +80,27 @@ class BaseStateHunting(State):
         enemy = character.enemyTarget
         if not enemy or not enemy.isAlive:
             return "waiting"
-        
-        if character.distanceFrom(enemy)>character.sightRange or not character.hasFreeSightOn(enemy):
+
+        if character.distanceFrom(
+            enemy
+        ) > character.sightRange or not character.hasFreeSightOn(enemy):
             self.character.navPoint.set(enemy.position)
             return "exploring"
-        
+
         # BBB: withdraw
-        if cbrandom.randint(1,100)<=25 and enemy.active_state=='attacking' and enemy.enemyTarget is character and \
-                enemy.distanceFrom(character) < enemy.attackRange:
+        if (
+            cbrandom.randint(1, 100) <= 25
+            and enemy.active_state == "attacking"
+            and enemy.enemyTarget is character
+            and enemy.distanceFrom(character) < enemy.attackRange
+        ):
             return "retreat"
-        
-        if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(character.distanceFrom(enemy), character.attackRange):
+
+        if cbrandom.rool100() < self._getChanceForAttackBasedOnDistance(
+            character.distanceFrom(enemy), character.attackRange
+        ):
             return "attacking"
-        
+
         return None
 
     def entry_actions(self, old_state_name):
@@ -116,7 +123,7 @@ class BaseStateAttacking(State):
             character.setAttackState(character.getHeadingTo(enemy))
         else:
             character.updateAttackState(time_passed)
-        
+
     def check_conditions(self):
         character = self.character
         enemy = character.enemyTarget
@@ -127,9 +134,9 @@ class BaseStateAttacking(State):
         if not enemy or not enemy.isAlive:
             return "waiting"
 
-        if character.distanceFrom(enemy)>character.attackRange:
+        if character.distanceFrom(enemy) > character.attackRange:
             return "hunting"
-        
+
         return None
 
     def entry_actions(self, old_state_name):
@@ -156,7 +163,7 @@ class BaseStateHit(State):
 
     def do_actions(self, time_passed):
         character = self.character
-        if self.collected_distance<self.distance_to_move:
+        if self.collected_distance < self.distance_to_move:
             # phase 1: the blow move away the character
             character.moveBasedOnHitTaken(time_passed)
             self.collected_distance += time_passed * character.speed
@@ -168,14 +175,16 @@ class BaseStateHit(State):
         """Always return to last action before the Hit.
         If the last was an attack then we return to the hunting state (or an "attack in the air" is performed).
         """
-        if self.collected_rest_time>=self.rest_time:
+        if self.collected_rest_time >= self.rest_time:
             if self.old_state_name == "attacking" or self.old_state_name == "hitten":
                 return "hunting"
             return self.old_state_name
         return None
 
     def entry_actions(self, old_state_name):
-        self.character.speed = cbrandom.randint(cblocals.HIT_MOVEMENT_SPEED/2, cblocals.HIT_MOVEMENT_SPEED)
+        self.character.speed = cbrandom.randint(
+            cblocals.HIT_MOVEMENT_SPEED / 2, cblocals.HIT_MOVEMENT_SPEED
+        )
         self.distance_to_move = 20
         self.old_state_name = old_state_name
 
@@ -184,9 +193,9 @@ class BaseStateHit(State):
         self.character.speed = self.character.maxSpeed
         self.collected_rest_time = 0
 
+
 class BaseStateRetreat(State):
-    """The character will perform a withdraw/dodge.
-    """
+    """The character will perform a withdraw/dodge."""
 
     def __init__(self, character):
         State.__init__(self, "retreat", character)
@@ -194,12 +203,12 @@ class BaseStateRetreat(State):
         self.collected_distance = 0
         self.distance_to_move = 40
         # rest after the real action
-        self.rest_time = .5
+        self.rest_time = 0.5
         self.collected_rest_time = 0
 
     def do_actions(self, time_passed):
         character = self.character
-        if self.collected_distance<self.distance_to_move:
+        if self.collected_distance < self.distance_to_move:
             # phase 1: retreat movement
             character.moveBasedOnRetreatAction(time_passed)
             self.collected_distance += time_passed * character.speed
@@ -209,7 +218,7 @@ class BaseStateRetreat(State):
 
     def check_conditions(self):
         """The character exit this state only when he rest for a while after the retreat movement"""
-        if self.collected_rest_time>=self.rest_time:
+        if self.collected_rest_time >= self.rest_time:
             return self.old_state_name
         return None
 
@@ -218,7 +227,7 @@ class BaseStateRetreat(State):
         character.speed = character.maxSpeed * 2
         character.navPoint.reset()
         self.old_state_name = old_state_name
-        print "%s dodge" % character.name
+        print("%s dodge" % character.name)
 
     def exit_actions(self, new_state_name):
         self.collected_distance = 0
@@ -229,20 +238,20 @@ class BaseStateRetreat(State):
         return True
 
 
-
-
 # ******* ladies and gentlemen: The Amazing State Machine *******
+
 
 class BaseStateMachine(StateMachine):
     """State machine for very base character"""
 
     def __init__(self, character):
         self._character = character
-        states = (BaseStateWaiting(character),
-                  BaseStateExploring(character),
-                  BaseStateHunting(character),
-                  BaseStateAttacking(character),
-                  BaseStateHit(character),
-                  BaseStateRetreat(character),
-                  )
+        states = (
+            BaseStateWaiting(character),
+            BaseStateExploring(character),
+            BaseStateHunting(character),
+            BaseStateAttacking(character),
+            BaseStateHit(character),
+            BaseStateRetreat(character),
+        )
         StateMachine.__init__(self, states)

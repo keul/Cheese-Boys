@@ -4,13 +4,19 @@ import pygame
 from pygame.locals import *
 
 from cheeseboys.ai import State, StateMachine
-from base_brain import BaseStateHunting, BaseStateAttacking, BaseStateHit, BaseStateRetreat
+from .base_brain import (
+    BaseStateHunting,
+    BaseStateAttacking,
+    BaseStateHit,
+    BaseStateRetreat,
+)
 from cheeseboys import cblocals
 from cheeseboys.cbrandom import cbrandom
 
+
 class HeroStateControlled(State):
     """The hero is moved by the player (I mean a human with a brain).
-    Think this state like a "brain sleep state". 
+    Think this state like a "brain sleep state".
     """
 
     def __init__(self, character):
@@ -22,7 +28,8 @@ class HeroStateControlled(State):
     def check_conditions(self):
         return None
 
-class HeroStateHunting(BaseStateHunting):   
+
+class HeroStateHunting(BaseStateHunting):
     """You right clicked over a far enemy. Move toward him"""
 
     def do_actions(self, time_passed):
@@ -39,16 +46,15 @@ class HeroStateHunting(BaseStateHunting):
 
         if not enemy or not enemy.isAlive:
             return "controlled"
-        
-        if character.distanceFrom(enemy)<=character.attackRange:
+
+        if character.distanceFrom(enemy) <= character.attackRange:
             return "attacking"
-        
+
         return None
 
 
 class HeroStateAttacking(BaseStateAttacking):
-    """Different from base class because the player must be able to regain control of the hero.
-    """
+    """Different from base class because the player must be able to regain control of the hero."""
 
     def do_actions(self, time_passed):
         """Changes from the base do_actions: we need to handle the X key here"""
@@ -72,9 +78,9 @@ class HeroStateAttacking(BaseStateAttacking):
         if enemy and not enemy.isAlive:
             return "controlled"
 
-        if character.distanceFrom(enemy)>character.attackRange:
+        if character.distanceFrom(enemy) > character.attackRange:
             return "hunting"
-        
+
         return None
 
 
@@ -85,12 +91,11 @@ class HeroStateMachine(StateMachine):
 
     def __init__(self, character):
         self._character = character
-        states = (HeroStateControlled(character),
-                  HeroStateHunting(character),
-                  HeroStateAttacking(character),
-                  BaseStateHit(character),
-                  BaseStateRetreat(character),
-                  )
+        states = (
+            HeroStateControlled(character),
+            HeroStateHunting(character),
+            HeroStateAttacking(character),
+            BaseStateHit(character),
+            BaseStateRetreat(character),
+        )
         StateMachine.__init__(self, states)
-
-

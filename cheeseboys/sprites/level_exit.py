@@ -5,13 +5,23 @@ from pygame.locals import *
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import cblocals, utils
 
+
 class LevelExit(GameSprite):
     """Important sprite that allow change of the level"""
-    
-    def __init__(self, position, size, exit_to, start_position, firstNavPoint, topleft, *containers):
+
+    def __init__(
+        self,
+        position,
+        size,
+        exit_to,
+        start_position,
+        firstNavPoint,
+        topleft,
+        *containers
+    ):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, size)
-        self.image = self.generateEmptySprite(size, alpha=0, fillWith=(240,240,240))
+        self.image = self.generateEmptySprite(size, alpha=0, fillWith=(240, 240, 240))
         self._focus = False
         # Exit data
         self.to_level = exit_to
@@ -37,23 +47,32 @@ class LevelExit(GameSprite):
             else:
                 if self._focus:
                     self.image.set_alpha(0)
-                    if cblocals.global_mouseCursorType==cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE:
+                    if (
+                        cblocals.global_mouseCursorType
+                        == cblocals.IMAGE_CURSOR_CHANGELEVEL_TYPE
+                    ):
                         utils.changeMouseCursor(None)
                     self._focus = False
 
             # Change level
-            if self.to_level and self.physical_rect.colliderect(self.currentLevel.hero.physical_rect) and \
-                        self.currentLevel.timeIn > 5.:
-                event = pygame.event.Event(cblocals.LEVEL_CHANGE_EVENT, {'exit':self, })
+            if (
+                self.to_level
+                and self.physical_rect.colliderect(self.currentLevel.hero.physical_rect)
+                and self.currentLevel.timeIn > 5.0
+            ):
+                event = pygame.event.Event(
+                    cblocals.LEVEL_CHANGE_EVENT,
+                    {
+                        "exit": self,
+                    },
+                )
                 pygame.event.post(event)
-    
+
     def getTip(self):
-        """Tip of a level exit give info on where it lead but only when mouse hover on it.
-        """
+        """Tip of a level exit give info on where it lead but only when mouse hover on it."""
         if self._focus:
             tip = self._emptyTipStructure.copy()
-            tip['text']=self.to_level or "???"
-            tip['background']=(255,255,255)
+            tip["text"] = self.to_level or "???"
+            tip["background"] = (255, 255, 255)
             return tip
         return ""
-

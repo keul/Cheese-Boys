@@ -2,6 +2,6 @@
 
 __author__ = "Keul - lucafbb AT gmail.com"
 
-from testcase import CheeseBoysTestCase
+from .testcase import CheeseBoysTestCase
 
-import test_presentation
+from . import test_presentation

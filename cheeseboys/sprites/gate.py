@@ -5,25 +5,26 @@ from pygame.locals import *
 from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import cblocals, utils
 
+
 class Gate(GameSprite):
     """Gate sprite. Solid passage commonly closed.
     TODO: In future this will have an open/close animation.
     """
-    
+
     def __init__(self, position, length, orientation, *containers):
         """Init the gate. Just give the length on the gate and the orientation.
         0 for horizontal, 1 for vertical.
-        
+
         To open the gate set the open_condition tuple attribute. The tuple contains an object (commonly a GameSprite)
         and an attribute name, that need to be tested on this object.
         The open_condition attribute must be evaluated to True, or must be a callable that return True.
         In any one of this case, the gate will open on collision with the hero.
-        
+
         You can also use the open_condition_reverse_flag to negate the condition needed to open the gate (not True but False).
         """
         GameSprite.__init__(self, *containers)
         self.length = self.total_length = length
-        self.width = int(length/20)
+        self.width = int(length / 20)
         self.orientation = orientation
         self.position = position
         self._initGate()
@@ -39,30 +40,30 @@ class Gate(GameSprite):
         self.image = self._getImage()
 
     def _getImage(self):
-        srf = self.generateEmptySprite(self.rect.size, colorKey=(0,0,0) )
-        if self.orientation==0:
-            rect = pygame.Rect( (0,0), (self.length,self.width) ) 
+        srf = self.generateEmptySprite(self.rect.size, colorKey=(0, 0, 0))
+        if self.orientation == 0:
+            rect = pygame.Rect((0, 0), (self.length, self.width))
         else:
-            rect = pygame.Rect( (0,0), (self.width,self.length) )
-        pygame.draw.rect(srf, (100,255,100), rect, 0)
+            rect = pygame.Rect((0, 0), (self.width, self.length))
+        pygame.draw.rect(srf, (100, 255, 100), rect, 0)
         return srf
 
     def _getRect(self, position, length, orientation):
-        if orientation==0:
-            rect = pygame.Rect( position, (length, length/2) )
+        if orientation == 0:
+            rect = pygame.Rect(position, (length, length / 2))
         else:
-            rect = pygame.Rect( position, (length/2, length) )
+            rect = pygame.Rect(position, (length / 2, length))
         return rect
 
     def open(self):
         """Open the gate"""
-        self.length = int(self.length/3)
+        self.length = int(self.length / 3)
         self._initGate()
         self.opened = True
 
     def close(self):
         """Close the gate"""
-        self.length = self.length*3
+        self.length = self.length * 3
         self._initGate()
         self.opened = False
 
@@ -70,20 +71,20 @@ class Gate(GameSprite):
     def collide_rect(self):
         """Collision rect of the gate; is where the gate is draw"""
         rect = self.rect
-        if self.orientation==0:
-            cr_rect = pygame.Rect( rect.topleft, (self.length,self.width) )
+        if self.orientation == 0:
+            cr_rect = pygame.Rect(rect.topleft, (self.length, self.width))
         else:
-            cr_rect = pygame.Rect( rect.topleft, (self.width,self.length) )
+            cr_rect = pygame.Rect(rect.topleft, (self.width, self.length))
         return cr_rect
 
     @property
     def physical_rect(self):
         """More thick than collide_rect because contains the open gate area"""
         rect = self.collide_rect
-        if self.orientation==0:
-            ph_rect = pygame.Rect( rect.topleft, (self.total_length,self.width*3) )
+        if self.orientation == 0:
+            ph_rect = pygame.Rect(rect.topleft, (self.total_length, self.width * 3))
         else:
-            ph_rect = pygame.Rect( rect.topleft, (self.width*3,self.total_length) )
+            ph_rect = pygame.Rect(rect.topleft, (self.width * 3, self.total_length))
         return ph_rect
 
     def update(self, time_passed):
@@ -100,7 +101,10 @@ class Gate(GameSprite):
             else:
                 if self._focus:
                     self.image.set_alpha(255)
-                    if cblocals.global_mouseCursorType==cblocals.IMAGE_CURSOR_OPENDOOR_TYPE:
+                    if (
+                        cblocals.global_mouseCursorType
+                        == cblocals.IMAGE_CURSOR_OPENDOOR_TYPE
+                    ):
                         utils.changeMouseCursor(None)
                     self._focus = False
 
@@ -120,11 +124,11 @@ class Gate(GameSprite):
         if source is hero and not self.opened:
             cond = True
             if open_condition_reverse_flag:
-                cond=False
+                cond = False
             if open_condition is not None:
-                if (type(open_condition)==bool and open_condition==cond) or \
-                            (type(open_condition)!=bool and open_condition()==cond):
+                if (type(open_condition) == bool and open_condition == cond) or (
+                    type(open_condition) != bool and open_condition() == cond
+                ):
                     self.open()
                     return
             hero.say("It wont open!", silenceFirst=True)
-

@@ -6,22 +6,10 @@ from pygame import sprite
 from cheeseboys import utils
 from cheeseboys.character import Character
 
-def groupSortingByYAxis(sprite1, sprite2):
-    """This function is made to be used by the sort procedure of the GameGroup.sprites().
-    Order 2 sprites by their Y position (using the GameSprite.collide_rect.centery)
-    """
-    y1 = sprite1.collide_rect.centery
-    y2 = sprite2.collide_rect.centery
-    if y1>y2:
-        return 1
-    elif y1==y2:
-        return 0
-    return -1
 
 class GameGroup(sprite.RenderUpdates):
-    """Game specific version of PyGame Group class, adding some functionality needed by this game.
-    """
-    
+    """Game specific version of PyGame Group class, adding some functionality needed by this game."""
+
     def __init__(self, name, drawable=False, updatable=False):
         sprite.Group.__init__(self)
         self.name = name
@@ -36,7 +24,7 @@ class GameGroup(sprite.RenderUpdates):
         a sprite is "far" from the screen base.
         """
         sprites = sprite.Group.sprites(self)
-        sprites.sort(groupSortingByYAxis)
+        sprites.sort(key=lambda sprite: sprite.collide_rect.centery)
         return sprites
 
     @property
@@ -52,7 +40,7 @@ class GameGroup(sprite.RenderUpdates):
     def drawAttacks(self, surface, time_passed):
         """Given a surface, draw all attack for charas on this surface.
         Drawing an attach is done by calling charas.drawAttack.
-        
+
         Of course, this method is nonsense called on a group that store non-character GameSprite.
         """
         for character in self.sprites():
@@ -79,18 +67,22 @@ class GameGroup(sprite.RenderUpdates):
         for s in self.sprites():
             # Special hero handling
             # BBB: must be moved away from there
-            if ref_sprite and isinstance(s,Character) and not ref_sprite.hasFreeSightOn(s):
+            if (
+                ref_sprite
+                and isinstance(s, Character)
+                and not ref_sprite.hasFreeSightOn(s)
+            ):
                 try:
                     del ref_sprite.can_see_list[s.UID()]
                 except:
                     pass
                 continue
-            elif ref_sprite and isinstance(s,Character):
+            elif ref_sprite and isinstance(s, Character):
                 ref_sprite.can_see_list[s.UID()] = True
             r = spritedict[s]
             newrect = surface_blit(s.image, s.rect)
             if r is 0:
-                dirty_append (newrect)
+                dirty_append(newrect)
             else:
                 if newrect.colliderect(r):
                     dirty_append(newrect.union(r))
@@ -101,38 +93,40 @@ class GameGroup(sprite.RenderUpdates):
         return dirty
 
     # ******* DEBUG HELPER METHODS *******
-    def drawCollideRect(self, surface, color=(0,255,255), width=1):
+    def drawCollideRect(self, surface, color=(0, 255, 255), width=1):
         """Draw a rect on the screen that repr collide area for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.collide_rect, width)
-    
-    def drawMainRect(self, surface, color=(255,100,100), width=1):
+
+    def drawMainRect(self, surface, color=(255, 100, 100), width=1):
         """Draw a rect on the screen that repr rect attribute of the sprite, for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.rect, width)
-    
-    def drawPhysicalRect(self, surface, color=(200,200,200), width=1):
+
+    def drawPhysicalRect(self, surface, color=(200, 200, 200), width=1):
         """Draw a rect on the screen that repr real physical rect attribute of the sprite, for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.physical_rect, width)
 
-    def drawHeatRect(self, surface, color=(255,0,255), width=1):
+    def drawHeatRect(self, surface, color=(255, 0, 255), width=1):
         """Draw a rect on the screen that repr the heat area for all Sprite in this group"""
         for sprite in self.sprites():
             pygame.draw.rect(surface, color, sprite.heat_rect, width)
 
     def drawNavPoint(self, surface):
         """Draw a point to the character navPoint"""
-        np_color = (255,0,0)
-        cp_color = (0,255,0)
+        np_color = (255, 0, 0)
+        cp_color = (0, 255, 0)
         for sprite in self.sprites():
-            if hasattr(sprite,'navPoint') and sprite.navPoint:
-                pos = sprite.currentLevel.transformToScreenCoordinate(sprite.navPoint.as_tuple())
+            if hasattr(sprite, "navPoint") and sprite.navPoint:
+                pos = sprite.currentLevel.transformToScreenCoordinate(
+                    sprite.navPoint.as_tuple()
+                )
                 pos = (int(pos[0]), int(pos[1]))
                 pygame.draw.circle(surface, np_color, pos, 3, 0)
                 for p in sprite.navPoint.computed_path:
                     pos = sprite.currentLevel.transformToScreenCoordinate(p)
                     pos = (int(pos[0]), int(pos[1]))
-                    pygame.draw.circle(surface, cp_color, pos, 3, 0)                    
-    # *******
+                    pygame.draw.circle(surface, cp_color, pos, 3, 0)
 
+    # *******

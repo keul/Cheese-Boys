@@ -2,12 +2,13 @@
 
 import logging
 import random
-from numerichandlers import DiceHandler
+from .numerichandlers import DiceHandler
+
 
 class RandomGenerator(object):
     """This random class may be only a wrapper for standard pygame random module...
     Buy may be that this is overwritten during unit-testing
-    """  
+    """
 
     def __init__(self, debug=False, values=[]):
         self._debug = debug
@@ -30,20 +31,20 @@ class RandomGenerator(object):
         """
         if forceResultTo:
             return forceResultTo
-    
+
         if self._debug:
             return self._getNextRandom()
-    
+
         handler = DiceHandler(dices)
         numberOfDices, typeOfDice, bonus = handler.getValues()
 
         amount = 0
         for ndices in range(numberOfDices):
             # Every HD can be 1d8, 1d4...
-            rndAmoun = random.randint(1, typeOfDice)+bonus
-            if rndAmoun<1:
+            rndAmoun = random.randint(1, typeOfDice) + bonus
+            if rndAmoun < 1:
                 rndAmoun = 1
-            amount+= rndAmoun
+            amount += rndAmoun
         logging.debug("Roll for %s: %s" % (dices, amount))
         return amount
 
@@ -52,5 +53,6 @@ class RandomGenerator(object):
         if self._debug:
             return self._getNextRandom()
         return forceResultTo or random.randint(1, 100)
+
 
 cbrandom = RandomGenerator()

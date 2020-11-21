@@ -8,13 +8,14 @@ from cheeseboys import cblocals, utils
 from cheeseboys.vector2 import Vector2
 from cheeseboys.pygame_extensions.unique import UniqueObject
 
+
 class GameSprite(pygame.sprite.Sprite, UniqueObject):
     """Base character for game sprite. This is a normal pygame sprite with some other methods.
     A GameSprite is always used inside a Level object.
     """
-    
-    _emptyTipStructure = {'text':"", 'color':(0,0,0)}
-    
+
+    _emptyTipStructure = {"text": "", "color": (0, 0, 0)}
+
     def __init__(self, *containers):
         pygame.sprite.Sprite.__init__(self, *containers)
         UniqueObject.__init__(self)
@@ -25,27 +26,32 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
 
     def _setX(self, newx):
         self._x = newx
+
     x = property(lambda self: self._x, _setX, doc="""The sprite X position""")
 
     def _setY(self, newy):
         self._y = newy
+
     y = property(lambda self: self._y, _setY, doc="""The sprite Y position""")
 
     def _setPosition(self, new_position):
         x, y = new_position
         self._x = x
-        self._y = y        
+        self._y = y
+
     def _getPosition(self):
         if not self.x and not self.y:
             return ()
         return (int(self.x), int(self.y))
-    position = property(_getPosition, _setPosition, doc="""Character position (midbottom) as tuple""")
+
+    position = property(
+        _getPosition, _setPosition, doc="""Character position (midbottom) as tuple"""
+    )
 
     @property
     def v(self):
         """Return position as Vector2 object"""
         return Vector2(self.position)
-
 
     def update(self, time_passed):
         """Update method of pygame Sprite class.
@@ -60,22 +66,22 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """
         topleft = self.rect.topleft
         if x or y:
-            return (topleft[0]+x, topleft[1]+y)
+            return (topleft[0] + x, topleft[1] + y)
         return topleft
 
     @property
     def absolute_collide_topleft(self):
         """Get the topleft absolute sprite position."""
-        x,y = self.position
+        x, y = self.position
         rect = self.collide_rect
-        return (x-rect.width/2, y-rect.height)
+        return (x - rect.width / 2, y - rect.height)
 
     @property
     def absolute_collide_bottomright(self):
         """Get the bottomright absolute sprite position."""
-        x,y = self.position
+        x, y = self.position
         rect = self.collide_rect
-        return (x+rect.width/2, y)
+        return (x + rect.width / 2, y)
 
     @property
     def position_grid(self):
@@ -83,12 +89,11 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         return self.currentLevel.toGridCoord(self.position)
 
     def isNearTo(self, point):
-        """Check if the sprite collision rect (the basement) is near to a point.
-        """
+        """Check if the sprite collision rect (the basement) is near to a point."""
         # BBB: I'm using a majored version of the collide rect to fix a problem with a charas-bouncing-effect on movement... :-|
         x, y = self.currentLevel.transformToScreenCoordinate(point)
         collide_rect = self.collide_rect
-        collide_rect.height+=3
+        collide_rect.height += 3
         return collide_rect.collidepoint(x, y)
 
     def toScreenCoordinate(self):
@@ -127,15 +132,18 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         """
         # BBB: use of the zindex info can be useful here in future (flying characters)?
         x, y = utils.normalizeXY(x, y)
-        collide_rect = self.collide_rect.move(x,y)
-        collideGroups = (self.currentLevel['physical'],)
+        collide_rect = self.collide_rect.move(x, y)
+        collideGroups = (self.currentLevel["physical"],)
         for group in collideGroups:
             for sprite in group.sprites():
                 if sprite is self:
                     continue
                 if collide_rect.colliderect(sprite.collide_rect):
                     if not silent:
-                        event = pygame.event.Event(cblocals.SPRITE_COLLISION_EVENT, {'source':self, 'to': sprite})
+                        event = pygame.event.Event(
+                            cblocals.SPRITE_COLLISION_EVENT,
+                            {"source": self, "to": sprite},
+                        )
                         pygame.event.post(event)
                     return True
         return False
@@ -167,21 +175,21 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         tlx, tly = self.currentLevel.toGridCoord(topleft)
         brx, bry = self.currentLevel.toGridCoord(bottomright)
         collide_grid = []
-        for x in range(tlx, brx+1):
-            for y in range(tly, bry+1):
-                collide_grid.append( (x,y) )
+        for x in range(tlx, brx + 1):
+            for y in range(tly, bry + 1):
+                collide_grid.append((x, y))
         if not collide_grid:
-            collide_grid = [(tlx,tly)]
+            collide_grid = [(tlx, tly)]
         return collide_grid
 
     def distanceFrom(self, sprite):
         """Return the distance between this sprite and another one"""
-        return Vector2.from_points(self.position,sprite.position).get_magnitude()
+        return Vector2.from_points(self.position, sprite.position).get_magnitude()
 
     def move(self, x, y):
         """Move the sprite, relative to current point"""
-        self.x+=x
-        self.y+=y
+        self.x += x
+        self.y += y
 
     @classmethod
     def generateEmptySprite(cls, size, alpha=None, fillWith=None, colorKey=None):
@@ -189,7 +197,7 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
         You can enter alpha value, fill color and colorkey color for per-pixel-alpha.
         """
         # BBB: move this away from here, like in a simple module
-        surface = pygame.Surface(size, flags=HWSURFACE|HWPALETTE, depth=32)
+        surface = pygame.Surface(size, flags=HWSURFACE | HWPALETTE, depth=32)
         if fillWith:
             surface.fill(fillWith)
         if alpha is not None:
@@ -222,10 +230,8 @@ class GameSprite(pygame.sprite.Sprite, UniqueObject):
     @property
     def outOfScreen(self):
         """True if the sprite is out of the screen coordinates"""
-        x,y = self.currentLevel.transformToScreenCoordinate(self.position)
-        w,h = cblocals.GAME_SCREEN_SIZE
-        if x<0 or y<0 or x>x or y>h:
+        x, y = self.currentLevel.transformToScreenCoordinate(self.position)
+        w, h = cblocals.GAME_SCREEN_SIZE
+        if x < 0 or y < 0 or x > x or y > h:
             return True
         return False
-
- 

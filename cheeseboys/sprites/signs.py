@@ -6,9 +6,10 @@ from cheeseboys.pygame_extensions.sprite import GameSprite
 from cheeseboys import cblocals, utils
 from cheeseboys.cbrandom import cbrandom
 
+
 class CodigoroSign(GameSprite):
     """Static town sign"""
-    
+
     def __init__(self, position, size, *containers):
         GameSprite.__init__(self, *containers)
         self.rect = pygame.Rect(position, size)
@@ -22,7 +23,7 @@ class CodigoroSign(GameSprite):
         rect = self.rect
         ly = rect.bottom
         h = 5
-        hy = ly-h
+        hy = ly - h
         lx = rect.left + 33
         w = 9
-        return pygame.Rect( (lx, hy), (w, h) )
+        return pygame.Rect((lx, hy), (w, h))
