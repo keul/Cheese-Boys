@@ -16,7 +16,7 @@ PyMike (Pygame community)
 
 The Mage (Charasproject.net community)
 --------------------------------------
-* Thanks for his original Glenn image, and for create a new one for Cheese Boys.
+* Thanks for his original Glenn image, and for creating a new one for Cheese Boys.
 
 Eli Bendersky
 -------------
@@ -26,11 +26,11 @@ Eli Bendersky
 
 Zion
 ----
-Even if Zion is NOT a software developer, I think he was exacly this in a provious life.
+Even if Zion is NOT a software developer, I think he was exactly this in a previous life.
 Some of his super ideas:
 
 * Plan a future split of the engine and the game.
-* Suggest to use manually drawen image instead of tiles (this after the failure of the Gareth's Quest project).
+* Suggest to use manually drawn image instead of tiles (this after the failure of the Gareth's Quest project).
 * ...and finally, to be a good friend! :-)
  
  

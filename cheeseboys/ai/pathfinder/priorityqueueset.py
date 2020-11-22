@@ -1,3 +1,5 @@
+# Credits geos to https://eli.thegreenplace.net/2009/01/09/writing-a-game-in-python-with-pygame-part-iii
+
 import heapq
 
 

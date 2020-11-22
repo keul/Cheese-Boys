@@ -19,7 +19,7 @@ except ImportError:
     )
     sys.exit(1)
 
-# Check for pygame 1.8
+# Check for pygame 2.0+
 print("Checking for pygame version...")
 from pygame import version
 
